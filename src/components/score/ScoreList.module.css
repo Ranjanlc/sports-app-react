@@ -1,0 +1,141 @@
+.date {
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  border: 0.5px solid rgba(255, 255, 255, 0.42);
+  margin: 0;
+}
+.date li {
+  cursor: pointer;
+  font-weight: 600;
+}
+.date-picker {
+  background-color: rgb(28, 225, 225);
+  color: white;
+  font-weight: 900;
+}
+.date-picker:focus {
+  outline: none;
+}
+.icon {
+  width: 3rem;
+  cursor: pointer;
+}
+.container {
+  display: flex;
+  justify-content: space-around;
+}
+.match-list {
+  width: 50%;
+  background-color: black;
+}
+.match-list img {
+  width: 2.5rem;
+  border-radius: 1px;
+  padding-right: 0.69rem;
+  /* padding-top: 1rem; */
+}
+.title-container {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  /* flex-direction: column; */
+}
+.title {
+  display: flex;
+  flex-direction: column;
+}
+.competition {
+  font-weight: 700;
+  font-size: medium;
+}
+.country {
+  font-weight: 400;
+  font-size: small;
+}
+.match-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #454545;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+}
+.lhs {
+  display: flex;
+  align-items: center;
+}
+.time {
+  min-width: 38px;
+  text-align: center;
+  transform: scale(1, 0.9);
+  color: rgb(208, 208, 208);
+}
+.teams {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.teams div {
+  display: flex;
+}
+.rhs {
+  display: flex;
+}
+.score {
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+.first-score {
+  margin-bottom: 0.5rem;
+}
+.second-score {
+  padding-bottom: 0.5rem;
+}
+.featured {
+  width: 35%;
+  background-color: #454545;
+  margin-top: 1.5rem;
+  height: 15rem;
+}
+.featured-title {
+  display: block;
+  text-align: center;
+  font-size: large;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+.featured-match {
+  /* width: 90%; */
+  background-color: rgba(8, 8, 5);
+  margin: 0 1rem;
+  border-radius: 5px;
+  min-height: 110px;
+  /* margin-left: 2rem; */
+  margin-top: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.featured-match img {
+  margin-top: 0.5rem;
+  width: 3.5rem;
+}
+.featured-lhs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 3rem;
+}
+.featured-score {
+  font-size: 30px;
+  font-weight: 700;
+}
+.featured-rhs {
+  display: flex;
+  flex-direction: column;
+  margin-right: 3rem;
+}
