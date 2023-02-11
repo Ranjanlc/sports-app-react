@@ -1,28 +1,79 @@
-import { Fragment } from 'react';
-import datePicker from '../../helpers/date-picker';
+import { Fragment, useEffect } from 'react';
+import datePicker, { apiDateConverter } from '../../helpers/date-picker';
+import DatePicker from 'react-datepicker';
+import { useState } from 'react';
+
+import 'react-datepicker/dist/react-datepicker.css';
 import classes from './ScoreList.module.css';
-import favourites from './star.svg';
+import favourites from '../../assets/star.svg';
 const ScoreList = (props) => {
-  const dateContainer = datePicker();
-  const dateChangeHandler = (e) => {
-    console.log('fired');
-  };
+  const URL = 'http://localhost:8080/graphql';
+  // let dateContainer;
+  const [startDate, setStartDate] = useState(null);
+  let dateContainer = datePicker(startDate);
   const dateList = dateContainer.map((date) => {
     const day = date.getDate();
     const month = date.toLocaleString('default', { month: 'short' });
     const curDate = [day, month].join(' ');
     return <li key={date.toISOString()}>{curDate}</li>;
   });
+  const curDay = String(new Date().toISOString().split('T').at(0));
+  const newDay = apiDateConverter(startDate);
+  console.log(typeof curDay);
+  const graphqlQuery = {
+    query: `
+     query {
+      getFootballMatches(date:"${startDate ? newDay : curDay}") {
+        competitionName,
+        competitionId,
+        venue,
+        events {
+        matchId,homeTeam {
+           name
+          imageUrl
+        },awayTeam {
+          name imageUrl
+        },startTime, matchStatus,homeScore,awayScore
+      },
+      competitionImage
+      }
+     }
+    `,
+  };
+  const fetchMatches = async () => {
+    const res = await fetch(URL, {
+      method: 'POST',
+      body: JSON.stringify(graphqlQuery),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    console.log(data);
+  };
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+  const dateChangeHandler = (dateValue) => {
+    // const date = new Date(+new Date(dateValue) + 60000000);
+    setStartDate(dateValue);
+  };
   return (
     <Fragment>
       <ul className={classes.date}>
         <img src="./liveicon.png" className={classes.icon} />
         {dateList}
-        <input
-          type="date"
-          className={classes['date-picker']}
-          onChange={dateChangeHandler}
-        ></input>
+        <li>
+          <DatePicker
+            selected={startDate}
+            className={classes['date-picker']}
+            todayButton="Set to Today"
+            closeOnScroll={true}
+            placeholderText="mm/dd/yy&#8617;"
+            value={startDate}
+            // To disable keyboard
+            onFocus={(e) => e.target.blur()}
+            onChange={dateChangeHandler}
+          />
+        </li>
       </ul>
       <main className={classes.container}>
         <div className={classes['match-list']}>

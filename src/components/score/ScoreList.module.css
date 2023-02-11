@@ -10,13 +10,18 @@
   font-weight: 600;
 }
 .date-picker {
+  width: 125px;
+  cursor: pointer;
+  text-align: center;
+}
+/* .date-picker {
   background-color: rgb(28, 225, 225);
   color: white;
   font-weight: 900;
 }
 .date-picker:focus {
   outline: none;
-}
+} */
 .icon {
   width: 3rem;
   cursor: pointer;
@@ -27,7 +32,7 @@
 }
 .match-list {
   width: 50%;
-  background-color: black;
+  /* background-color: black; */
 }
 .match-list img {
   width: 2.5rem;
