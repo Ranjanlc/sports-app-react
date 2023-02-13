@@ -1,4 +1,5 @@
 const datePicker = (defaultDate) => {
+  console.log(defaultDate);
   const convertToMs = (day) => {
     return day * 60 * 60 * 24 * 1000;
   };
@@ -42,6 +43,23 @@ export const apiDateConverter = (date) => {
   const [month, day, year] = String(date).split(' ').slice(1, 4);
   const numberMonth = monthToDateConverter(month);
   return `${year}-${numberMonth}-${day}`;
+};
+
+export const convertDateForDisplay = (date) => {
+  const [dateStr, timeStr] = date.split(' ');
+  const [yearStr, monthStr, dayStr] = dateStr.split('-');
+  const [hourStr, minuteStr] = timeStr.split(':');
+  const [year, month, day, hour, minute] = [
+    +yearStr,
+    +monthStr,
+    +dayStr,
+    +hourStr,
+    +minuteStr,
+  ];
+  // month-1 because javascript takes january as 0 and feb as 1.
+  const convertedDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
+  const displayTime = String(convertedDate).split(' ').at(4).slice(0, 5);
+  return { displayTime, convertedDate };
 };
 
 export default datePicker;

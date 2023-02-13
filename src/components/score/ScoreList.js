@@ -1,29 +1,60 @@
-import { Fragment, useEffect } from 'react';
-import datePicker, { apiDateConverter } from '../../helpers/date-picker';
+import { Fragment, useCallback, useEffect } from 'react';
+import datePicker, {
+  apiDateConverter,
+  convertDateForDisplay,
+} from '../../helpers/date-picker';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import classes from './ScoreList.module.css';
 import favourites from '../../assets/star.svg';
+import dummyLogo from '../../assets/dummy-logo.png';
+import { useNavigate, useParams } from 'react-router-dom';
 const ScoreList = (props) => {
   const URL = 'http://localhost:8080/graphql';
   // let dateContainer;
-  const [startDate, setStartDate] = useState(null);
-  let dateContainer = datePicker(startDate);
-  const dateList = dateContainer.map((date) => {
+  const navigate = useNavigate();
+  const { dateId } = useParams();
+  // startDate's type is date because that is what accepted by datePicker
+  const [startDate, setStartDate] = useState(
+    dateId ? new Date(dateId) : new Date()
+  );
+  const curDay = apiDateConverter(new Date());
+  const [date, setDate] = useState(dateId || curDay);
+  const [matches, setMatches] = useState(null);
+  let dateContainer = datePicker(date);
+  const loadMatchByDate = (date) => {
+    setDate(date);
+    console.log(new Date(date));
+    setStartDate(new Date(date));
+    navigate(`/${date}`);
+  };
+  const dateList = dateContainer?.map((date) => {
     const day = date.getDate();
     const month = date.toLocaleString('default', { month: 'short' });
     const curDate = [day, month].join(' ');
-    return <li key={date.toISOString()}>{curDate}</li>;
+    const convertedDate = apiDateConverter(date);
+    return (
+      <li
+        key={date.toISOString()}
+        id={convertedDate}
+        onClick={loadMatchByDate.bind(null, convertedDate)}
+      >
+        {curDate}
+      </li>
+    );
   });
-  const curDay = String(new Date().toISOString().split('T').at(0));
-  const newDay = apiDateConverter(startDate);
-  console.log(typeof curDay);
+  // Used conditional setState to avoid infinite re-rendering
+  if (apiDateConverter(startDate) !== date) {
+    setDate(apiDateConverter(startDate));
+  }
+
+  // const newDay = apiDateConverter(startDate);
   const graphqlQuery = {
     query: `
      query {
-      getFootballMatches(date:"${startDate ? newDay : curDay}") {
+      getFootballMatches(date:"${date}") {
         competitionName,
         competitionId,
         venue,
@@ -40,21 +71,89 @@ const ScoreList = (props) => {
      }
     `,
   };
-  const fetchMatches = async () => {
+  const fetchMatches = useCallback(async () => {
+    console.log('REquest to get data????');
     const res = await fetch(URL, {
       method: 'POST',
       body: JSON.stringify(graphqlQuery),
       headers: { 'Content-Type': 'application/json' },
     });
-    const data = await res.json();
-    console.log(data);
-  };
+    const {
+      data: { getFootballMatches: MatchesList },
+    } = await res.json();
+    setMatches(MatchesList);
+    //We send another request whenever date changes.
+  }, [date]);
   useEffect(() => {
     fetchMatches();
-  }, []);
+  }, [fetchMatches]);
+  const competitionSet = matches?.map((competition) => {
+    const { competitionId, competitionName, competitionImage, venue, events } =
+      competition;
+    const eventsList = events.map((event) => {
+      const {
+        matchId,
+        matchStatus,
+        startTime,
+        awayScore,
+        homeScore,
+        homeTeam: { imageUrl: homeImageUrl, name: homeTeamName },
+        awayTeam: { imageUrl: awayImageUrl, name: awayTeamName },
+      } = event;
+      const homeUrl = homeImageUrl.includes(undefined)
+        ? dummyLogo
+        : homeImageUrl;
+      const awayUrl = awayImageUrl.includes(undefined)
+        ? dummyLogo
+        : awayImageUrl;
+      const { displayTime } = convertDateForDisplay(startTime);
+      // console.log(startTimeConverted);
+      return (
+        <div className={classes['match-item']}>
+          <div className={classes.lhs}>
+            <span className={classes.time}>{displayTime}</span>
+            <div className={classes.teams}>
+              <div>
+                <img src={`${homeUrl}`} alt="Home" />
+                {homeTeamName}
+              </div>
+              <div>
+                <img src={`${awayUrl}`} alt="Away" />
+                {awayTeamName}
+              </div>
+            </div>
+          </div>
+          <div className={classes.rhs}>
+            {matchStatus !== 'NS' && (
+              <div className={classes.score}>
+                <span className={classes['first-score']}>{homeScore}</span>
+                <span className={classes['second-score']}>{awayScore}</span>
+              </div>
+            )}
+            <img src={favourites} alt="star" />
+          </div>
+        </div>
+      );
+    });
+    return (
+      <Fragment>
+        <div className={classes['title-container']}>
+          <img src={`${competitionImage}`} alt="Flag" />
+          <div className={classes.title}>
+            <span className={classes.competition}>{competitionName} </span>
+            <span className={classes.country}>{venue}</span>
+          </div>
+        </div>
+        {eventsList}
+      </Fragment>
+    );
+  });
+
   const dateChangeHandler = (dateValue) => {
-    // const date = new Date(+new Date(dateValue) + 60000000);
+    const convertedDate = apiDateConverter(dateValue);
+    setDate(convertedDate);
     setStartDate(dateValue);
+    navigate(`/${convertedDate}`);
   };
   return (
     <Fragment>
@@ -63,7 +162,8 @@ const ScoreList = (props) => {
         {dateList}
         <li>
           <DatePicker
-            selected={startDate}
+            // Conditional selector to display placeHolder text on initial loading
+            selected={dateId ? startDate : null}
             className={classes['date-picker']}
             todayButton="Set to Today"
             closeOnScroll={true}
@@ -76,106 +176,7 @@ const ScoreList = (props) => {
         </li>
       </ul>
       <main className={classes.container}>
-        <div className={classes['match-list']}>
-          <div className={classes['title-container']}>
-            <img src="https://static.livescore.com/i2/fh/england.jpg" alt="" />
-            <div className={classes.title}>
-              <span className={classes.competition}>Premier League </span>
-              <span className={classes.country}>England</span>
-            </div>
-          </div>
-          <div className={classes['match-item']}>
-            <div className={classes.lhs}>
-              <span className={classes.time}>18:15</span>
-              <div className={classes.teams}>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8654.png"
-                    alt="dasdc"
-                  />
-                  West Ham United
-                </div>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8455.png"
-                    alt="dasdc"
-                  />
-                  Chelsea
-                </div>
-              </div>
-            </div>
-            <div className={classes.rhs}>
-              <div className={classes.score}>
-                <span className={classes['first-score']}>1</span>
-                <span className={classes['second-score']}>2</span>
-              </div>
-              <img src={favourites} alt="star" />
-            </div>
-          </div>
-          <div className={classes['title-container']}>
-            <img src="https://static.livescore.com/i2/fh/england.jpg" alt="" />
-            <div className={classes.title}>
-              <span className={classes.competition}>Premier League </span>
-              <span className={classes.country}>England</span>
-            </div>
-          </div>
-          <div className={classes['match-item']}>
-            <div className={classes.lhs}>
-              <span className={classes.time}>18:15</span>
-              <div className={classes.teams}>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8654.png"
-                    alt="dasdc"
-                  />
-                  West Ham United
-                </div>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8455.png"
-                    alt="dasdc"
-                  />
-                  Chelsea
-                </div>
-              </div>
-            </div>
-            <div className={classes.rhs}>
-              <div className={classes.score}>
-                <span className={classes['first-score']}>1</span>
-                <span className={classes['second-score']}>2</span>
-              </div>
-              <img src={favourites} alt="star" />
-            </div>
-          </div>
-          <div className={classes['match-item']}>
-            <div className={classes.lhs}>
-              <span className={classes.time}>FT</span>
-              <div className={classes.teams}>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8654.png"
-                    alt="dasdc"
-                  />
-                  West Ham United
-                </div>
-                <div>
-                  <img
-                    src="https://lsm-static-prod.livescore.com/high/enet/8455.png"
-                    alt="dasdc"
-                  />
-                  Chelsea
-                </div>
-              </div>
-            </div>
-            <div className={classes.rhs}>
-              {/* <div className={classes.score}>
-                <span>1</span>
-                <span>2</span>
-              </div> */}
-              <img src={favourites} alt="star" />
-            </div>
-          </div>
-        </div>
+        <div className={classes['match-list']}>{competitionSet}</div>
         <div className={classes.featured}>
           <span className={classes['featured-title']}>Featured Match</span>
           <div className={classes['featured-match']}>
