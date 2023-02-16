@@ -1,5 +1,4 @@
 const datePicker = (defaultDate) => {
-  console.log(defaultDate);
   const convertToMs = (day) => {
     return day * 60 * 60 * 24 * 1000;
   };

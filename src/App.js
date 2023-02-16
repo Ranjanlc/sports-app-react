@@ -1,4 +1,11 @@
-import { Route, Routes } from 'react-router-dom';
+import { useState } from 'react';
+import {
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+  useRoutes,
+} from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ScoreList from './components/score/ScoreList';
 
@@ -8,13 +15,17 @@ import ScoreList from './components/score/ScoreList';
 //TODO:Make the algorithm for featured matches
 //TODO:Loading Component
 // FIXME:The match time which should be in next date is in the previous for ex:if the match is in 2023-02-14 1 am,it showing 1 am in 02-13.
+// TODO:If a user is in football and he clicks football icon,he is gone back to top.
 function App() {
-  console.log(new Date('2023-02-15'));
+  console.log('abcd'.charAt(0).toUpperCase() + 'abcd'.slice(1));
   return (
     <Layout>
+      {/* The component is side by side of Routes because it is the equivalent of Routes */}
       <Routes>
-        <Route path="/" element={<ScoreList />} />
-        <Route path="/:dateId" element={<ScoreList />} />
+        <Route path="/" element={<Navigate to={'basketball'} replace />} />
+        {['/:sportName', '/:sportName/:dateId'].map((path, id) => (
+          <Route path={path} element={<ScoreList />} key={id} />
+        ))}
       </Routes>
     </Layout>
   );

@@ -10,80 +10,79 @@ import 'react-datepicker/dist/react-datepicker.css';
 import classes from './ScoreList.module.css';
 import favourites from '../../assets/star.svg';
 import dummyLogo from '../../assets/dummy-logo.png';
-import { useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 const ScoreList = (props) => {
   const URL = 'http://localhost:8080/graphql';
-  // let dateContainer;
   const navigate = useNavigate();
-  const { dateId } = useParams();
+  const { dateId, sportName } = useParams();
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
   );
   const curDay = apiDateConverter(new Date());
-  const [date, setDate] = useState(dateId || curDay);
+  // This date is for api uses.
+  const [date, setDate] = useState(dateId);
+  // This two if clauses for loading data when user clicks back button.
+  if (!dateId && date !== curDay) {
+    setDate(curDay);
+  }
+  if (dateId && dateId !== date) {
+    setDate(dateId);
+  }
   const [matches, setMatches] = useState(null);
-  let dateContainer = datePicker(date);
-  const loadMatchByDate = (date) => {
-    setDate(date);
-    console.log(new Date(date));
+  const changeStateHandler = (date) => {
     setStartDate(new Date(date));
-    navigate(`/${date}`);
+    setDate(date);
   };
+  const dateContainer = datePicker(date);
   const dateList = dateContainer?.map((date) => {
     const day = date.getDate();
     const month = date.toLocaleString('default', { month: 'short' });
     const curDate = [day, month].join(' ');
     const convertedDate = apiDateConverter(date);
     return (
-      <li
+      <NavLink
         key={date.toISOString()}
-        id={convertedDate}
-        onClick={loadMatchByDate.bind(null, convertedDate)}
+        onClick={changeStateHandler.bind(null, convertedDate)}
+        to={`/${sportName}/${convertedDate}`}
       >
         {curDate}
-      </li>
+      </NavLink>
     );
   });
-  // Used conditional setState to avoid infinite re-rendering
-  if (apiDateConverter(startDate) !== date) {
-    setDate(apiDateConverter(startDate));
-  }
-
-  // const newDay = apiDateConverter(startDate);
+  const sportForApi = `get${
+    sportName.charAt(0).toUpperCase() + sportName.slice(1)
+  }Matches`; //capitalizing first letter for convenience
   const graphqlQuery = {
     query: `
-     query {
-      getFootballMatches(date:"${date}") {
-        competitionName,
-        competitionId,
-        venue,
+    {
+     ${sportForApi}(date:"${date}") {
+        competitionId competitionName competitionImage venue
         events {
-        matchId,homeTeam {
-           name
-          imageUrl
-        },awayTeam {
-          name imageUrl
-        },startTime, matchStatus,homeScore,awayScore
-      },
-      competitionImage
+          matchId matchStatus
+          homeTeam {
+            name imageUrl 
+          },awayTeam {
+            name imageUrl 
+          } 
+          startTime homeScore awayScore winnerTeam
+        }
       }
      }
     `,
   };
   const fetchMatches = useCallback(async () => {
-    console.log('REquest to get data????');
     const res = await fetch(URL, {
       method: 'POST',
       body: JSON.stringify(graphqlQuery),
       headers: { 'Content-Type': 'application/json' },
     });
     const {
-      data: { getFootballMatches: MatchesList },
+      data: { [sportForApi]: MatchesList }, //[] for computed property
     } = await res.json();
     setMatches(MatchesList);
     //We send another request whenever date changes.
-  }, [date]);
+  }, [date, sportName]);
   useEffect(() => {
     fetchMatches();
   }, [fetchMatches]);
@@ -109,7 +108,7 @@ const ScoreList = (props) => {
       const { displayTime } = convertDateForDisplay(startTime);
       // console.log(startTimeConverted);
       return (
-        <div className={classes['match-item']}>
+        <div className={classes['match-item']} key={matchId}>
           <div className={classes.lhs}>
             <span className={classes.time}>{displayTime}</span>
             <div className={classes.teams}>
@@ -126,8 +125,8 @@ const ScoreList = (props) => {
           <div className={classes.rhs}>
             {matchStatus !== 'NS' && (
               <div className={classes.score}>
-                <span className={classes['first-score']}>{homeScore}</span>
-                <span className={classes['second-score']}>{awayScore}</span>
+                <div className={classes['first-score']}>{homeScore}</div>
+                <div className={classes['second-score']}>{awayScore}</div>
               </div>
             )}
             <img src={favourites} alt="star" />
@@ -135,9 +134,10 @@ const ScoreList = (props) => {
         </div>
       );
     });
+
     return (
-      <Fragment>
-        <div className={classes['title-container']}>
+      <Fragment key={competitionId}>
+        <div className={classes['title-container']} key={competitionId}>
           <img src={`${competitionImage}`} alt="Flag" />
           <div className={classes.title}>
             <span className={classes.competition}>{competitionName} </span>
@@ -148,12 +148,11 @@ const ScoreList = (props) => {
       </Fragment>
     );
   });
-
   const dateChangeHandler = (dateValue) => {
     const convertedDate = apiDateConverter(dateValue);
     setDate(convertedDate);
     setStartDate(dateValue);
-    navigate(`/${convertedDate}`);
+    navigate(`/${sportName}/${convertedDate}`);
   };
   return (
     <Fragment>

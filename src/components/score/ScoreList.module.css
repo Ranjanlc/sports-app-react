@@ -5,7 +5,9 @@
   border: 0.5px solid rgba(255, 255, 255, 0.42);
   margin: 0;
 }
-.date li {
+.date a {
+  text-decoration: none;
+  color: inherit;
   cursor: pointer;
   font-weight: 600;
 }
@@ -75,6 +77,7 @@
   text-align: center;
   transform: scale(1, 0.9);
   color: rgb(208, 208, 208);
+  margin-left: 0.5rem;
 }
 .teams {
   margin-left: 10px;
@@ -83,6 +86,9 @@
 }
 .teams div {
   display: flex;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  min-height: 29px;
 }
 .rhs {
   display: flex;
@@ -93,12 +99,15 @@
   flex-direction: column;
   font-weight: bold;
 }
-.first-score {
-  margin-bottom: 0.5rem;
+.score .first-score {
+  min-height: 30px;
+  margin-bottom: 2px;
 }
-.second-score {
-  padding-bottom: 0.5rem;
+.score .second-score {
+  min-height: 30px;
+  margin-top: 6px;
 }
+
 .featured {
   width: 35%;
   background-color: #454545;

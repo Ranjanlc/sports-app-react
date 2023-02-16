@@ -11,7 +11,8 @@
   min-height: 60px;
   /* max-height: 52px; */
   border-radius: 10px;
-  /* position: sticky; */
+  top: -0.5px;
+  position: sticky;
 }
 
 .list .logo {
@@ -29,8 +30,10 @@
   height: 100%;
   /* align-items: center; */
 }
-.list div {
+.list a {
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   margin-right: 2rem;
   padding: 0 1.5rem;
 }
