@@ -10,11 +10,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import classes from './ScoreList.module.css';
 import favourites from '../../assets/star.svg';
 import dummyLogo from '../../assets/dummy-logo.png';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import cricketBat from '../../assets/cricket-bat.png';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 const ScoreList = (props) => {
   const URL = 'http://localhost:8080/graphql';
   const navigate = useNavigate();
   const { dateId, sportName } = useParams();
+  const { pathname: urlPath } = useLocation();
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
@@ -50,26 +52,27 @@ const ScoreList = (props) => {
       </NavLink>
     );
   });
-  const sportForApi = `get${
+  const sportForApi = `get${urlPath.includes('live') ? 'Live' : ''}${
     sportName.charAt(0).toUpperCase() + sportName.slice(1)
-  }Matches`; //capitalizing first letter for convenience
+  }Matches`;
   const graphqlQuery = {
     query: `
-    {
-     ${sportForApi}(date:"${date}") {
-        competitionId competitionName competitionImage venue
-        events {
-          matchId matchStatus
-          homeTeam {
-            name imageUrl 
-          },awayTeam {
-            name imageUrl 
-          } 
-          startTime homeScore awayScore winnerTeam
-        }
+     {
+      ${sportForApi}${urlPath.includes('live') ? '' : `(date:"${date}")`} {
+         competitionId competitionName competitionImage venue
+         events {
+           matchId matchStatus
+           homeTeam {
+             name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+           },awayTeam {
+             name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+           } 
+           startTime homeScore awayScore winnerTeam 
+           ${sportName === 'cricket' ? 'note' : ''}
+         }
+       }
       }
-     }
-    `,
+     `,
   };
   const fetchMatches = useCallback(async () => {
     const res = await fetch(URL, {
@@ -80,6 +83,7 @@ const ScoreList = (props) => {
     const {
       data: { [sportForApi]: MatchesList }, //[] for computed property
     } = await res.json();
+    console.log(MatchesList);
     setMatches(MatchesList);
     //We send another request whenever date changes.
   }, [date, sportName]);
@@ -96,8 +100,16 @@ const ScoreList = (props) => {
         startTime,
         awayScore,
         homeScore,
-        homeTeam: { imageUrl: homeImageUrl, name: homeTeamName },
-        awayTeam: { imageUrl: awayImageUrl, name: awayTeamName },
+        homeTeam: {
+          imageUrl: homeImageUrl,
+          name: homeTeamName,
+          isBatting: homeIsBatting,
+        },
+        awayTeam: {
+          imageUrl: awayImageUrl,
+          name: awayTeamName,
+          isBatting: awayIsBatting,
+        },
       } = event;
       const homeUrl = homeImageUrl.includes(undefined)
         ? dummyLogo
@@ -107,30 +119,76 @@ const ScoreList = (props) => {
         : awayImageUrl;
       const { displayTime } = convertDateForDisplay(startTime);
       // console.log(startTimeConverted);
-      return (
-        <div className={classes['match-item']} key={matchId}>
-          <div className={classes.lhs}>
-            <span className={classes.time}>{displayTime}</span>
-            <div className={classes.teams}>
-              <div>
-                <img src={`${homeUrl}`} alt="Home" />
-                {homeTeamName}
-              </div>
-              <div>
-                <img src={`${awayUrl}`} alt="Away" />
-                {awayTeamName}
-              </div>
+      // TODO:Add winning class.
+      const splittedHomeScore =
+        homeScore !== 'Yet to bat' && homeScore?.split(' ');
+      const splittedAwayScore =
+        awayScore !== 'Yet to bat' && awayScore?.split(' ');
+      // Logic to separate test scores with odi&t20i scores.
+      const cricketScore =
+        sportName === 'cricket' &&
+        (splittedHomeScore?.length === 3 || splittedAwayScore?.length === 3 ? (
+          <div className={classes.score}>
+            <div className={classes['first-score']}>
+              <span className={classes.innings}>
+                {splittedHomeScore?.slice(0, 2).join(' ')}
+              </span>
+              <span className={classes.total}>{splittedHomeScore?.at(2)}</span>
+            </div>
+            <div className={classes['second-score']}>
+              <span className={classes.innings}>
+                {splittedAwayScore?.slice(0, 2).join(' ')}
+              </span>
+              <span className={classes.total}>{splittedAwayScore?.at(2)}</span>
             </div>
           </div>
-          <div className={classes.rhs}>
-            {matchStatus !== 'NS' && (
-              <div className={classes.score}>
-                <div className={classes['first-score']}>{homeScore}</div>
-                <div className={classes['second-score']}>{awayScore}</div>
-              </div>
-            )}
-            <img src={favourites} alt="star" />
+        ) : (
+          <div className={classes.score}>
+            <div className={classes['first-score']}>{homeScore}</div>
+            <div className={classes['second-score']}>{awayScore}</div>
           </div>
+        ));
+      return (
+        <div className={classes['match-container']} key={matchId}>
+          <div className={classes['match-item']}>
+            <div className={classes.lhs}>
+              {sportName === 'cricket' && (
+                <div className={classes['time']}>{displayTime}</div>
+              )}
+              {sportName !== 'cricket' && (
+                <span className={classes.time}>{displayTime}</span>
+              )}
+              <div className={classes.teams}>
+                <div>
+                  <img src={`${homeUrl}`} alt="Home" />
+                  {homeTeamName}
+                  {homeIsBatting && matchStatus !== 'Ended' && (
+                    <img src={cricketBat} className={classes.bat} alt="" />
+                  )}
+                </div>
+                <div>
+                  <img src={`${awayUrl}`} alt="Away" />
+                  {awayTeamName}
+                  {awayIsBatting && matchStatus !== 'Ended' && (
+                    <img src={cricketBat} className={classes.bat} alt="" />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className={classes.rhs}>
+              {matchStatus !== 'NS' && sportName !== 'cricket' && (
+                <div className={classes.score}>
+                  <div className={classes['first-score']}>{homeScore}</div>
+                  <div className={classes['second-score']}>{awayScore}</div>
+                </div>
+              )}
+              {sportName === 'cricket' &&
+                matchStatus !== 'Not Started' &&
+                cricketScore}
+              <img src={favourites} alt="star" />
+            </div>
+          </div>
+          {event.note && <div className={classes.note}>{event.note}</div>}
         </div>
       );
     });
@@ -157,7 +215,9 @@ const ScoreList = (props) => {
   return (
     <Fragment>
       <ul className={classes.date}>
+        {/* <NavLink to={`/${sportName}/live`}> */}
         <img src="./liveicon.png" className={classes.icon} />
+        {/* </NavLink> */}
         {dateList}
         <li>
           <DatePicker

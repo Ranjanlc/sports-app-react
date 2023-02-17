@@ -4,12 +4,17 @@
   justify-content: space-around;
   border: 0.5px solid rgba(255, 255, 255, 0.42);
   margin: 0;
+  /* max-height: 27px;
+  min-height: 26px; */
 }
 .date a {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
   font-weight: 600;
+  /* min-height: 27px;
+  max-height: 27px; */
+  /* margin-bottom: 0; */
 }
 .date-picker {
   width: 125px;
@@ -60,17 +65,39 @@
   font-weight: 400;
   font-size: small;
 }
+.match-container {
+  background-color: #454545;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+.note {
+  font-size: small;
+  text-align: center;
+  color: rgb(208, 228, 228);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
 .match-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #454545;
-  margin-top: 0.5rem;
-  border-radius: 4px;
+  /* margin-top: 0.5rem;
+  border-radius: 4px; */
 }
 .lhs {
   display: flex;
   align-items: center;
+}
+.cricket-time {
+  min-width: 38px;
+  text-align: center;
+  /* transform: scale(1, 0.9); */
+  color: rgb(208, 208, 208);
+  margin-left: 0.5rem;
 }
 .time {
   min-width: 38px;
@@ -78,6 +105,7 @@
   transform: scale(1, 0.9);
   color: rgb(208, 208, 208);
   margin-left: 0.5rem;
+  margin-right: 0.2rem;
 }
 .teams {
   margin-left: 10px;
@@ -86,6 +114,8 @@
 }
 .teams div {
   display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
   min-height: 29px;
@@ -96,8 +126,18 @@
 .score {
   margin-right: 20px;
   display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
   flex-direction: column;
   font-weight: bold;
+  min-width: 90px;
+  text-align: right;
+}
+.score .innings {
+  font-weight: normal;
+}
+.score .total {
+  margin-left: 10px;
 }
 .score .first-score {
   min-height: 30px;
