@@ -33,6 +33,7 @@
 .list a {
   cursor: pointer;
   color: inherit;
+  font-weight: 600;
   text-decoration: none;
   margin-right: 2rem;
   padding: 0 1.5rem;
@@ -40,4 +41,12 @@
 
 .action {
   border: none;
+}
+
+.list .active {
+  /* background-color: #d4d4d4; */
+  border-radius: 5px;
+  color: #555555;
+  /* text-decoration: dashed; */
+  border-bottom: 5px solid rgb(28, 185, 220);
 }

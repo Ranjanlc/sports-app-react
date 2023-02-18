@@ -15,6 +15,7 @@ const datePicker = (defaultDate) => {
   const thirdDay = convertDay(2);
   const fourthDay = convertDay(3);
   const fifthDay = convertDay(4);
+  // console.log(defaultDate, firstDay);
   return [firstDay, secondDay, thirdDay, fourthDay, fifthDay];
   //   console.log(new Date(prevDate));
 };

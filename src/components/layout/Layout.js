@@ -1,6 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import classes from './Layout.module.css';
 import logo from '../../assets/logo.png';
+import football from '../../assets/football.png';
+import cricket from '../../assets/cricket.png';
+import basketball from '../../assets/basketball.png';
 import { NavLink } from 'react-router-dom';
 const Layout = (props) => {
   // const { onSportsChange } = props;
@@ -10,21 +13,46 @@ const Layout = (props) => {
   //   const sport = e.currentTarget.id;
   //   onSportsChange(sport);
   // };
+  const [isLoaded, setIsLoaded] = useState(true);
+  const setInitialLoaded = () => {
+    if (isLoaded) {
+      setIsLoaded(false);
+    }
+  };
   return (
     <Fragment>
       <nav className={classes.navigation}>
         <div className={classes.list}>
           <img src={logo} className={classes.logo} alt="logo" />
-          <NavLink to="/football">
-            <img src="./football.png" alt="football" />
+          {/* This all to set the link active when it is first loaded. */}
+          <NavLink
+            to="/football"
+            className={({ isActive }) =>
+              [
+                isLoaded ? classes.active : null,
+                isActive ? classes.active : null,
+              ]
+                .filter(Boolean)
+                .join(' ')
+            }
+          >
+            <img src={football} alt="football" />
             Football
           </NavLink>
-          <NavLink to="/cricket">
-            <img src="./cricket.png" alt="cricket" />
+          <NavLink
+            to="/cricket"
+            onClick={setInitialLoaded}
+            className={({ isActive }) => (isActive ? classes.active : '')}
+          >
+            <img src={cricket} alt="cricket" />
             Cricket
           </NavLink>
-          <NavLink to="/basketball">
-            <img src="./basketball.png" alt="basketball" />
+          <NavLink
+            to="/basketball"
+            onClick={setInitialLoaded}
+            className={({ isActive }) => (isActive ? classes.active : '')}
+          >
+            <img src={basketball} alt="basketball" />
             Basketball
           </NavLink>
         </div>

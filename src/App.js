@@ -24,9 +24,11 @@ function App() {
       {/* The component is side by side of Routes because it is the equivalent of Routes */}
       <Routes>
         <Route path="/" element={<Navigate to={'cricket'} replace />} />
-        {['/:sportName', '/:sportName/:dateId'].map((path, id) => (
-          <Route path={path} element={<ScoreList />} key={id} />
-        ))}
+        {['/:sportName', '/:sportName/live', '/:sportName/:dateId'].map(
+          (path, id) => (
+            <Route path={path} element={<ScoreList />} key={id} />
+          )
+        )}
       </Routes>
     </Layout>
   );
