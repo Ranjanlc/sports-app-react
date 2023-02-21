@@ -20,7 +20,7 @@ const datePicker = (defaultDate) => {
   //   console.log(new Date(prevDate));
 };
 const monthToDateConverter = (month) => {
-  // Using map after a long tim :)
+  // Using map after a long time :)
   const months = new Map([
     ['Jan', '01'],
     ['Feb', '02'],
@@ -60,6 +60,19 @@ export const convertDateForDisplay = (date) => {
   const convertedDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
   const displayTime = String(convertedDate).split(' ').at(4).slice(0, 5);
   return { displayTime, convertedDate };
+};
+export const competitionDateHandler = (date, mode) => {
+  const { displayTime, convertedDate } = convertDateForDisplay(date);
+  // reverse because localeString gives in fEb 20 and we need 20 Feb
+  const displayDate = convertedDate
+    .toLocaleString('en-US', {
+      month: 'short',
+      day: '2-digit',
+    })
+    .split(' ')
+    .reverse()
+    .join(' ');
+  return { displayDate, displayTime };
 };
 
 export default datePicker;

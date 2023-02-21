@@ -13,11 +13,13 @@ import cricketBat from '../../assets/cricket-bat.png';
 import liveicon from '../../assets/liveicon.png';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import { refineCricketScores } from '../../helpers/helpers';
 const ScoreList = (props) => {
   const URL = 'http://localhost:8080/graphql';
   const navigate = useNavigate();
   const { dateId, sportName } = useParams();
   const { pathname: urlPath } = useLocation();
+  const { changeCompetition } = props;
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
@@ -54,7 +56,7 @@ const ScoreList = (props) => {
     const month = date.toLocaleString('default', { month: 'short' });
     const formattedDate = [day, month].join(' ');
     const convertedDate = apiDateConverter(date);
-    console.log(convertedDate, curDay);
+    // console.log(convertedDate, curDay);
     if (!dateId && convertedDate === curDay && dateNotClicked) {
       return (
         <NavLink
@@ -93,7 +95,9 @@ const ScoreList = (props) => {
     query: `
      {
       ${sportForApi}${urlPath.includes('live') ? '' : `(date:"${date}")`} {
-         competitionId competitionName competitionImage venue
+         competitionId competitionName competitionImage venue ${
+           sportName === 'cricket' ? 'uniqueId' : ''
+         }
          events {
            matchId matchStatus
            homeTeam {
@@ -122,12 +126,20 @@ const ScoreList = (props) => {
     setMatches(MatchesList);
     setIsLoading(false);
     //We send another request whenever date changes.
-  }, [urlPath, date]);
+  }, [sportName, date]);
   useEffect(() => {
     fetchMatches();
   }, [fetchMatches]);
+  const competitionClickHandler = (compDetails) => {
+    // TO convert it to url compatible form
+    const { competitionName: compName } = compDetails;
+    const compSlug = compName.toLowerCase().split(' ').join('-');
+    changeCompetition(compDetails);
+    navigate(`/${sportName}/${compSlug}/fixtures`);
+  };
+
   const competitionSet =
-    matches?.length > 1 &&
+    matches?.length >= 1 &&
     matches?.map((competition) => {
       const {
         competitionId,
@@ -135,7 +147,15 @@ const ScoreList = (props) => {
         competitionImage,
         venue,
         events,
+        uniqueId,
       } = competition;
+      const compDetails = {
+        competitionName,
+        competitionImage,
+        venue,
+        competitionId,
+      };
+      if (sportName === 'cricket') compDetails.uniqueId = uniqueId;
       const eventsList = events.map((event) => {
         const {
           matchId,
@@ -162,31 +182,28 @@ const ScoreList = (props) => {
           : awayImageUrl;
         const { displayTime } = convertDateForDisplay(startTime);
         // TODO:Add winning class.
-        const splittedHomeScore =
-          homeScore !== 'Yet to bat' && homeScore?.split(' ');
-        const splittedAwayScore =
-          awayScore !== 'Yet to bat' && awayScore?.split(' ');
         // Logic to separate test scores with odi&t20i scores.
+        const {
+          cricketFormat,
+          homeInnings,
+          awayInnings,
+          totalAwayScore,
+          totalHomeScore,
+        } =
+          sportName === 'cricket'
+            ? refineCricketScores(homeScore, awayScore)
+            : {}; //object coz undefined would produce an error.
         const cricketScore =
           sportName === 'cricket' &&
-          (splittedHomeScore?.length === 3 ||
-          splittedAwayScore?.length === 3 ? (
+          (cricketFormat === 'test' ? (
             <div className={classes.score}>
               <div className={classes['first-score']}>
-                <span className={classes.innings}>
-                  {splittedHomeScore?.slice(0, 2).join(' ')}
-                </span>
-                <span className={classes.total}>
-                  {splittedHomeScore?.at(2)}
-                </span>
+                <span className={classes.innings}>{homeInnings}</span>
+                <span className={classes.total}>{totalHomeScore}</span>
               </div>
               <div className={classes['second-score']}>
-                <span className={classes.innings}>
-                  {splittedAwayScore?.slice(0, 2).join(' ')}
-                </span>
-                <span className={classes.total}>
-                  {splittedAwayScore?.at(2)}
-                </span>
+                <span className={classes.innings}>{awayInnings}</span>
+                <span className={classes.total}>{totalAwayScore}</span>
               </div>
             </div>
           ) : (
@@ -245,7 +262,11 @@ const ScoreList = (props) => {
                     </div>
                   )}
                 {sportName === 'cricket' &&
-                  matchStatus !== 'Not Started' &&
+                  !(
+                    matchStatus === 'Not Started' ||
+                    matchStatus === 'Interrupted' ||
+                    matchStatus === 'Abandoned'
+                  ) &&
                   cricketScore}
                 <img src={favourites} alt="star" />
               </div>
@@ -257,10 +278,15 @@ const ScoreList = (props) => {
 
       return (
         <Fragment key={competitionId}>
-          <div className={classes['title-container']} key={competitionId}>
+          <div className={classes['title-container']}>
             <img src={`${competitionImage}`} alt="Flag" />
             <div className={classes.title}>
-              <span className={classes.competition}>{competitionName} </span>
+              <span
+                className={classes.competition}
+                onClick={competitionClickHandler.bind(null, compDetails)}
+              >
+                {competitionName}{' '}
+              </span>
               <span className={classes.country}>{venue}</span>
             </div>
           </div>

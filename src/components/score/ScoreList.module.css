@@ -61,6 +61,12 @@
 .competition {
   font-weight: 700;
   font-size: medium;
+  cursor: pointer;
+}
+.competition:hover {
+  text-decoration: underline;
+  font-style: italic;
+  color: darkgray;
 }
 .country {
   font-weight: 400;

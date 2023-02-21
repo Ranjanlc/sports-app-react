@@ -4,7 +4,7 @@ import logo from '../../assets/logo.png';
 import football from '../../assets/football.png';
 import cricket from '../../assets/cricket.png';
 import basketball from '../../assets/basketball.png';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 const Layout = (props) => {
   // const { onSportsChange } = props;
   // const changeHandler = (e) => {
@@ -13,6 +13,7 @@ const Layout = (props) => {
   //   const sport = e.currentTarget.id;
   //   onSportsChange(sport);
   // };
+  const { sportName } = useParams();
   const [isLoaded, setIsLoaded] = useState(true);
   const setInitialLoaded = () => {
     if (isLoaded) {
@@ -29,7 +30,7 @@ const Layout = (props) => {
             to="/football"
             className={({ isActive }) =>
               [
-                isLoaded ? classes.active : null,
+                isLoaded && sportName === 'football' ? classes.active : null,
                 isActive ? classes.active : null,
               ]
                 .filter(Boolean)
