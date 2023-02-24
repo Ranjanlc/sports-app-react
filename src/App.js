@@ -25,7 +25,7 @@ function App() {
     <Layout>
       <Routes>
         {/* <Route path="/" element={<Navigate to={'cricket'} replace />} /> */}
-        <Route path="/" element={<Navigate to={'cricket'} replace />} />
+        <Route path="/" element={<Navigate to={'football'} replace />} />
         {['/:sportName', '/:sportName/live', '/:sportName/:dateId'].map(
           (path, id) => (
             <Route

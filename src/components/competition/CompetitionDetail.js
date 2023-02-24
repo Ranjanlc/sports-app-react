@@ -21,829 +21,7 @@ const CompetitionDetail = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [curGroup, setCurGroup] = useState(null);
   const [groupContainer, setGroupContainer] = useState(null);
-  //   const [groupContainer, setGroupContainer] = useState(null);
-  //   const DUMMY_MATCHES = [
-  //     {
-  //       homeTeam: {
-  //         name: 'Indiana Pacers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3419/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Boston Celtics',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3422/image',
-  //       },
-  //       matchId: '10601895',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Cleveland Cavaliers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3432/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Denver Nuggets',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3417/image',
-  //       },
-  //       matchId: '10600446',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Orlando Magic',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3437/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Detroit Pistons',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3424/image',
-  //       },
-  //       matchId: '10601963',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Dallas Mavericks',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3411/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'San Antonio Spurs',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3429/image',
-  //       },
-  //       matchId: '10600592',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 1:30:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Utah Jazz',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3434/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Oklahoma City Thunder',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3418/image',
-  //       },
-  //       matchId: '10601896',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 2:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Los Angeles Lakers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3427/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Golden State Warriors',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3428/image',
-  //       },
-  //       matchId: '10601975',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 3:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Sacramento Kings',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3413/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Portland Trail Blazers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3414/image',
-  //       },
-  //       matchId: '10600792',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-24 3:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Washington Wizards',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3431/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'New York Knicks',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3421/image',
-  //       },
-  //       matchId: '10600518',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Milwaukee Bucks',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3410/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Miami Heat',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3435/image',
-  //       },
-  //       matchId: '10600727',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 0:30:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Atlanta Hawks',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3423/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Cleveland Cavaliers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3432/image',
-  //       },
-  //       matchId: '10601916',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 0:30:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Chicago Bulls',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3409/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Brooklyn Nets',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3436/image',
-  //       },
-  //       matchId: '10600537',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 1:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Minnesota Timberwolves',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3426/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Charlotte Hornets',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3430/image',
-  //       },
-  //       matchId: '10600743',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 1:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Golden State Warriors',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3428/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Houston Rockets',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3412/image',
-  //       },
-  //       matchId: '10600602',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 3:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Phoenix Suns',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3416/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Oklahoma City Thunder',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3418/image',
-  //       },
-  //       matchId: '10601878',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 3:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Los Angeles Clippers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3425/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Sacramento Kings',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3413/image',
-  //       },
-  //       matchId: '10600512',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 3:30:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Detroit Pistons',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3424/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Toronto Raptors',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3433/image',
-  //       },
-  //       matchId: '10601856',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-25 17:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Charlotte Hornets',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3430/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Miami Heat',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3435/image',
-  //       },
-  //       matchId: '10602086',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-26 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'Orlando Magic',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3437/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'Indiana Pacers',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3419/image',
-  //       },
-  //       matchId: '10602081',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-26 0:0:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //     {
-  //       homeTeam: {
-  //         name: 'New York Knicks',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/3421/image',
-  //       },
-  //       awayTeam: {
-  //         name: 'New Orleans Pelicans',
-  //         imageUrl: 'https://api.sofascore.app/api/v1/team/5539/image',
-  //       },
-  //       matchId: '10600401',
-  //       matchStatus: 'Not started',
-  //       startTime: '2023-2-26 0:30:0',
-  //       homeScore: null,
-  //       awayScore: null,
-  //       winnerTeam: null,
-  //     },
-  //   ];
-  //   const DUMMY_STANDINGS = [
-  //     {
-  //       groupName: 'Eastern Conference',
-  //       standings: [
-  //         {
-  //           name: 'Boston Celtics',
-  //           teamId: '3422',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3422/image',
-  //           position: 1,
-  //           played: 59,
-  //           wins: 42,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.712,
-  //         },
-  //         {
-  //           name: 'Milwaukee Bucks',
-  //           teamId: '3410',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3410/image',
-  //           position: 2,
-  //           played: 58,
-  //           wins: 41,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.707,
-  //         },
-  //         {
-  //           name: 'Philadelphia 76ers',
-  //           teamId: '3420',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3420/image',
-  //           position: 3,
-  //           played: 57,
-  //           wins: 38,
-  //           losses: 19,
-  //           points: null,
-  //           percentage: 0.667,
-  //         },
-  //         {
-  //           name: 'Cleveland Cavaliers',
-  //           teamId: '3432',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3432/image',
-  //           position: 4,
-  //           played: 61,
-  //           wins: 38,
-  //           losses: 23,
-  //           points: null,
-  //           percentage: 0.623,
-  //         },
-  //         {
-  //           name: 'Brooklyn Nets',
-  //           teamId: '3436',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3436/image',
-  //           position: 5,
-  //           played: 58,
-  //           wins: 34,
-  //           losses: 24,
-  //           points: null,
-  //           percentage: 0.586,
-  //         },
-  //         {
-  //           name: 'New York Knicks',
-  //           teamId: '3421',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3421/image',
-  //           position: 6,
-  //           played: 60,
-  //           wins: 33,
-  //           losses: 27,
-  //           points: null,
-  //           percentage: 0.55,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       groupName: 'Western Conference',
-  //       standings: [
-  //         {
-  //           name: 'Denver Nuggets',
-  //           teamId: '3417',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3417/image',
-  //           position: 1,
-  //           played: 59,
-  //           wins: 41,
-  //           losses: 18,
-  //           points: null,
-  //           percentage: 0.695,
-  //         },
-  //         {
-  //           name: 'Memphis Grizzlies',
-  //           teamId: '3415',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3415/image',
-  //           position: 2,
-  //           played: 57,
-  //           wins: 35,
-  //           losses: 22,
-  //           points: null,
-  //           percentage: 0.614,
-  //         },
-  //         {
-  //           name: 'Sacramento Kings',
-  //           teamId: '3413',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3413/image',
-  //           position: 3,
-  //           played: 57,
-  //           wins: 32,
-  //           losses: 25,
-  //           points: null,
-  //           percentage: 0.561,
-  //         },
-  //         {
-  //           name: 'Los Angeles Clippers',
-  //           teamId: '3425',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3425/image',
-  //           position: 4,
-  //           played: 61,
-  //           wins: 33,
-  //           losses: 28,
-  //           points: null,
-  //           percentage: 0.541,
-  //         },
-  //         {
-  //           name: 'Phoenix Suns',
-  //           teamId: '3416',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3416/image',
-  //           position: 5,
-  //           played: 60,
-  //           wins: 32,
-  //           losses: 28,
-  //           points: null,
-  //           percentage: 0.533,
-  //         },
-  //         {
-  //           name: 'Dallas Mavericks',
-  //           teamId: '3411',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3411/image',
-  //           position: 6,
-  //           played: 60,
-  //           wins: 31,
-  //           losses: 29,
-  //           points: null,
-  //           percentage: 0.517,
-  //         },
-  //         {
-  //           name: 'New Orleans Pelicans',
-  //           teamId: '5539',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/5539/image',
-  //           position: 7,
-  //           played: 59,
-  //           wins: 30,
-  //           losses: 29,
-  //           points: null,
-  //           percentage: 0.508,
-  //         },
-  //         {
-  //           name: 'Minnesota Timberwolves',
-  //           teamId: '3426',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3426/image',
-  //           position: 8,
-  //           played: 61,
-  //           wins: 31,
-  //           losses: 30,
-  //           points: null,
-  //           percentage: 0.508,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       groupName: 'Central Division',
-  //       standings: [
-  //         {
-  //           name: 'Milwaukee Bucks',
-  //           teamId: '3410',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3410/image',
-  //           position: 1,
-  //           played: 58,
-  //           wins: 41,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.707,
-  //         },
-  //         {
-  //           name: 'Cleveland Cavaliers',
-  //           teamId: '3432',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3432/image',
-  //           position: 2,
-  //           played: 61,
-  //           wins: 38,
-  //           losses: 23,
-  //           points: null,
-  //           percentage: 0.623,
-  //         },
-  //         {
-  //           name: 'Chicago Bulls',
-  //           teamId: '3409',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3409/image',
-  //           position: 3,
-  //           played: 59,
-  //           wins: 26,
-  //           losses: 33,
-  //           points: null,
-  //           percentage: 0.441,
-  //         },
-  //         {
-  //           name: 'Indiana Pacers',
-  //           teamId: '3419',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3419/image',
-  //           position: 4,
-  //           played: 60,
-  //           wins: 26,
-  //           losses: 34,
-  //           points: null,
-  //           percentage: 0.433,
-  //         },
-  //         {
-  //           name: 'Detroit Pistons',
-  //           teamId: '3424',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3424/image',
-  //           position: 5,
-  //           played: 59,
-  //           wins: 15,
-  //           losses: 44,
-  //           points: null,
-  //           percentage: 0.254,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       groupName: 'Atlantic Division',
-  //       standings: [
-  //         {
-  //           name: 'Boston Celtics',
-  //           teamId: '3422',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3422/image',
-  //           position: 1,
-  //           played: 59,
-  //           wins: 42,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.712,
-  //         },
-  //         {
-  //           name: 'Philadelphia 76ers',
-  //           teamId: '3420',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3420/image',
-  //           position: 2,
-  //           played: 57,
-  //           wins: 38,
-  //           losses: 19,
-  //           points: null,
-  //           percentage: 0.667,
-  //         },
-  //         {
-  //           name: 'Brooklyn Nets',
-  //           teamId: '3436',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3436/image',
-  //           position: 3,
-  //           played: 58,
-  //           wins: 34,
-  //           losses: 24,
-  //           points: null,
-  //           percentage: 0.586,
-  //         },
-  //         {
-  //           name: 'New York Knicks',
-  //           teamId: '3421',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3421/image',
-  //           position: 4,
-  //           played: 60,
-  //           wins: 33,
-  //           losses: 27,
-  //           points: null,
-  //           percentage: 0.55,
-  //         },
-  //         {
-  //           name: 'Toronto Raptors',
-  //           teamId: '3433',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3433/image',
-  //           position: 5,
-  //           played: 59,
-  //           wins: 28,
-  //           losses: 31,
-  //           points: null,
-  //           percentage: 0.475,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       groupName: 'Southeast Division',
-  //       standings: [
-  //         {
-  //           name: 'Miami Heat',
-  //           teamId: '3435',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3435/image',
-  //           position: 1,
-  //           played: 59,
-  //           wins: 32,
-  //           losses: 27,
-  //           points: null,
-  //           percentage: 0.542,
-  //         },
-  //         {
-  //           name: 'Atlanta Hawks',
-  //           teamId: '3423',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3423/image',
-  //           position: 2,
-  //           played: 59,
-  //           wins: 29,
-  //           losses: 30,
-  //           points: null,
-  //           percentage: 0.492,
-  //         },
-  //         {
-  //           name: 'Washington Wizards',
-  //           teamId: '3431',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3431/image',
-  //           position: 3,
-  //           played: 58,
-  //           wins: 28,
-  //           losses: 30,
-  //           points: null,
-  //           percentage: 0.483,
-  //         },
-  //         {
-  //           name: 'Orlando Magic',
-  //           teamId: '3437',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3437/image',
-  //           position: 4,
-  //           played: 59,
-  //           wins: 24,
-  //           losses: 35,
-  //           points: null,
-  //           percentage: 0.407,
-  //         },
-  //         {
-  //           name: 'Charlotte Hornets',
-  //           teamId: '3430',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3430/image',
-  //           position: 5,
-  //           played: 60,
-  //           wins: 17,
-  //           losses: 43,
-  //           points: null,
-  //           percentage: 0.283,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       groupName: 'NBA 22/23',
-  //       standings: [
-  //         {
-  //           name: 'Boston Celtics',
-  //           teamId: '3422',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3422/image',
-  //           position: 1,
-  //           played: 59,
-  //           wins: 42,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.712,
-  //         },
-  //         {
-  //           name: 'Milwaukee Bucks',
-  //           teamId: '3410',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3410/image',
-  //           position: 2,
-  //           played: 58,
-  //           wins: 41,
-  //           losses: 17,
-  //           points: null,
-  //           percentage: 0.707,
-  //         },
-  //         {
-  //           name: 'Denver Nuggets',
-  //           teamId: '3417',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3417/image',
-  //           position: 3,
-  //           played: 59,
-  //           wins: 41,
-  //           losses: 18,
-  //           points: null,
-  //           percentage: 0.695,
-  //         },
-  //         {
-  //           name: 'Philadelphia 76ers',
-  //           teamId: '3420',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3420/image',
-  //           position: 4,
-  //           played: 57,
-  //           wins: 38,
-  //           losses: 19,
-  //           points: null,
-  //           percentage: 0.667,
-  //         },
-  //         {
-  //           name: 'Cleveland Cavaliers',
-  //           teamId: '3432',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3432/image',
-  //           position: 5,
-  //           played: 61,
-  //           wins: 38,
-  //           losses: 23,
-  //           points: null,
-  //           percentage: 0.623,
-  //         },
-  //         {
-  //           name: 'Memphis Grizzlies',
-  //           teamId: '3415',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3415/image',
-  //           position: 6,
-  //           played: 57,
-  //           wins: 35,
-  //           losses: 22,
-  //           points: null,
-  //           percentage: 0.614,
-  //         },
-  //         {
-  //           name: 'Brooklyn Nets',
-  //           teamId: '3436',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3436/image',
-  //           position: 7,
-  //           played: 58,
-  //           wins: 34,
-  //           losses: 24,
-  //           points: null,
-  //           percentage: 0.586,
-  //         },
-  //         {
-  //           name: 'Sacramento Kings',
-  //           teamId: '3413',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3413/image',
-  //           position: 8,
-  //           played: 57,
-  //           wins: 32,
-  //           losses: 25,
-  //           points: null,
-  //           percentage: 0.561,
-  //         },
-  //         {
-  //           name: 'New York Knicks',
-  //           teamId: '3421',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3421/image',
-  //           position: 9,
-  //           played: 60,
-  //           wins: 33,
-  //           losses: 27,
-  //           points: null,
-  //           percentage: 0.55,
-  //         },
-  //         {
-  //           name: 'Miami Heat',
-  //           teamId: '3435',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3435/image',
-  //           position: 10,
-  //           played: 59,
-  //           wins: 32,
-  //           losses: 27,
-  //           points: null,
-  //           percentage: 0.542,
-  //         },
-  //         {
-  //           name: 'Los Angeles Clippers',
-  //           teamId: '3425',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3425/image',
-  //           position: 11,
-  //           played: 61,
-  //           wins: 33,
-  //           losses: 28,
-  //           points: null,
-  //           percentage: 0.541,
-  //         },
-  //         {
-  //           name: 'Phoenix Suns',
-  //           teamId: '3416',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3416/image',
-  //           position: 12,
-  //           played: 60,
-  //           wins: 32,
-  //           losses: 28,
-  //           points: null,
-  //           percentage: 0.533,
-  //         },
-  //         {
-  //           name: 'Dallas Mavericks',
-  //           teamId: '3411',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3411/image',
-  //           position: 13,
-  //           played: 60,
-  //           wins: 31,
-  //           losses: 29,
-  //           points: null,
-  //           percentage: 0.517,
-  //         },
-  //         {
-  //           name: 'New Orleans Pelicans',
-  //           teamId: '5539',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/5539/image',
-  //           position: 14,
-  //           played: 59,
-  //           wins: 30,
-  //           losses: 29,
-  //           points: null,
-  //           percentage: 0.508,
-  //         },
-  //         {
-  //           name: 'Minnesota Timberwolves',
-  //           teamId: '3426',
-  //           teamImageUrl: 'https://api.sofascore.app/api/v1/team/3426/image',
-  //           position: 15,
-  //           played: 61,
-  //           wins: 31,
-  //           losses: 30,
-  //           points: null,
-  //           percentage: 0.508,
-  //         },
-  //       ],
-  //     },
-  //   ];
+  const [nextPage, setNextPage] = useState(null);
   let competitionSet;
   // For the case if user reloads the page from FootballDetail page.
   if (props.competitionSet) {
@@ -862,21 +40,19 @@ const CompetitionDetail = (props) => {
   const backClickHandler = () => {
     navigate(-1);
   };
-  const sportForApi = `get${
+  const sportForDetails = `get${
     sportName.charAt(0).toUpperCase() + sportName.slice(1)
   }Details`;
+  // FIXME:when one events ,not loading...
+  // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
   const compOrUniqueId =
     sportName === 'cricket'
-      ? `compId:${competitionId}`
-      : `uniqueId:${uniqueId}`;
-  const graphqlQuery = {
+      ? `compId:${competitionId},uniqueId:${uniqueId}`
+      : `uniqueId:${competitionId}`;
+  const graphqlQueryDetails = {
     query: `
     {
-        ${sportForApi}(${
-      sportName === 'cricket'
-        ? `compId:${competitionId},uniqueId:${uniqueId}`
-        : `uniqueId:${competitionId}`
-    },appSeasonId:${seasonId},page:${page} dateState:"${
+        ${sportForDetails}(${compOrUniqueId},dateState:"${
       matchState === 'fixtures' ? 'next' : 'last'
     }") {
             matchSet {
@@ -886,11 +62,11 @@ const CompetitionDetail = (props) => {
                     }
                     awayTeam {
                         name imageUrl
-                    } matchId matchStatus startTime homeScore awayScore winnerTeam ${
+                    } matchId matchStatus startTime ${
                       sportName === 'cricket' ? 'note' : ''
-                    }
-                } hasNextPage
-            } 
+                    } awayScore homeScore winnerTeam
+                } hasNextPage 
+            } seasonId
             standingSet {
                 groupName
                 standings {
@@ -901,26 +77,31 @@ const CompetitionDetail = (props) => {
        }
     }`,
   };
+
   const fetchCompDetails = useCallback(async () => {
+    setIsLoading(true);
     const res = await fetch(URL, {
       method: 'POST',
-      body: JSON.stringify(graphqlQuery),
+      body: JSON.stringify(graphqlQueryDetails),
       headers: {
         'Content-Type': 'application/json',
       },
     });
     const {
       data: {
-        [sportForApi]: {
+        [sportForDetails]: {
           matchSet: { matches, hasNextPage },
           standingSet,
+          seasonId,
         },
       },
     } = await res.json();
-    console.log(matches, standingSet);
+    console.log(matches, standingSet, hasNextPage);
     setMatches(matches);
     setStandings(standingSet);
-    if (standingSet.length > 1) {
+    setSeasonId(seasonId);
+    setNextPage(hasNextPage);
+    if (standingSet?.length > 1) {
       const groupSet = standingSet.map((set) => set.groupName);
       setGroupContainer(groupSet);
       //   Setting first element to show in first
@@ -931,6 +112,54 @@ const CompetitionDetail = (props) => {
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
+  const sportForMatches = `get${
+    sportName.charAt(0).toUpperCase() + sportName.slice(1)
+  }CompMatches`;
+  const graphqlQueryMatches = {
+    query: `
+    {
+        ${sportForMatches}(${compOrUniqueId},appSeasonId:${seasonId},page:${page} dateState:"${
+      matchState === 'fixtures' ? 'next' : 'last'
+    }") {
+          matches {
+              homeTeam {
+              name imageUrl
+              }
+              awayTeam {
+                  name imageUrl
+              } matchId matchStatus startTime homeScore awayScore winnerTeam ${
+                sportName === 'cricket' ? 'note' : ''
+              }
+          } hasNextPage
+        } 
+       
+    }`,
+  };
+  const fetchMatchesHandler = useCallback(async () => {
+    setIsLoading(true);
+    const res = await fetch(URL, {
+      method: 'POST',
+      body: JSON.stringify(graphqlQueryMatches),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const {
+      data: {
+        [sportForMatches]: { matches, hasNextPage },
+      },
+    } = await res.json();
+    console.log(matches);
+    setMatches(matches);
+    setNextPage(hasNextPage);
+    setIsLoading(false);
+  }, [page, urlState]);
+  useEffect(() => {
+    // To prevent initial loading
+    if (matches) {
+      fetchMatchesHandler();
+    }
+  }, [fetchMatchesHandler]);
   const groupChangeHandler = (option) => {
     setCurGroup(option);
   };
@@ -938,12 +167,14 @@ const CompetitionDetail = (props) => {
     // To replace fixtures/results with results/fixtures resp.
     const baseUrl = pathname.split('/').slice(0, -1).join('/');
     if (state === 'fixtures' && urlState !== 'fixtures') {
+      setPage(0);
       setMatchState('fixtures');
-      navigate(`${baseUrl}/fixtures`);
+      navigate(`${baseUrl}/fixtures`, { replace: true });
     }
     if (state === 'results' && urlState !== 'results') {
+      setPage(0);
       setMatchState('results');
-      navigate(`${baseUrl}/results`);
+      navigate(`${baseUrl}/results`, { replace: true });
     }
   };
   const events =
@@ -1023,12 +254,7 @@ const CompetitionDetail = (props) => {
             </div>
           </div>
           <div className={classes.rhs}>
-            {!(
-              matchStatus === 'Not Started' ||
-              matchStatus === 'Interrupted' ||
-              matchStatus === 'Abandoned' ||
-              matchStatus === 'Postponed'
-            ) && displayScore}
+            {matchState === 'results' && displayScore}
             <StarJsx />
           </div>
         </div>
@@ -1059,7 +285,7 @@ const CompetitionDetail = (props) => {
       points,
     } = teamData;
     return (
-      <article className={classes['team-data']}>
+      <article className={classes['team-data']} key={teamId}>
         <div className={classes['team-data__details']}>
           <span className={classes.position}>{position}</span>
           <span className={classes.name}>
@@ -1079,7 +305,25 @@ const CompetitionDetail = (props) => {
       </article>
     );
   });
-
+  const previousClickHandler = () => {
+    console.log('execute ta bhacha');
+    if (urlState === 'results') {
+      setPage((previousPage) => ++previousPage);
+    }
+    if (urlState === 'fixtures' && page > 0) {
+      console.log(page);
+      setPage((previousPage) => --previousPage);
+    }
+  };
+  const nextClickHandler = () => {
+    console.log('yeta click bhooo');
+    if (urlState === 'fixtures') {
+      setPage((previousPage) => ++previousPage);
+    }
+    if (urlState === 'results' && page > 0) {
+      setPage((previousPage) => --previousPage);
+    }
+  };
   return (
     <Fragment>
       <div className={classes['title-container']}>
@@ -1122,6 +366,20 @@ const CompetitionDetail = (props) => {
               Results
             </div>
           </div>
+          <div className={classes.switch}>
+            {nextPage && urlState === 'results' && (
+              <span onClick={previousClickHandler}> &#8592;Previous</span>
+            )}
+            {urlState === 'fixtures' && page > 0 && (
+              <span onClick={previousClickHandler}> &#8592;Previous</span>
+            )}
+            {urlState === 'results' && page > 0 && (
+              <span onClick={nextClickHandler}> Next&#8594;</span>
+            )}
+            {nextPage && urlState === 'fixtures' && (
+              <span onClick={nextClickHandler}> Next&#8594;</span>
+            )}
+          </div>
           {isLoading && (
             <div className="centered">
               <LoadingSpinner />
@@ -1130,7 +388,7 @@ const CompetitionDetail = (props) => {
           {!isLoading && <Fragment>{events}</Fragment>}
         </div>
         <div className={classes.table}>
-          {groupContainer && (
+          {groupContainer && (!isLoading || standings) && (
             <div className={classes.dropdown}>
               <Dropdown
                 optionSet={groupContainer}
@@ -1138,12 +396,12 @@ const CompetitionDetail = (props) => {
               />
             </div>
           )}
-          {isLoading && (
+          {isLoading && !standings && (
             <div className="centered">
               <LoadingSpinner />
             </div>
           )}
-          {!isLoading && (
+          {(!isLoading || standings) && (
             <Fragment>
               <header className={classes.header}>
                 <div className={classes['team-details']}>

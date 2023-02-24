@@ -59,6 +59,7 @@ const FootballDetail = (props) => {
       }`,
   };
   const fetchCompDetails = useCallback(async () => {
+    setIsLoading(true);
     const res = await fetch(URL, {
       method: 'POST',
       body: JSON.stringify(graphqlQuery),
@@ -68,7 +69,7 @@ const FootballDetail = (props) => {
     });
     const {
       data: {
-        getCompetitionDetails: { matches, standings },
+        getFootballDetails: { matches, standings },
       },
     } = await res.json();
     console.log(matches, standings);
@@ -84,11 +85,11 @@ const FootballDetail = (props) => {
     const baseUrl = pathname.split('/').slice(0, -1).join('/');
     if (state === 'fixtures' && urlState !== 'fixtures') {
       setMatchState('fixtures');
-      navigate(`${baseUrl}/fixtures`);
+      navigate(`${baseUrl}/fixtures`, { replace: true });
     }
     if (state === 'results' && urlState !== 'results') {
       setMatchState('results');
-      navigate(`${baseUrl}/results`);
+      navigate(`${baseUrl}/results`, { replace: true });
     }
   };
   const events =
@@ -159,7 +160,7 @@ const FootballDetail = (props) => {
       points,
     } = teamData;
     return (
-      <article className={classes['team-data']}>
+      <article className={classes['team-data']} key={teamId}>
         <div className={classes['team-data__details']}>
           <span className={classes.position}>{position}</span>
           <span className={classes.name}>

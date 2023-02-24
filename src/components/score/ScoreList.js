@@ -27,6 +27,11 @@ const ScoreList = (props) => {
   const curDay = apiDateConverter(new Date());
   // This date is for api uses.
   const [date, setDate] = useState(dateId);
+  const [matches, setMatches] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  // For initial rendering of active class on todays date.
+  const [isLive, setIsLive] = useState();
+  const [dateNotClicked, setDateNotClicked] = useState(true);
   // This two if clauses for loading data when user clicks back button.
   console.log(dateId, date, curDay);
   if (!dateId && date !== curDay) {
@@ -36,9 +41,15 @@ const ScoreList = (props) => {
   if (dateId && dateId !== date) {
     setDate(dateId);
   }
-  const [matches, setMatches] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [dateNotClicked, setDateNotClicked] = useState(true);
+  // FOr loading data if it is set to live
+  if (!isLive && urlPath.includes('live')) {
+    setIsLive(true);
+  }
+  // If user clicks back an gets redirected to /sportName when isLive is true,we need to change state to again fetch data
+  if (isLive && !urlPath.includes('live')) {
+    setIsLive(false);
+  }
+
   const changeStateHandler = (date) => {
     setStartDate(new Date(date));
     setDate(date);
@@ -126,7 +137,7 @@ const ScoreList = (props) => {
     setMatches(MatchesList);
     setIsLoading(false);
     //We send another request whenever date changes.
-  }, [sportName, date]);
+  }, [sportName, date, isLive]);
   useEffect(() => {
     fetchMatches();
   }, [fetchMatches]);

@@ -84,6 +84,21 @@
   cursor: pointer;
   margin-top: 0;
 }
+.switch {
+  display: flex;
+  width: 92%;
+  justify-content: space-between;
+  margin-left: 20px;
+  /* align-items: center; */
+  /* margin: 0 3rem; */
+  margin-bottom: 1rem;
+}
+.switch span {
+  border: 2px solid #d3d3d3;
+  padding: 0 8px;
+  border-radius: 20px;
+  cursor: pointer;
+}
 
 .matches-container {
   margin-top: 1rem;
