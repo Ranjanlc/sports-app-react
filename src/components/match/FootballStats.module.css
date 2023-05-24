@@ -1,0 +1,29 @@
+.team-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* height: 50px; */
+}
+.home {
+  display: flex;
+  align-items: center;
+  color: #3fade9;
+  font-weight: 700;
+}
+.away {
+  display: flex;
+  font-weight: 700;
+  color: #fa9005;
+  align-items: center;
+}
+.chart {
+  padding: 0.5rem;
+  border-radius: 12px;
+  /* background-color: #f8dfff71; */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
+  height: 10rem;
+}

@@ -5,16 +5,23 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import dummyLogo from '../../assets/dummy-logo.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import Dropdown from '../layout/Dropdown';
+import FootballStandings from '../UI/FootballStandings';
 const FootballDetail = (props) => {
   const URL = 'http://localhost:8080/graphql';
+
   const navigate = useNavigate();
   const { loadState } = useParams();
   const { pathname } = useLocation();
+  const baseUrl = pathname.split('/').slice(0, -1).join('/');
   const urlState = pathname.split('/').slice(-1).at(0);
+
   const [matches, setMatches] = useState(null);
   const [matchState, setMatchState] = useState(loadState);
-  const [standings, setStandings] = useState();
+  const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  // const [groupContainer, setGroupContainer] = useState();
+  // const [curGroup, setCurGroup] = useState();
   let competitionSet;
   // For the case if user reloads the page from FootballDetail page.
   if (props.competitionSet) {
@@ -74,15 +81,22 @@ const FootballDetail = (props) => {
     } = await res.json();
     console.log(matches, standings);
     setMatches(matches);
+    // If there is no matches left.
+    if (matches.fixtures.length === 0) {
+      navigate(`${baseUrl}/results`, { replace: true });
+      setMatchState('results');
+    }
     setStandings(standings);
     setIsLoading(false);
   }, []);
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
-  const matchStateChangeHandler = (state, e) => {
+  // const groupChangeHandler = (option) => {
+  //   setCurGroup(option);
+  // };
+  const matchStateChangeHandler = (state) => {
     // To replace fixtures/results with results/fixtures resp.
-    const baseUrl = pathname.split('/').slice(0, -1).join('/');
     if (state === 'fixtures' && urlState !== 'fixtures') {
       setMatchState('fixtures');
       navigate(`${baseUrl}/fixtures`, { replace: true });
@@ -144,41 +158,6 @@ const FootballDetail = (props) => {
       );
     });
   // TODO:Address the situation when there is no standings or there is a group-wise standings.
-  const standingList = standings?.map((teamData) => {
-    const {
-      position,
-      name,
-      teamId,
-      teamImageUrl,
-      wins,
-      draws,
-      loses,
-      played,
-      GF,
-      GA,
-      GD,
-      points,
-    } = teamData;
-    return (
-      <article className={classes['team-data']} key={teamId}>
-        <div className={classes['team-data__details']}>
-          <span className={classes.position}>{position}</span>
-          <span className={classes.name}>
-            <img src={teamImageUrl} alt="" />
-            {name}
-          </span>
-        </div>
-        <span>{played}</span>
-        <span>{wins}</span>
-        <span>{draws}</span>
-        <span>{loses}</span>
-        <span>{GF}</span>
-        <span>{GA}</span>
-        <span>{GD}</span>
-        <span>{points}</span>
-      </article>
-    );
-  });
 
   return (
     <Fragment>
@@ -205,22 +184,26 @@ const FootballDetail = (props) => {
         <div className={classes['matches-container']}>
           {/* <hr /> */}
           <div className={classes['state-container']}>
-            <div
-              className={`${classes.state} ${
-                urlState === 'fixtures' && classes.active
-              }`}
-              onClick={matchStateChangeHandler.bind(null, 'fixtures')}
-            >
-              Fixtures
-            </div>
-            <div
-              className={`${classes.state} ${
-                urlState === 'results' && classes.active
-              }`}
-              onClick={matchStateChangeHandler.bind(null, 'results')}
-            >
-              Results
-            </div>
+            {matches?.fixtures.length !== 0 && (
+              <div
+                className={`${classes.state} ${
+                  urlState === 'fixtures' && classes.active
+                }`}
+                onClick={matchStateChangeHandler.bind(null, 'fixtures')}
+              >
+                Fixtures
+              </div>
+            )}
+            {matches?.results.length !== 0 && (
+              <div
+                className={`${classes.state} ${
+                  urlState === 'results' && classes.active
+                }`}
+                onClick={matchStateChangeHandler.bind(null, 'results')}
+              >
+                Results
+              </div>
+            )}
           </div>
           {isLoading && (
             <div className="centered">
@@ -229,33 +212,7 @@ const FootballDetail = (props) => {
           )}
           {!isLoading && <Fragment>{events}</Fragment>}
         </div>
-        <div className={classes.table}>
-          {isLoading && (
-            <div className="centered">
-              <LoadingSpinner />
-            </div>
-          )}
-          {!isLoading && (
-            <Fragment>
-              <header className={classes.header}>
-                <div className={classes['team-details']}>
-                  <span>#</span>
-                  <span className={classes['header-name']}>Team</span>
-                </div>
-                <span>P</span>
-                <span>W</span>
-                <span>D</span>
-                <span>L</span>
-                <span>GF</span>
-                <span>GA</span>
-                <span>GD</span>
-                <span>Pts</span>
-              </header>
-              <hr />
-              {standingList}
-            </Fragment>
-          )}
-        </div>
+        {!isLoading && <FootballStandings dirtyStandings={standings} />}
       </div>
     </Fragment>
   );

@@ -1,7 +1,8 @@
-import { Fragment, useCallback, useEffect } from 'react';
+import { Fragment, useCallback, useContext, useEffect } from 'react';
 import datePicker, {
   apiDateConverter,
   convertDateForDisplay,
+  getTimeZoneOffSet,
 } from '../../helpers/date-picker';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
@@ -13,13 +14,22 @@ import cricketBat from '../../assets/cricket-bat.png';
 import liveicon from '../../assets/liveicon.png';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import { refineCricketScores } from '../../helpers/helpers';
+import FeaturedMatch from './FeaturedMatch';
+import {
+  convertSlugToDisplay,
+  refineCricketScores,
+  slugMaker,
+} from '../../helpers/helpers';
+import Info from '../../assets/info';
+import FootballContext from '../../store/football-context';
 const ScoreList = (props) => {
   const URL = 'http://localhost:8080/graphql';
   const navigate = useNavigate();
   const { dateId, sportName } = useParams();
   const { pathname: urlPath } = useLocation();
   const { changeCompetition } = props;
+  const ctx = useContext(FootballContext);
+  const { matchDetailHandler: setMatchDetailHandler } = ctx;
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
@@ -28,14 +38,15 @@ const ScoreList = (props) => {
   // This date is for api uses.
   const [date, setDate] = useState(dateId);
   const [matches, setMatches] = useState(null);
+  const [featuredMatch, setFeaturedMatch] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   // For initial rendering of active class on todays date.
   const [isLive, setIsLive] = useState();
   const [dateNotClicked, setDateNotClicked] = useState(true);
   // This two if clauses for loading data when user clicks back button.
-  console.log(dateId, date, curDay);
+  // console.log(dateId, date, curDay);
   if (!dateId && date !== curDay) {
-    console.log('nice');
+    // console.log('nice');
     setDate(curDay);
   }
   if (dateId && dateId !== date) {
@@ -49,7 +60,6 @@ const ScoreList = (props) => {
   if (isLive && !urlPath.includes('live')) {
     setIsLive(false);
   }
-
   const changeStateHandler = (date) => {
     setStartDate(new Date(date));
     setDate(date);
@@ -57,9 +67,7 @@ const ScoreList = (props) => {
   };
   // To set title of document.
   useEffect(() => {
-    document.title = `BallScore | ${
-      sportName.charAt(0).toUpperCase() + sportName.slice(1)
-    } scores`;
+    document.title = `BallScore | ${convertSlugToDisplay(sportName)} scores`;
   }, [sportName]);
   const dateContainer = datePicker(date);
   const dateList = dateContainer?.map((date) => {
@@ -98,29 +106,50 @@ const ScoreList = (props) => {
       </NavLink>
     );
   });
-  const sportForApi = `get${urlPath.includes('live') ? 'Live' : ''}${
-    sportName.charAt(0).toUpperCase() + sportName.slice(1)
-  }Matches`;
-  console.log(date);
+  const sportForApi = `get${
+    urlPath.includes('live') ? 'Live' : ''
+  }${convertSlugToDisplay(sportName)}Matches`;
+  // console.log(date);
+  const timeZoneOffsetHour = getTimeZoneOffSet();
   const graphqlQuery = {
     query: `
      {
-      ${sportForApi}${urlPath.includes('live') ? '' : `(date:"${date}")`} {
-         competitionId competitionName competitionImage venue ${
-           sportName === 'cricket' ? 'uniqueId' : ''
-         }
-         events {
-           matchId matchStatus
-           homeTeam {
-             name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
-           },awayTeam {
-             name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
-           } 
-           startTime homeScore awayScore winnerTeam 
-           ${sportName === 'cricket' ? 'note' : ''}
-         }
-       }
+      ${sportForApi}${
+      urlPath.includes('live')
+        ? ''
+        : `(date:"${date}"${
+            sportName === 'football'
+              ? `,timeZoneDiff:"${timeZoneOffsetHour}")`
+              : ')'
+          }`
+    }{
+        matches {
+          competitionId competitionName competitionImage venue ${
+            sportName === 'cricket' ? 'uniqueId' : ''
+          }
+          events {
+            matchId matchStatus
+            homeTeam {
+              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+            },awayTeam {
+              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+            } 
+            startTime homeScore awayScore winnerTeam 
+            ${sportName === 'cricket' ? 'note' : ''}
+          }
+        }
+        featuredMatch {
+            matchId matchStatus 
+            homeTeam {
+              name imageUrl
+            },awayTeam {
+              name imageUrl
+            } 
+            startTime homeScore awayScore winnerTeam 
+        }
       }
+         
+    }
      `,
   };
   const fetchMatches = useCallback(async () => {
@@ -131,10 +160,14 @@ const ScoreList = (props) => {
       headers: { 'Content-Type': 'application/json' },
     });
     const {
-      data: { [sportForApi]: MatchesList }, //[] for computed property
+      data: {
+        [sportForApi]: { matches, featuredMatch },
+      }, //[] for computed property
     } = await res.json();
-    console.log(MatchesList);
-    setMatches(MatchesList);
+    // console.log(matches, featuredMatch);
+    setMatches(matches);
+    // IN case we load live matches
+    featuredMatch && setFeaturedMatch(featuredMatch);
     setIsLoading(false);
     //We send another request whenever date changes.
   }, [sportName, date, isLive]);
@@ -144,9 +177,20 @@ const ScoreList = (props) => {
   const competitionClickHandler = (compDetails) => {
     // TO convert it to url compatible form
     const { competitionName: compName } = compDetails;
-    const compSlug = compName.toLowerCase().split(' ').join('-');
+    const compSlug = slugMaker(compName);
     changeCompetition(compDetails);
     navigate(`/${sportName}/${compSlug}/fixtures`);
+  };
+  const matchClickHandler = (matchDetail) => {
+    const { matchStatus, homeTeamName, awayTeamName, matchId } = matchDetail;
+    setMatchDetailHandler(matchDetail);
+    const homeSlug = slugMaker(homeTeamName);
+    const awaySlug = slugMaker(awayTeamName);
+    if (matchStatus === 'NS') {
+      navigate(`/${sportName}/match/${matchId}/lineups`);
+      return;
+    }
+    navigate(`/${sportName}/match/${matchId}/summary`);
   };
 
   const competitionSet =
@@ -174,6 +218,7 @@ const ScoreList = (props) => {
           startTime,
           awayScore,
           homeScore,
+          winnerTeam,
           homeTeam: {
             imageUrl: homeImageUrl,
             name: homeTeamName,
@@ -191,7 +236,11 @@ const ScoreList = (props) => {
         const awayUrl = awayImageUrl.includes(undefined)
           ? dummyLogo
           : awayImageUrl;
-        const { displayTime } = convertDateForDisplay(startTime);
+        // console.log(startTime);
+        const { displayTime } =
+          sportName === 'football'
+            ? convertDateForDisplay(startTime, 'football')
+            : convertDateForDisplay(startTime);
         // TODO:Add winning class.
         // Logic to separate test scores with odi&t20i scores.
         const {
@@ -208,23 +257,68 @@ const ScoreList = (props) => {
           sportName === 'cricket' &&
           (cricketFormat === 'test' ? (
             <div className={classes.score}>
-              <div className={classes['first-score']}>
+              <div
+                className={`${classes['first-score']} ${
+                  matchStatus === 'Ended' && winnerTeam !== 1
+                    ? classes.loser
+                    : ''
+                }`}
+              >
                 <span className={classes.innings}>{homeInnings}</span>
                 <span className={classes.total}>{totalHomeScore}</span>
               </div>
-              <div className={classes['second-score']}>
+              <div
+                className={`${classes['second-score']} ${
+                  matchStatus === 'Ended' && winnerTeam !== 2
+                    ? classes.loser
+                    : ''
+                } `}
+              >
                 <span className={classes.innings}>{awayInnings}</span>
                 <span className={classes.total}>{totalAwayScore}</span>
               </div>
             </div>
           ) : (
             <div className={classes.score}>
-              <div className={classes['first-score']}>{homeScore}</div>
-              <div className={classes['second-score']}>{awayScore}</div>
+              <div
+                className={`${classes['first-score']} ${
+                  matchStatus === 'Ended' && winnerTeam !== 1
+                    ? classes.loser
+                    : ''
+                }`}
+              >
+                {homeScore}
+              </div>
+              <div
+                className={`${classes['second-score']} ${
+                  matchStatus === 'Ended' && winnerTeam !== 2
+                    ? classes.loser
+                    : ''
+                } `}
+              >
+                {awayScore}
+              </div>
             </div>
           ));
+        const matchDetail = {
+          matchId,
+          matchStatus,
+          homeTeamName,
+          awayTeamName,
+          homeImageUrl,
+          awayImageUrl,
+          homeScore,
+          awayScore,
+          winnerTeam,
+          displayTime,
+          competitionName,
+        };
         return (
-          <div className={classes['match-container']} key={matchId}>
+          <div
+            className={classes['match-container']}
+            key={matchId}
+            onClick={matchClickHandler.bind(null, matchDetail)}
+          >
             <div className={classes['match-item']}>
               <div className={classes.lhs}>
                 {sportName === 'cricket' && (
@@ -244,14 +338,27 @@ const ScoreList = (props) => {
                   </span>
                 )}
                 <div className={classes.teams}>
-                  <div>
+                  <div
+                    className={
+                      (matchStatus === 'FT' || matchStatus === 'Ended') &&
+                      winnerTeam !== 1
+                        ? classes.loser
+                        : ''
+                    }
+                  >
                     <img src={`${homeUrl}`} alt="Home" />
                     {homeTeamName}
                     {homeIsBatting && matchStatus !== 'Ended' && (
                       <img src={cricketBat} className={classes.bat} alt="" />
                     )}
                   </div>
-                  <div>
+                  <div
+                    className={
+                      matchStatus === 'FT' && winnerTeam !== 2
+                        ? classes.loser
+                        : ''
+                    }
+                  >
                     <img src={`${awayUrl}`} alt="Away" />
                     {awayTeamName}
                     {awayIsBatting && matchStatus !== 'Ended' && (
@@ -268,8 +375,26 @@ const ScoreList = (props) => {
                 ) &&
                   sportName !== 'cricket' && (
                     <div className={classes.score}>
-                      <div className={classes['first-score']}>{homeScore}</div>
-                      <div className={classes['second-score']}>{awayScore}</div>
+                      <div
+                        className={`${classes['first-score']} ${
+                          (matchStatus === 'FT' || matchStatus === 'Ended') &&
+                          winnerTeam !== 1
+                            ? classes.loser
+                            : ''
+                        }`}
+                      >
+                        {homeScore}
+                      </div>
+                      <div
+                        className={`${classes['second-score']} ${
+                          (matchStatus === 'FT' || matchStatus === 'Ended') &&
+                          winnerTeam !== 2
+                            ? classes.loser
+                            : ''
+                        }`}
+                      >
+                        {awayScore}
+                      </div>
                     </div>
                   )}
                 {sportName === 'cricket' &&
@@ -288,7 +413,11 @@ const ScoreList = (props) => {
       });
 
       return (
-        <Fragment key={competitionId}>
+        <Fragment
+          key={`${competitionId}.${
+            Math.ceil(Math.random() * 100) + Math.floor(Math.random() * 100)
+          }`}
+        >
           <div className={classes['title-container']}>
             <img src={`${competitionImage}`} alt="Flag" />
             <div className={classes.title}>
@@ -296,7 +425,7 @@ const ScoreList = (props) => {
                 className={classes.competition}
                 onClick={competitionClickHandler.bind(null, compDetails)}
               >
-                {competitionName}{' '}
+                {competitionName}
               </span>
               <span className={classes.country}>{venue}</span>
             </div>
@@ -340,36 +469,38 @@ const ScoreList = (props) => {
           />
         </li>
       </ul>
-
-      <main className={classes.container}>
+      <main
+        className={
+          urlPath.includes('live')
+            ? classes['live-container']
+            : classes.container
+        }
+      >
         <div className={classes['match-list']}>
           {isLoading && (
             <div className="centered">
               <LoadingSpinner />
             </div>
           )}
+          {!isLoading && matches.length === 0 && (
+            <div className={classes.fallback}>
+              <Info /> There are no live matches as of now.
+            </div>
+          )}
           {!isLoading && <Fragment>{competitionSet}</Fragment>}
         </div>
-        <div className={classes.featured}>
-          <span className={classes['featured-title']}>Featured Match</span>
-          <div className={classes['featured-match']}>
-            <div className={classes['featured-lhs']}>
-              Arsenal
-              <img
-                src="https://api.sofascore.app/api/v1/team/65676/image"
-                alt="dasd"
-              />
-            </div>
-            <div className={classes['featured-score']}>0 - 0</div>
-            <div className={classes['featured-rhs']}>
-              Brentford
-              <img
-                src="https://api.sofascore.app/api/v1/team/3203/image"
-                alt=""
-              />
-            </div>
+        {!urlPath.includes('live') && (
+          <div className={classes.featured}>
+            {isLoading && (
+              <div className="centered">
+                <LoadingSpinner />
+              </div>
+            )}
+            {!isLoading && featuredMatch && (
+              <FeaturedMatch event={featuredMatch} sportName={sportName} />
+            )}
           </div>
-        </div>
+        )}
       </main>
     </Fragment>
   );

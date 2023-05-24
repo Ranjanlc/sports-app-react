@@ -4,20 +4,13 @@ import logo from '../../assets/logo.png';
 import football from '../../assets/football.png';
 import cricket from '../../assets/cricket.png';
 import basketball from '../../assets/basketball.png';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 const Layout = (props) => {
-  // const { onSportsChange } = props;
-  // const changeHandler = (e) => {
-  // e.currentTarget gives the element in which handler is attached,not where the event originated.
-  // We could also attach the event handler to only the listing div and write necessary logic to get the clicked div.
-  //   const sport = e.currentTarget.id;
-  //   onSportsChange(sport);
-  // };
-  const { sportName } = useParams();
-  const [isLoaded, setIsLoaded] = useState(true);
-  const setInitialLoaded = () => {
-    if (isLoaded) {
-      setIsLoaded(false);
+  const { pathname } = useLocation();
+  const sportClickHandler = (sport, e) => {
+    // To scroll to top.
+    if (pathname.includes(sport)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   return (
@@ -28,21 +21,16 @@ const Layout = (props) => {
           {/* This all to set the link active when it is first loaded. */}
           <NavLink
             to="/football"
-            className={({ isActive }) =>
-              [
-                isLoaded && sportName === 'football' ? classes.active : null,
-                isActive ? classes.active : null,
-              ]
-                .filter(Boolean)
-                .join(' ')
-            }
+            // ({ isActive }) =>[isActive ? classes.active : null].filter(Boolean).join(' ')
+            className={({ isActive }) => (isActive ? classes.active : '')}
+            onClick={sportClickHandler.bind(null, 'football')}
           >
             <img src={football} alt="football" />
             Football
           </NavLink>
           <NavLink
             to="/cricket"
-            onClick={setInitialLoaded}
+            onClick={sportClickHandler.bind(null, 'cricket')}
             className={({ isActive }) => (isActive ? classes.active : '')}
           >
             <img src={cricket} alt="cricket" />
@@ -50,7 +38,7 @@ const Layout = (props) => {
           </NavLink>
           <NavLink
             to="/basketball"
-            onClick={setInitialLoaded}
+            onClick={sportClickHandler.bind(null, 'basketball')}
             className={({ isActive }) => (isActive ? classes.active : '')}
           >
             <img src={basketball} alt="basketball" />

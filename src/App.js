@@ -1,26 +1,29 @@
 import { useState } from 'react';
-import {
-  Navigate,
-  Route,
-  Routes,
-  useNavigate,
-  useRoutes,
-} from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ScoreList from './components/score/ScoreList';
 import FootballDetail from './components/competition/FootballDetail';
 import CompetitionDetail from './components/competition/CompetitionDetail';
+import MatchDetail from './components/match/MatchDetail';
+import FootballSummary from './components/match/FootballSummary';
+import FootballLineup from './components/match/FootballLineup';
+import FootballTable from './components/match/FootballTable';
+import FootballStats from './components/match/FootballStats';
 //TODO:Special class while game is playing.
-//TODO:Make the algorithm for featured matches
-//TODO:If match is abandoned,do some styling
-// FIXME:The match time which should be in next date is in the previous for ex:if the match is in 2023-02-14 1 am,it showing 1 am in 02-13.
-// TODO:If a user is in football and he clicks football icon,he is gone back to top.
+//NOT-IMP-TODO:If match is abandoned,do some styling
+// Major-TODO:Make the site responsive
+// Major-TODO:Make the team page working
+// Major-TODO:Make the matches page working
+
 function App() {
   const [competitionDetail, setCompetitionDetail] = useState(null);
+  // const [matchDetail, setMatchDetail] = useState(null);
   const changeCompetition = (competitionSet) => {
-    console.log('aayo aayo', competitionSet);
     setCompetitionDetail(competitionSet);
   };
+  // const matchDetailHandler = (matchDetail) => {
+  //   setMatchDetail(matchDetail);
+  // };
   return (
     <Layout>
       <Routes>
@@ -43,6 +46,12 @@ function App() {
           path="/:sportName/:compName/:loadState"
           element={<CompetitionDetail competitionSet={competitionDetail} />}
         ></Route>
+        <Route path="/football/match/:matchId" element={<MatchDetail />}>
+          <Route path="summary" element={<FootballSummary />}></Route>
+          <Route path="stats" element={<FootballStats />}></Route>
+          <Route path="lineups" element={<FootballLineup />}></Route>
+          <Route path="table" element={<FootballTable />}></Route>
+        </Route>
       </Routes>
     </Layout>
   );

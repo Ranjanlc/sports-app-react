@@ -1,14 +1,21 @@
 import classes from './Dropdown.module.css';
 
 import React, { useState } from 'react';
+import { convertSlugToDisplay } from '../../helpers/helpers';
 function Dropdown(props) {
-  const { optionSet, groupChangeHandler } = props;
+  const { optionSet, groupChangeHandler, isFootball, startingOption } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(startingOption);
   const list = optionSet.map((option) => {
+    let displayOption;
+    if (isFootball) {
+      displayOption = convertSlugToDisplay(option);
+    } else {
+      displayOption = option;
+    }
     return (
       <li onClick={() => optionClickHandler(option)} key={option}>
-        {option}
+        {displayOption}
       </li>
     );
   });
@@ -17,7 +24,7 @@ function Dropdown(props) {
   };
   const optionClickHandler = (option) => {
     groupChangeHandler(option);
-    setSelectedOption(option);
+    setSelectedOption(isFootball ? convertSlugToDisplay(option) : option);
     setIsOpen(false);
   };
   return (
@@ -28,7 +35,10 @@ function Dropdown(props) {
         }`}
         onClick={selectClickHandler}
       >
-        <span className="selected">{selectedOption || optionSet[0]}</span>
+        <span className="selected">
+          {selectedOption ||
+            (isFootball ? convertSlugToDisplay(optionSet[0]) : optionSet[0])}
+        </span>
         <div
           className={`${classes.caret} ${
             isOpen ? classes['caret-rotate'] : ''

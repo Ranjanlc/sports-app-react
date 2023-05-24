@@ -1,0 +1,60 @@
+.featured-title {
+  display: block;
+  text-align: center;
+  font-size: large;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+.featured-match {
+  /* width: 90%; */
+  background-color: rgba(8, 8, 5);
+  margin: 0 1rem;
+  border-radius: 5px;
+  min-height: 110px;
+  /* margin-left: 2rem; */
+  margin-top: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.featured-match img {
+  margin-top: 0.5rem;
+  width: 3rem;
+}
+.featured-lhs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  /* align-content: center; */
+  /* margin-left: 3rem; */
+}
+.featured-score {
+  font-size: 30px;
+  font-weight: 700;
+  display: flex;
+  width: 80px;
+  justify-content: space-around;
+}
+.cricket-score {
+  font-size: 15px;
+  display: flex;
+  width: 120px;
+}
+.cricket-score span {
+  min-width: 20px;
+}
+.featured-rhs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* margin-right: 3rem; */
+}
+.date .active {
+  color: orangered;
+}
+.loser {
+  color: #808080;
+  font-weight: 600;
+}

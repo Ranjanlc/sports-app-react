@@ -17,3 +17,25 @@ export const refineCricketScores = (homeScore, awayScore) => {
     return { cricketFormat: 'one-day' };
   }
 };
+export const convertSlugToDisplay = (slug) => {
+  let refinedSlug = slug.charAt(0).toUpperCase() + slug.slice(1);
+  if (slug.includes('-')) {
+    const [firstString, secondString] = refinedSlug.split('-');
+    refinedSlug = `${firstString}-${secondString.toUpperCase()}`;
+  }
+  return refinedSlug;
+};
+
+export const slugMaker = (title) => {
+  console.log(title);
+  return title.toLowerCase().split(' ').join('-');
+};
+export const convertToReadableStatus = (status) => {
+  const statusMap = new Map([
+    ['FT', 'Full Time'],
+    ['AET', 'Full Time'],
+    ['HT', 'Half Time'],
+    ['NS', 'Yet to Start'],
+  ]);
+  return statusMap.get(status);
+};

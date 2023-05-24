@@ -3,9 +3,10 @@ import StarJsx from '../../assets/star-jsx';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import dummyLogo from '../../assets/dummy-logo.png';
+import cricketBat from '../../assets/cricket-bat.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import { refineCricketScores } from '../../helpers/helpers';
+import { convertSlugToDisplay, refineCricketScores } from '../../helpers/helpers';
 import Dropdown from '../layout/Dropdown';
 const CompetitionDetail = (props) => {
   const URL = 'http://localhost:8080/graphql';
@@ -41,9 +42,8 @@ const CompetitionDetail = (props) => {
     navigate(-1);
   };
   const sportForDetails = `get${
-    sportName.charAt(0).toUpperCase() + sportName.slice(1)
+    convertSlugToDisplay(sportName)
   }Details`;
-  // FIXME:when one events ,not loading...
   // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
   const compOrUniqueId =
     sportName === 'cricket'
@@ -113,7 +113,7 @@ const CompetitionDetail = (props) => {
     fetchCompDetails();
   }, [fetchCompDetails]);
   const sportForMatches = `get${
-    sportName.charAt(0).toUpperCase() + sportName.slice(1)
+    convertSlugToDisplay(sportName)
   }CompMatches`;
   const graphqlQueryMatches = {
     query: `
@@ -246,10 +246,16 @@ const CompetitionDetail = (props) => {
               <div>
                 <img src={homeUrl} alt="Home" />
                 {homeTeamName}
+                {homeIsBatting && matchStatus !== 'Ended' && (
+                  <img src={cricketBat} className={classes.bat} alt="" />
+                )}
               </div>
               <div>
                 <img src={awayUrl} alt="Away" />
                 {awayTeamName}
+                {awayIsBatting && matchStatus !== 'Ended' && (
+                  <img src={cricketBat} className={classes.bat} alt="" />
+                )}
               </div>
             </div>
           </div>
@@ -389,12 +395,10 @@ const CompetitionDetail = (props) => {
         </div>
         <div className={classes.table}>
           {groupContainer && (!isLoading || standings) && (
-            <div className={classes.dropdown}>
-              <Dropdown
-                optionSet={groupContainer}
-                groupChangeHandler={groupChangeHandler}
-              />
-            </div>
+            <Dropdown
+              optionSet={groupContainer}
+              groupChangeHandler={groupChangeHandler}
+            />
           )}
           {isLoading && !standings && (
             <div className="centered">

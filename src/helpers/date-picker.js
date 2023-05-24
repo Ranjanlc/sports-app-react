@@ -44,11 +44,27 @@ export const apiDateConverter = (date) => {
   const numberMonth = monthToDateConverter(month);
   return `${year}-${numberMonth}-${day}`;
 };
+export const getTimeZoneOffSet = () => {
+  const date = new Date();
+  // console.log(new Date(new Date('2023-02-27 01:45:00').getTime() - 10000000));
+  // Get the timezone offset in minutes
+  const timezoneOffset = date.getTimezoneOffset();
 
-export const convertDateForDisplay = (date) => {
+  // Convert the timezone offset to hours and minutes
+  const hours = Math.floor(Math.abs(timezoneOffset) / 60);
+  const minutes = Math.abs(timezoneOffset) % 60;
+  const timezoneOffsetSign = timezoneOffset > 0 ? '-' : '+';
+  return `${timezoneOffsetSign}${hours}:${minutes}`;
+};
+
+export const convertDateForDisplay = (date, sport) => {
   const [dateStr, timeStr] = date.split(' ');
   const [yearStr, monthStr, dayStr] = dateStr.split('-');
   const [hourStr, minuteStr] = timeStr.split(':');
+  const refinedHourStr = hourStr === '24' ? '00' : hourStr;
+  if (sport === 'football') {
+    return { displayTime: `${refinedHourStr}:${minuteStr}` };
+  }
   const [year, month, day, hour, minute] = [
     +yearStr,
     +monthStr,
