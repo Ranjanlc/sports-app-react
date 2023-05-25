@@ -1,256 +1,243 @@
-import { useContext } from 'react';
+import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import FootballContext from '../../store/football-context';
 import { DUMMY_SUMMARY } from '../../helpers/DUMMY';
+import LoadingSpinner from '../UI/LoadingSpinner';
 import classes from './FootballSummary.module.css';
-import Card from '../../assets/card';
+import FootballIncident from './FootballIncident';
+import Info from '../../assets/info';
 import FootballIcon from '../../assets/football-icon';
-import { Fragment } from 'react';
-import Boot from '../../assets/boot-icon';
+import football from '../../assets/football.png';
+import missedGoal from '../../assets/football-cross.png';
 
 const FootballSummary = (props) => {
+  const URL = 'http://localhost:8080/graphql';
+
   const ctx = useContext(FootballContext);
-  const { matchDetail } = ctx;
-  console.log(DUMMY_SUMMARY);
-  const { homeImageUrl, awayImageUrl } = matchDetail;
-  console.log(matchDetail);
+  const [isLoading, setIsLoading] = useState(false);
+  // const [penaltyContainer, setPenaltyContainer] = useState(null);
   const {
-    firstHalfIncidents,
-    secondHalfIncidents,
-    homeHTScore,
-    awayHTScore,
-    awayFTScore,
-    homeFTScore,
-  } = DUMMY_SUMMARY;
-  const firstHalfEl = firstHalfIncidents.map((incidentSet) => {
+    matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },
+    summaryContainer: {
+      homeFTScore,
+      awayHTScore,
+      awayFTScore,
+      homeHTScore,
+      homeShootoutScore,
+      awayShootoutScore,
+      homeScore,
+      awayScore,
+      firstHalfIncidents,
+      secondHalfIncidents,
+      extraTimeIncidents,
+      penaltyShootout: penaltyContainer,
+    },
+    setSummaryHandler,
+  } = ctx;
+  const graphqlQuery = {
+    query: `
+    {
+      getFootballMatchSummary(matchId: ${matchId}) {
+        homeFTScore
+        awayHTScore
+        homeHTScore
+        awayFTScore
+        homeScore
+        awayScore
+        homeShootoutScore
+        awayShootoutScore
+        firstHalfIncidents {
+          minute
+          team
+          score
+          scorer
+          assister
+          incident
+          playerName
+          minuteExtended
+          hasAssisted
+        }
+        secondHalfIncidents {
+          minute
+          team
+          score
+          scorer
+          assister
+          incident
+          playerName
+          minuteExtended
+          hasAssisted
+        }
+        extraTimeIncidents {
+           minute
+          team
+          score
+          scorer
+          assister
+          incident
+          playerName
+          minuteExtended
+          hasAssisted
+        }
+        penaltyShootout {
+          team 
+          playerName
+          score
+          incident
+        }
+      }
+    }
+    
+    `,
+  };
+  const fetchMatchSummary = useCallback(async () => {
+    setIsLoading(true);
+    const res = await fetch(URL, {
+      method: 'POST',
+      body: JSON.stringify(graphqlQuery),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     const {
-      minute,
-      team,
-      incident,
-      hasAssisted,
-      score,
-      scorer,
-      assister,
-      playerName,
-    } = incidentSet;
-    if (!score && team === 1) {
-      return (
-        <div className={`${classes.card} ${classes.home}`} key={minute}>
-          <span className={classes.minute}>18'</span>
-          <img src={homeImageUrl} />
-          <span className={classes.player}>{playerName}</span>
-          {incident === 'yellowCard' ? (
-            <Card color="yellow" />
-          ) : (
-            <Card color="red" />
-          )}
-        </div>
-      );
-    }
-    if (score && team === 1) {
-      return (
-        <div
-          className={`${classes['left-goal']} ${classes.goal} ${classes.card}`}
-          key={minute}
-        >
-          <span className={classes.minute}>18'</span>
-          <div className={classes.left}>
-            <img src={team === 1 ? homeImageUrl : awayImageUrl} alt="dcas" />
-            <span
-              className={`${classes.player} ${
-                hasAssisted ? classes.assist : ''
-              }`}
-            >
-              <span>{playerName ? playerName : scorer}</span>
-              {hasAssisted && (
-                <span className={classes.assister}>
-                  {assister}
-                  <Boot />
-                </span>
-              )}
-            </span>
-            {incident === 'ownGoal' ? (
-              <FootballIcon color="red" />
-            ) : (
-              <FootballIcon />
-            )}
-          </div>
-          <span className={classes.center}>
-            {score[0]}-{score[1]}
-          </span>
-          <div className={classes.away}></div>
-        </div>
-      );
-    }
-    if (!score && team === 2) {
-      return (
-        <div className={`${classes.card} ${classes.away}`} key={minute}>
-          <span className={classes.minute}>18'</span>
-          <div className={classes.right}>
-            {incident === 'yellowCard' ? (
-              <Card color="yellow" />
-            ) : (
-              <Card color="red" />
-            )}
-            <span className={classes.player}>{playerName}</span>
-            <img src={awayImageUrl} />
-          </div>
-        </div>
-      );
-    }
-    if (score && team === 2) {
-      return (
-        <div
-          className={`${classes['right-goal']} ${classes.card} ${classes.goal}`}
-          key={minute}
-        >
-          <span className={classes.minute}>18'</span>
-          <span className={classes.center}>
-            {score[0]}-{score[1]}
-          </span>
-          <div className={classes.right}>
-            {incident === 'ownGoal' ? (
-              <FootballIcon color="red" />
-            ) : (
-              <FootballIcon />
-            )}
-            <span
-              className={`${classes.player} ${
-                hasAssisted ? classes.assist : ''
-              }`}
-            >
-              <span>{playerName ? playerName : scorer}</span>
-              {hasAssisted && (
-                <span className={classes.assister}>
-                  {assister}
-                  <Boot />
-                </span>
-              )}
-            </span>
-            <img src={awayImageUrl} alt="dcas" />
-          </div>
-        </div>
-      );
-    }
+      data: { getFootballMatchSummary },
+    } = await res.json();
+    console.log(getFootballMatchSummary);
+    setSummaryHandler(getFootballMatchSummary);
+    setIsLoading(false);
+  }, []);
+  useEffect(() => {
+    matchStatus !== 'NS' &&
+      firstHalfIncidents.length === 0 &&
+      fetchMatchSummary();
+  }, [fetchMatchSummary]);
+  if (matchStatus === 'NS') {
+    return (
+      <div className={classes.fallback}>
+        <Info /> Key events will be shown once the match starts.
+      </div>
+    );
+  }
+  const firstHalfEl = firstHalfIncidents.map((incidentSet, i) => {
+    return <FootballIncident incidentSet={incidentSet} key={i} />;
   });
-  const secondHalfEl = secondHalfIncidents.map((incidentSet) => {
-    const {
-      minute,
-      team,
-      incident,
-      hasAssisted,
-      score,
-      scorer,
-      assister,
-      playerName,
-    } = incidentSet;
-    if (!score && team === 1) {
+  const secondHalfEl = secondHalfIncidents.map((incidentSet, i) => (
+    <FootballIncident incidentSet={incidentSet} key={i} />
+  ));
+  const extraTimeEl =
+    extraTimeIncidents &&
+    extraTimeIncidents.map((incidentSet, i) => (
+      <FootballIncident incidentSet={incidentSet} key={i} />
+    ));
+  const classifyPen = (incident) => {
+    if (incident === 'shootOutPen') {
       return (
-        <div className={`${classes.card} ${classes.home}`} key={minute}>
-          <span className={classes.minute}>18'</span>
-          <img src={homeImageUrl} />
-          <span className={classes.player}>{playerName}</span>
-          {incident === 'yellowCard' ? (
-            <Card color="yellow" />
-          ) : (
-            <Card color="red" />
-          )}
+        <div className={classes['goal-icon__container']}>
+          PEN
+          <img src={football} alt="football" />
         </div>
       );
     }
-    if (score && team === 1) {
+    if (incident === 'shootOutMiss') {
       return (
-        <div
-          className={`${classes['left-goal']} ${classes.goal} ${classes.card}`}
-          key={minute}
-        >
-          <span className={classes.minute}>18'</span>
-          <div className={classes.left}>
-            <img src={homeImageUrl} alt="dcas" />
-            <span
-              className={`${classes.player} ${
-                hasAssisted ? classes.assist : ''
-              }`}
-            >
-              <span>{playerName ? playerName : scorer}</span>
-              {hasAssisted && (
-                <span className={classes.assister}>
-                  <Boot />
-                  {assister}
-                </span>
-              )}
-            </span>
-            {incident === 'ownGoal' ? (
-              <FootballIcon color="red" />
-            ) : (
-              <FootballIcon />
-            )}
+        <div className={classes['goal-icon__container']}>
+          PEN
+          <img src={missedGoal} />
+        </div>
+      );
+    }
+  };
+  const penaltyEl = [];
+  if (penaltyContainer) {
+    for (let i = 0; i < penaltyContainer.length; i += 2) {
+      const j = i + 1;
+      const homeTeam =
+        penaltyContainer[i].team === 1
+          ? penaltyContainer[i]
+          : penaltyContainer[j];
+      const awayTeam =
+        penaltyContainer[i].team === 2
+          ? penaltyContainer[i]
+          : penaltyContainer[j];
+      const {
+        incident: homeIncident,
+        playerName: homePlayer,
+        score: homeScore,
+      } = homeTeam;
+      const {
+        incident: awayIncident,
+        playerName: awayPlayer,
+        score: awayScore,
+      } = awayTeam;
+      const el = (
+        <main key={i} className={classes['penalty-card']}>
+          <div className={classes.home}>
+            <img src={homeImageUrl} className={classes.logo} />
+            <div className={classes['player-container']}>
+              <span className={classes.player}>{homePlayer}</span>
+              <span
+                className={classes.score}
+              >{`${homeScore[0]}-${homeScore[1]}`}</span>
+            </div>
+            <span>{classifyPen(homeIncident)}</span>
           </div>
-          <span className={classes.center}>
-            {score[0]}-{score[1]}
-          </span>
-          <div className={classes.away}></div>
-        </div>
-      );
-    }
-    if (!score && team === 2) {
-      return (
-        <div className={`${classes.card} ${classes.away}`} key={minute}>
-          <span className={classes.minute}>18'</span>
-          <div className={classes.right}>
-            {incident === 'yellowCard' ? (
-              <Card color="yellow" />
-            ) : (
-              <Card color="red" />
-            )}
-            <span className={classes.player}>{playerName}</span>
-            <img src={awayImageUrl} />
+          <div className={classes.away}>
+            <span>{classifyPen(awayIncident)}</span>
+            <div className={classes['player-container']}>
+              <span className={`${classes.player} ${classes['away-player']}`}>
+                {awayPlayer}
+              </span>
+              <span
+                className={classes.score}
+              >{`${awayScore[0]}-${awayScore[1]}`}</span>
+            </div>
+            <img src={awayImageUrl} alt="Away Image" className={classes.logo} />
           </div>
-        </div>
+        </main>
       );
+      penaltyEl.push(el);
     }
-    if (score && team === 2) {
-      return (
-        <div
-          className={`${classes['right-goal']} ${classes.card} ${classes.goal}`}
-          key={minute}
-        >
-          <span className={classes.minute}>18'</span>
-          <span className={classes.center}>
-            {score[0]}-{score[1]}
-          </span>
-          <div className={classes.right}>
-            <FootballIcon />
-            <span
-              className={`${classes.player} ${
-                hasAssisted ? classes.assist : ''
-              }`}
-            >
-              <span>{playerName ? playerName : scorer}</span>
-              {hasAssisted && (
-                <span className={classes.assister}>
-                  <Boot />
-                  {assister}
-                </span>
-              )}
-            </span>
-            <img src={awayImageUrl} alt="dcas" />
-          </div>
-        </div>
-      );
-    }
-  });
+  }
   return (
     <Fragment>
-      {firstHalfEl}
-      <div className={`${classes.card} ${classes.time} ${classes.half}`}>
-        <span className={classes.minute}>HT</span>
-        {homeHTScore}-{awayHTScore}
-      </div>
-      {secondHalfEl}
-      <div className={`${classes.card} ${classes.time} ${classes.full}`}>
-        <span className={classes.minute}>FT</span>
-        {homeFTScore}-{awayFTScore}
-      </div>
+      {isLoading && (
+        <div className="centered">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && (
+        <div className={classes.container}>
+          {firstHalfEl}
+          <div className={`${classes.card} ${classes.time} ${classes.half}`}>
+            <span className={classes.minute}>HT</span>
+            {homeHTScore}-{awayHTScore}
+          </div>
+          {secondHalfEl}
+          <div className={`${classes.card} ${classes.time} ${classes.full}`}>
+            <span className={classes.minute}>FT</span>
+            {homeFTScore}-{awayFTScore}
+          </div>
+          {extraTimeEl && extraTimeEl}
+          {homeScore && (
+            <div className={`${classes.card} ${classes.time} ${classes.full}`}>
+              <span className={classes.minute}>AET</span>
+              {homeScore}-{awayScore}
+            </div>
+          )}
+          {penaltyContainer && <Fragment> {penaltyEl}</Fragment>}
+          {penaltyContainer && (
+            <div
+              className={`${classes.card} ${classes.full} ${classes.time} ${classes['penalty-score__container']}`}
+            >
+              <span>Penalty Shootout</span>
+              <div className={classes['penalty-score']}>
+                <img src={homeImageUrl} className={classes.logo} />
+                {homeShootoutScore}-{awayShootoutScore}
+                <img src={awayImageUrl} className={classes.logo} />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </Fragment>
   );
 };

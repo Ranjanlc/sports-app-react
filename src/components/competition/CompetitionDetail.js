@@ -6,7 +6,10 @@ import dummyLogo from '../../assets/dummy-logo.png';
 import cricketBat from '../../assets/cricket-bat.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import { convertSlugToDisplay, refineCricketScores } from '../../helpers/helpers';
+import {
+  convertSlugToDisplay,
+  refineCricketScores,
+} from '../../helpers/helpers';
 import Dropdown from '../layout/Dropdown';
 const CompetitionDetail = (props) => {
   const URL = 'http://localhost:8080/graphql';
@@ -41,9 +44,7 @@ const CompetitionDetail = (props) => {
   const backClickHandler = () => {
     navigate(-1);
   };
-  const sportForDetails = `get${
-    convertSlugToDisplay(sportName)
-  }Details`;
+  const sportForDetails = `get${convertSlugToDisplay(sportName)}Details`;
   // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
   const compOrUniqueId =
     sportName === 'cricket'
@@ -58,10 +59,10 @@ const CompetitionDetail = (props) => {
             matchSet {
                 matches {
                     homeTeam {
-                    name imageUrl
+                    name imageUrl id 
                     }
                     awayTeam {
-                        name imageUrl
+                        name imageUrl id
                     } matchId matchStatus startTime ${
                       sportName === 'cricket' ? 'note' : ''
                     } awayScore homeScore winnerTeam
@@ -112,9 +113,7 @@ const CompetitionDetail = (props) => {
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
-  const sportForMatches = `get${
-    convertSlugToDisplay(sportName)
-  }CompMatches`;
+  const sportForMatches = `get${convertSlugToDisplay(sportName)}CompMatches`;
   const graphqlQueryMatches = {
     query: `
     {
@@ -123,10 +122,10 @@ const CompetitionDetail = (props) => {
     }") {
           matches {
               homeTeam {
-              name imageUrl
+              name imageUrl id
               }
               awayTeam {
-                  name imageUrl
+                  name imageUrl id
               } matchId matchStatus startTime homeScore awayScore winnerTeam ${
                 sportName === 'cricket' ? 'note' : ''
               }
@@ -190,10 +189,12 @@ const CompetitionDetail = (props) => {
           imageUrl: homeImageUrl,
           name: homeTeamName,
           isBatting: homeIsBatting,
+          id: homeTeamId,
         },
         awayTeam: {
           imageUrl: awayImageUrl,
           name: awayTeamName,
+          id: awayTeamId,
           isBatting: awayIsBatting,
         },
       } = event;

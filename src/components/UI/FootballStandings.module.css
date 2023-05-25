@@ -1,9 +1,11 @@
 .table {
-  width: 50%;
+  width: 100%;
   background-color: rgb(28, 38, 50);
   margin-top: 10px;
   margin-right: 10px;
-  margin-left: 10px;
+  /* padding-right: 30px; */
+  /* margin-left: 10px; */
+  border-radius: 15px;
   height: -moz-fit-content; /* Firefox */
   height: -webkit-fit-content; /* Safari and Chrome */
   height: fit-content;
@@ -39,6 +41,7 @@ hr {
   justify-content: space-around;
   border-bottom: 1px solid rgba(85, 83, 83, 0.813);
   align-items: center;
+  padding-bottom: 12px;
 }
 .table .team-data__details {
   display: flex;

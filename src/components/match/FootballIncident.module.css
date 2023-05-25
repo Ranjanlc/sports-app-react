@@ -1,0 +1,112 @@
+.card {
+  display: flex;
+  background-color: black;
+  border: 0px solid white;
+  align-items: center;
+  margin-bottom: 5px;
+  border-radius: 15px;
+  padding: 0 2px;
+}
+
+.card svg {
+  width: 20px;
+  margin: 0 10px;
+  /* height: 10%; */
+}
+img {
+  width: 25px;
+  margin: 0 5px;
+}
+.player {
+  min-width: 115px;
+}
+.assist {
+  height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  font-weight: bold;
+}
+.assist .assister {
+  display: flex;
+  align-items: flex-end;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.689);
+}
+/* .away {
+    display: flex;
+    justify-content: flex-end;
+  } */
+.left-goal {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  background-color: black;
+  /* border: 1px solid white; */
+}
+.minute {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  margin: 0 10px;
+  color: rgb(255, 158, 3);
+  /* min-width: 40px; */
+}
+.goal svg {
+  width: 20px;
+  height: 20px;
+  margin: 0 10px;
+}
+
+.left-goal .left {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+.left-goal .center {
+  flex: 1;
+  text-align: left;
+  /* margin-right: 5%; */
+}
+.right-goal {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: black;
+  /* border: 1px solid white; */
+}
+.right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+.right .player {
+  text-align: right;
+}
+.right-goal .center {
+  flex: 1;
+  text-align: right;
+  margin-right: -50px;
+}
+.time {
+  background-color: rgba(35, 35, 35, 0.715);
+  height: 50px;
+  justify-content: center;
+  font-weight: 700;
+}
+.half {
+  border: 2px solid yellow;
+}
+.full {
+  border: 3px solid rgb(37, 210, 37);
+}
+.goal-icon__container {
+  display: flex;
+  height: 50px;
+  flex-direction: column;
+  align-items: center;
+  font-style: italic;
+  font-size: medium;
+  font-weight: 700;
+}

@@ -109,13 +109,15 @@
   width: 62%;
   background-color: #454545;
   margin-top: 1.5rem;
+  margin-right: 0.8rem;
   height: fit-content;
+  /* margin-bottom: 20px; */
   border-radius: 15px;
 }
 .link-container {
   display: flex;
   justify-content: space-around;
-  padding-bottom: 5px;
+  /* padding-bottom: 5px; */
   padding-top: 5px;
   /* border-bottom: 1px ridge white; */
 }
@@ -131,6 +133,28 @@ a.active {
   border-bottom: 3px solid rgb(6, 178, 236);
 }
 .details {
-  padding: 10px 10px;
+  padding: 0 10px;
+  /* height: 580px; */
+  margin: 10px 0;
+  height: fit-content;
+  overflow-y: auto;
+  overflow-x: hidden;
   /* display: flex; */
+}
+.details::-webkit-scrollbar {
+  width: 10px;
+}
+
+.details::-webkit-scrollbar-track {
+  border-radius: 50px;
+  background: #a4a3a3;
+}
+
+.details::-webkit-scrollbar-thumb {
+  background: rgb(87, 162, 233);
+  border-radius: 50px;
+}
+
+.details::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

@@ -25,5 +25,16 @@
   flex-direction: column;
   align-content: center;
   justify-content: space-around;
-  height: 10rem;
+  height: fit-content;
+}
+.fallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  color: orange;
+  font-style: italic;
+}
+.fallback svg {
+  width: 40px;
 }

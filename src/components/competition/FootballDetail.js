@@ -1,12 +1,13 @@
 import classes from './FootballDetail.module.css';
 import StarJsx from '../../assets/star-jsx';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import dummyLogo from '../../assets/dummy-logo.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import Dropdown from '../layout/Dropdown';
 import FootballStandings from '../UI/FootballStandings';
+import FootballContext from '../../store/football-context';
 const FootballDetail = (props) => {
   const URL = 'http://localhost:8080/graphql';
 
@@ -20,6 +21,8 @@ const FootballDetail = (props) => {
   const [matchState, setMatchState] = useState(loadState);
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const ctx = useContext(FootballContext);
+  const { matchDetailHandler, setSummaryHandler, setStatsHandler ,setTableHandler} = ctx;
   // const [groupContainer, setGroupContainer] = useState();
   // const [curGroup, setCurGroup] = useState();
   let competitionSet;
@@ -47,16 +50,16 @@ const FootballDetail = (props) => {
           matches {
             fixtures {
                matchId homeTeam {
-                name imageUrl
+                name imageUrl id
                 } awayTeam {
-                  name imageUrl
+                  name imageUrl id
                 }startTime matchStatus homeScore awayScore winnerTeam 
             }
             results {
               matchId homeTeam {
-                name imageUrl
-              }awayTeam {
-                name imageUrl
+                name imageUrl id
+              }awayTeam { 
+                name imageUrl id
               } startTime matchStatus homeScore awayScore winnerTeam
             }
           } standings {
@@ -106,6 +109,18 @@ const FootballDetail = (props) => {
       navigate(`${baseUrl}/results`, { replace: true });
     }
   };
+  const matchClickHandler = (matchDetail) => {
+    setStatsHandler([]);
+    setTableHandler([]);
+    setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+    const { matchStatus, matchId } = matchDetail;
+    matchDetailHandler(matchDetail);
+    if (matchStatus === 'NS') {
+      navigate(`/football/match/${matchId}/lineups`);
+      return;
+    }
+    navigate(`/football/match/${matchId}/summary`);
+  };
   const events =
     matches &&
     matches[matchState].map((event) => {
@@ -115,8 +130,17 @@ const FootballDetail = (props) => {
         startTime,
         awayScore,
         homeScore,
-        homeTeam: { imageUrl: homeImageUrl, name: homeTeamName },
-        awayTeam: { imageUrl: awayImageUrl, name: awayTeamName },
+        homeTeam: {
+          imageUrl: homeImageUrl,
+          name: homeTeamName,
+          id: homeTeamId,
+        },
+        awayTeam: {
+          imageUrl: awayImageUrl,
+          name: awayTeamName,
+          id: awayTeamId,
+        },
+        winnerTeam,
       } = event;
       const homeUrl = homeImageUrl.includes(undefined)
         ? dummyLogo
@@ -125,8 +149,28 @@ const FootballDetail = (props) => {
         ? dummyLogo
         : awayImageUrl;
       const { displayTime, displayDate } = competitionDateHandler(startTime);
+      const matchDetail = {
+        matchId,
+        matchStatus,
+        homeTeamName,
+        awayTeamName,
+        homeImageUrl,
+        awayImageUrl,
+        homeScore,
+        awayScore,
+        winnerTeam,
+        displayTime,
+        competitionName,
+        competitionId,
+        homeTeamId,
+        awayTeamId,
+      };
       return (
-        <div className={classes['match-item']} key={matchId}>
+        <div
+          className={classes['match-item']}
+          key={matchId}
+          onClick={matchClickHandler.bind(null, matchDetail)}
+        >
           <div className={classes.lhs}>
             <div className={classes['date-container']}>
               <div className={classes.date}>{displayDate}</div>
@@ -157,7 +201,6 @@ const FootballDetail = (props) => {
         </div>
       );
     });
-  // TODO:Address the situation when there is no standings or there is a group-wise standings.
 
   return (
     <Fragment>
@@ -212,7 +255,16 @@ const FootballDetail = (props) => {
           )}
           {!isLoading && <Fragment>{events}</Fragment>}
         </div>
-        {!isLoading && <FootballStandings dirtyStandings={standings} />}
+        {
+          <div className={classes['standing-container']}>
+            {isLoading && (
+              <div className="centered">
+                <LoadingSpinner />
+              </div>
+            )}{' '}
+            {!isLoading && <FootballStandings dirtyStandings={standings} />}
+          </div>
+        }
       </div>
     </Fragment>
   );

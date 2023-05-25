@@ -11,6 +11,23 @@ body {
   background-color: rgba(8, 8, 5);
   color: white;
   overflow-x: hidden;
+  /* overflow-y: hidden; */
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 50px;
+  background: #a381813e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 code {

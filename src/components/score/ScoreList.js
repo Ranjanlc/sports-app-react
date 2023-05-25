@@ -29,7 +29,12 @@ const ScoreList = (props) => {
   const { pathname: urlPath } = useLocation();
   const { changeCompetition } = props;
   const ctx = useContext(FootballContext);
-  const { matchDetailHandler: setMatchDetailHandler } = ctx;
+  const {
+    matchDetailHandler: setMatchDetailHandler,
+    setStatsHandler,
+    setSummaryHandler,
+    setTableHandler,
+  } = ctx;
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
@@ -130,9 +135,9 @@ const ScoreList = (props) => {
           events {
             matchId matchStatus
             homeTeam {
-              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''} id
             },awayTeam {
-              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''}
+              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''} id
             } 
             startTime homeScore awayScore winnerTeam 
             ${sportName === 'cricket' ? 'note' : ''}
@@ -141,9 +146,9 @@ const ScoreList = (props) => {
         featuredMatch {
             matchId matchStatus 
             homeTeam {
-              name imageUrl
+              name imageUrl id
             },awayTeam {
-              name imageUrl
+              name imageUrl id
             } 
             startTime homeScore awayScore winnerTeam 
         }
@@ -183,9 +188,10 @@ const ScoreList = (props) => {
   };
   const matchClickHandler = (matchDetail) => {
     const { matchStatus, homeTeamName, awayTeamName, matchId } = matchDetail;
+    setStatsHandler([]);
+    setTableHandler([]);
+    setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
     setMatchDetailHandler(matchDetail);
-    const homeSlug = slugMaker(homeTeamName);
-    const awaySlug = slugMaker(awayTeamName);
     if (matchStatus === 'NS') {
       navigate(`/${sportName}/match/${matchId}/lineups`);
       return;
@@ -223,13 +229,16 @@ const ScoreList = (props) => {
             imageUrl: homeImageUrl,
             name: homeTeamName,
             isBatting: homeIsBatting,
+            id: homeTeamId,
           },
           awayTeam: {
             imageUrl: awayImageUrl,
             name: awayTeamName,
             isBatting: awayIsBatting,
+            id: awayTeamId,
           },
         } = event;
+        console.log(event);
         const homeUrl = homeImageUrl.includes(undefined)
           ? dummyLogo
           : homeImageUrl;
@@ -312,6 +321,9 @@ const ScoreList = (props) => {
           winnerTeam,
           displayTime,
           competitionName,
+          competitionId,
+          homeTeamId,
+          awayTeamId,
         };
         return (
           <div
