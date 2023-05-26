@@ -1,11 +1,9 @@
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import FootballContext from '../../store/football-context';
-import { DUMMY_SUMMARY } from '../../helpers/DUMMY';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import classes from './FootballSummary.module.css';
 import FootballIncident from './FootballIncident';
 import Info from '../../assets/info';
-import FootballIcon from '../../assets/football-icon';
 import football from '../../assets/football.png';
 import missedGoal from '../../assets/football-cross.png';
 
@@ -174,9 +172,7 @@ const FootballSummary = (props) => {
             <img src={homeImageUrl} className={classes.logo} />
             <div className={classes['player-container']}>
               <span className={classes.player}>{homePlayer}</span>
-              <span
-                className={classes.score}
-              >{`${homeScore[0]}-${homeScore[1]}`}</span>
+              <span className={classes.score}>{homeScore.join('-')}</span>
             </div>
             <span>{classifyPen(homeIncident)}</span>
           </div>
@@ -186,9 +182,7 @@ const FootballSummary = (props) => {
               <span className={`${classes.player} ${classes['away-player']}`}>
                 {awayPlayer}
               </span>
-              <span
-                className={classes.score}
-              >{`${awayScore[0]}-${awayScore[1]}`}</span>
+              <span className={classes.score}>{awayScore.join('-')}</span>
             </div>
             <img src={awayImageUrl} alt="Away Image" className={classes.logo} />
           </div>

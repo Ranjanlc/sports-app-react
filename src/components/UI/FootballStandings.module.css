@@ -41,7 +41,7 @@ hr {
   justify-content: space-around;
   border-bottom: 1px solid rgba(85, 83, 83, 0.813);
   align-items: center;
-  padding-bottom: 12px;
+  padding: 6px 0;
 }
 .table .team-data__details {
   display: flex;
@@ -66,4 +66,8 @@ hr {
 .team-data span {
   width: 22px;
   text-align: center;
+}
+.highlight {
+  background-color: rgba(193, 40, 228, 0.566);
+  font-weight: 500;
 }

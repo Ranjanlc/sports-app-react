@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { DUMMY_TABLE } from '../../helpers/DUMMY';
 import FootballStandings from '../UI/FootballStandings';
 import classes from './FootballTable.module.css';
 import FootballContext from '../../store/football-context';

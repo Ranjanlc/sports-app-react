@@ -15,6 +15,7 @@ import FootballStats from './components/match/FootballStats';
 // Major-TODO:Make the team page working
 // Major-TODO:Make the matches page working
 // TODO:Refactor all graphql queries into one file,maybe
+// MAjOR___TODO:Make lineups responsive for various sizes
 function App() {
   const [competitionDetail, setCompetitionDetail] = useState(null);
   // const [matchDetail, setMatchDetail] = useState(null);

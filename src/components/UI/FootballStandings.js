@@ -21,6 +21,7 @@ const FootballStandings = (props) => {
     const refinedStandings = dirtyStandings.reduce((acc, curStanding) => {
       const { group } = curStanding;
       // Avoiding unnecessary work if competitionId already exists.
+
       if (acc[group]) {
         acc[group].push(curStanding);
         return acc;
@@ -72,7 +73,14 @@ const FootballStandings = (props) => {
       points,
     } = teamData;
     return (
-      <article className={classes['team-data']} key={teamId}>
+      <article
+        className={`${classes['team-data']} ${
+          teamId === homeTeamId || teamId === awayTeamId
+            ? classes.highlight
+            : ''
+        }`}
+        key={teamId}
+      >
         <div className={classes['team-data__details']}>
           <span className={classes.position}>{position}</span>
           <span className={classes.name}>

@@ -107,7 +107,7 @@
 
 .details-container {
   width: 62%;
-  background-color: #454545;
+  /* background-color: #454545; */
   margin-top: 1.5rem;
   margin-right: 0.8rem;
   height: fit-content;
@@ -119,6 +119,11 @@
   justify-content: space-around;
   /* padding-bottom: 5px; */
   padding-top: 5px;
+  background-color: #5f5c5c38;
+  border-radius: 20px;
+  align-items: center;
+  margin: 0 20px;
+  /* height: 40px; */
   /* border-bottom: 1px ridge white; */
 }
 .link-container a {
@@ -133,7 +138,7 @@ a.active {
   border-bottom: 3px solid rgb(6, 178, 236);
 }
 .details {
-  padding: 0 10px;
+  /* padding: 0 10px; */
   /* height: 580px; */
   margin: 10px 0;
   height: fit-content;

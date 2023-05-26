@@ -34,6 +34,7 @@ const ScoreList = (props) => {
     setStatsHandler,
     setSummaryHandler,
     setTableHandler,
+    setLineupHandler,
   } = ctx;
   // startDate's type is date because that is what accepted by datePicker
   const [startDate, setStartDate] = useState(
@@ -191,6 +192,7 @@ const ScoreList = (props) => {
     setStatsHandler([]);
     setTableHandler([]);
     setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+    setLineupHandler({lineups:[],subs:[]})
     setMatchDetailHandler(matchDetail);
     if (matchStatus === 'NS') {
       navigate(`/${sportName}/match/${matchId}/lineups`);

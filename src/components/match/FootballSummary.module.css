@@ -1,5 +1,7 @@
 .container {
-  height: 530px;
+  height: 70vh;
+  padding: 0 10px;
+  margin-top: 5px;
 }
 
 .fallback {

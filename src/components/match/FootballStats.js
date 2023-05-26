@@ -1,6 +1,5 @@
 import ChartBar from '../UI/ChartBar';
 import classes from './FootballStats.module.css';
-import { DUMMY_STATS } from '../../helpers/DUMMY';
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import FootballContext from '../../store/football-context';
 import Info from '../../assets/info';

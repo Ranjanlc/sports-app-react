@@ -22,7 +22,13 @@ const FootballDetail = (props) => {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const ctx = useContext(FootballContext);
-  const { matchDetailHandler, setSummaryHandler, setStatsHandler ,setTableHandler} = ctx;
+  const {
+    matchDetailHandler,
+    setSummaryHandler,
+    setStatsHandler,
+    setTableHandler,
+    setLineupHandler,
+  } = ctx;
   // const [groupContainer, setGroupContainer] = useState();
   // const [curGroup, setCurGroup] = useState();
   let competitionSet;
@@ -113,6 +119,8 @@ const FootballDetail = (props) => {
     setStatsHandler([]);
     setTableHandler([]);
     setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+    setLineupHandler({ lineups: [], subs: [] });
+
     const { matchStatus, matchId } = matchDetail;
     matchDetailHandler(matchDetail);
     if (matchStatus === 'NS') {

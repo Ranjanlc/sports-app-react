@@ -9,6 +9,8 @@ const FootballContext = createContext({
   setSummaryHandler: () => {},
   tableContainer: [],
   setTableHandler: () => {},
+  lineupContainer: { lineups: [], subs: [] },
+  setLineupHandler: () => {},
 });
 export const FootballContextProvider = (props) => {
   const storedMatchDetail = JSON.parse(localStorage.getItem('matchDetail'));
@@ -19,8 +21,8 @@ export const FootballContextProvider = (props) => {
     secondHalfIncidents: [],
   });
   const [table, setTable] = useState([]);
+  const [lineup, setLineup] = useState({ lineups: [], subs: [] });
   const matchDetailHandler = (matchDetail) => {
-    // console.log(matchDetail);
     localStorage.setItem('matchDetail', JSON.stringify(matchDetail));
     setMatchDetail(matchDetail);
   };
@@ -33,15 +35,20 @@ export const FootballContextProvider = (props) => {
   const setTableHandler = (tableContainer) => {
     setTable(tableContainer);
   };
+  const setLineupHandler = (lineupContainer) => {
+    setLineup(lineupContainer);
+  };
   const matchContainer = {
     matchDetail,
     matchDetailHandler,
-    statsContainer: stats,
-    setStatsHandler,
     summaryContainer: summary,
-    setSummaryHandler,
-    setTableHandler,
+    statsContainer: stats,
+    lineupContainer: lineup,
     tableContainer: table,
+    setSummaryHandler,
+    setStatsHandler,
+    setLineupHandler,
+    setTableHandler,
   };
   return (
     <FootballContext.Provider value={matchContainer}>

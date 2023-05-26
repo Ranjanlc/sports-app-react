@@ -5,7 +5,6 @@ import People from '../../assets/people';
 import Stadium from '../../assets/stadium.svg';
 import Referee from '../../assets/referee.svg';
 import Calendar from '../../assets/calendar.svg';
-import { DUMMY_INFO } from '../../helpers/DUMMY';
 import { NavLink, Outlet } from 'react-router-dom';
 import FootballContext from '../../store/football-context';
 import LoadingSpinner from '../UI/LoadingSpinner';
