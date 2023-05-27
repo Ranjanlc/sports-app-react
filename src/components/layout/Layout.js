@@ -1,9 +1,9 @@
 import { Fragment, useState } from 'react';
 import classes from './Layout.module.css';
-import logo from '../../assets/logo.png';
-import football from '../../assets/layout-football.png';
-import cricket from '../../assets/cricket.png';
-import basketball from '../../assets/basketball.png';
+import logo from '../../assets/layout/logo.png';
+import football from '../../assets/layout/layout-football.png';
+import cricket from '../../assets/layout/cricket.png';
+import basketball from '../../assets/layout/basketball.png';
 import { NavLink, useLocation } from 'react-router-dom';
 const Layout = (props) => {
   const { pathname } = useLocation();

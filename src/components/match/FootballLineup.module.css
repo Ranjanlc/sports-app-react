@@ -4,19 +4,29 @@
   justify-content: center;
   height: 78vh;
   overflow-y: auto;
-  color: rgb(3, 226, 246);
 }
 .lineup-container {
   background-color: rgba(8, 8, 5);
-  /* font-size: small; */
   font-weight: 700;
   /* to maintain aspect ratio */
   width: 759.5px;
 }
-
+.predicted {
+  display: flex;
+  align-items: center;
+  border-radius: 15px;
+  font-size: 1.3rem;
+  font-style: italic;
+  justify-content: center;
+  background-color: rgba(176, 153, 153, 0.103);
+}
+.predicted svg {
+  width: 30px;
+  margin-right: 5px;
+}
 .lineups {
   height: 1260px;
-  background: url('../../assets/pitch.png');
+  background: url('../../assets/matchDetail/pitch.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -28,6 +38,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  color: rgb(3, 226, 246);
   justify-content: space-around;
 }
 .away-lineups {
@@ -36,7 +47,7 @@
   display: flex;
   flex-direction: column-reverse;
   justify-content: space-around;
-  color: rgb(245, 123, 67);
+  color: #ffa500;
 }
 .summary {
   display: flex;

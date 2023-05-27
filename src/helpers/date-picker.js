@@ -15,9 +15,7 @@ const datePicker = (defaultDate) => {
   const thirdDay = convertDay(2);
   const fourthDay = convertDay(3);
   const fifthDay = convertDay(4);
-  // console.log(defaultDate, firstDay);
   return [firstDay, secondDay, thirdDay, fourthDay, fifthDay];
-  //   console.log(new Date(prevDate));
 };
 const monthToDateConverter = (month) => {
   // Using map after a long time :)
@@ -46,7 +44,6 @@ export const apiDateConverter = (date) => {
 };
 export const getTimeZoneOffSet = () => {
   const date = new Date();
-  // console.log(new Date(new Date('2023-02-27 01:45:00').getTime() - 10000000));
   // Get the timezone offset in minutes
   const timezoneOffset = date.getTimezoneOffset();
 

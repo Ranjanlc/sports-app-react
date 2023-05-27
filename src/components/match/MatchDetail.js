@@ -1,10 +1,10 @@
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import classes from './MatchDetail.module.css';
 import { convertToReadableStatus } from '../../helpers/helpers';
-import People from '../../assets/people';
-import Stadium from '../../assets/stadium.svg';
-import Referee from '../../assets/referee.svg';
-import Calendar from '../../assets/calendar.svg';
+import People from '../../assets/matchDetail/people';
+import Stadium from '../../assets/matchDetail/stadium.svg';
+import Referee from '../../assets/matchDetail/referee.svg';
+import Calendar from '../../assets/matchDetail/calendar.svg';
 import { NavLink, Outlet } from 'react-router-dom';
 import FootballContext from '../../store/football-context';
 import LoadingSpinner from '../UI/LoadingSpinner';
@@ -55,14 +55,12 @@ const MatchDetail = () => {
     const {
       data: { getFootballMatchInfo },
     } = await res.json();
-    console.log(getFootballMatchInfo);
     setMatchInfo(getFootballMatchInfo);
     setIsLoading(false);
   }, []);
   useEffect(() => {
     fetchMatchInfo();
   }, [fetchMatchInfo]);
-  // console.log(matchId, winnerTeam);
   const { spectators, refName, refCountry, venue, startDate } = matchInfo;
   return (
     <main className={classes.container}>

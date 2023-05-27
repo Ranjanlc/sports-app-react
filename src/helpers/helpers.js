@@ -27,7 +27,6 @@ export const convertSlugToDisplay = (slug) => {
 };
 
 export const slugMaker = (title) => {
-  console.log(title);
   return title.toLowerCase().split(' ').join('-');
 };
 export const convertToReadableStatus = (status) => {

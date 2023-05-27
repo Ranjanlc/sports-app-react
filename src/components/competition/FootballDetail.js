@@ -88,7 +88,6 @@ const FootballDetail = (props) => {
         getFootballDetails: { matches, standings },
       },
     } = await res.json();
-    console.log(matches, standings);
     setMatches(matches);
     // If there is no matches left.
     if (matches.fixtures.length === 0) {

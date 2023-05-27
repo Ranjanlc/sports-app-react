@@ -97,7 +97,6 @@ const CompetitionDetail = (props) => {
         },
       },
     } = await res.json();
-    console.log(matches, standingSet, hasNextPage);
     setMatches(matches);
     setStandings(standingSet);
     setSeasonId(seasonId);
@@ -148,7 +147,6 @@ const CompetitionDetail = (props) => {
         [sportForMatches]: { matches, hasNextPage },
       },
     } = await res.json();
-    console.log(matches);
     setMatches(matches);
     setNextPage(hasNextPage);
     setIsLoading(false);
@@ -272,10 +270,9 @@ const CompetitionDetail = (props) => {
     ? standings.find((standingData) => standingData.groupName === curGroup)
     : standings?.at(0);
   const curStandings = curStandingSet?.standings;
-  console.log(curStandings);
   //   To check if point data exists.
   const pointExists = curStandings?.at(0).points;
-  //   console.log(pointExists);
+
 
   const standingList = curStandings?.map((teamData) => {
     const {
@@ -313,17 +310,14 @@ const CompetitionDetail = (props) => {
     );
   });
   const previousClickHandler = () => {
-    console.log('execute ta bhacha');
     if (urlState === 'results') {
       setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'fixtures' && page > 0) {
-      console.log(page);
       setPage((previousPage) => --previousPage);
     }
   };
   const nextClickHandler = () => {
-    console.log('yeta click bhooo');
     if (urlState === 'fixtures') {
       setPage((previousPage) => ++previousPage);
     }

@@ -6,16 +6,13 @@ import { Fragment } from 'react';
 import { convertSlugToDisplay } from '../../helpers/helpers';
 const FootballStandings = (props) => {
   const { dirtyStandings, homeTeamId, awayTeamId } = props;
-  console.log(homeTeamId);
   const [standings, setStandings] = useState();
   const [curGroup, setCurGroup] = useState();
   const [groupContainer, setGroupContainer] = useState();
-  console.log(dirtyStandings, standings);
   const groupChangeHandler = (option) => {
     setCurGroup(option);
   };
   //   guard clause for avoiding multiple re-renders
-  // console.log(curGroup);
   if (dirtyStandings[0]?.group && !curGroup) {
     const totalGroups = [];
     const refinedStandings = dirtyStandings.reduce((acc, curStanding) => {
@@ -35,21 +32,17 @@ const FootballStandings = (props) => {
     // For determining starting position for standings in case of standings from match
     const standingsArr = Object.values(refinedStandings);
     let position = 0;
-    console.log(position);
     homeTeamId &&
       standingsArr.forEach((el, i) => {
         // + to convert it to number
         const pos = el.findIndex((team) => {
-          console.log(team.teamId, homeTeamId);
           return team.teamId === homeTeamId;
         });
-        console.log(pos, i);
         if (pos !== -1) {
           // pos just gives the ranking of the team in the table,i gives what is the iteration which gives group number
           position = i;
         }
       });
-    // console.log(position);
     setStandings(refinedStandings);
     setGroupContainer(totalGroups);
     setCurGroup(totalGroups.at(position));

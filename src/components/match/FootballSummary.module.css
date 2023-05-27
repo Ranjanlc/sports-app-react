@@ -77,6 +77,12 @@
   font-style: italic;
   /* justify-content: center; */
 }
+.decider {
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-style: italic;
+  color: rgb(215, 74, 243);
+}
 .penalty-score {
   display: flex;
   align-items: center;

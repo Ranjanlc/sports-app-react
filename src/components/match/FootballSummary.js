@@ -4,8 +4,8 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import classes from './FootballSummary.module.css';
 import FootballIncident from './FootballIncident';
 import Info from '../../assets/info';
-import football from '../../assets/football.png';
-import missedGoal from '../../assets/football-cross.png';
+import football from '../../assets/matchDetail/football.png';
+import missedGoal from '../../assets/matchDetail/football-cross.png';
 
 const FootballSummary = (props) => {
   const URL = 'http://localhost:8080/graphql';
@@ -115,10 +115,11 @@ const FootballSummary = (props) => {
       </div>
     );
   }
+  console.log(firstHalfIncidents, extraTimeIncidents);
   const firstHalfEl = firstHalfIncidents.map((incidentSet, i) => {
     return <FootballIncident incidentSet={incidentSet} key={i} />;
   });
-  const secondHalfEl = secondHalfIncidents.map((incidentSet, i) => (
+  const secondHalfEl = secondHalfIncidents?.map((incidentSet, i) => (
     <FootballIncident incidentSet={incidentSet} key={i} />
   ));
   const extraTimeEl =
@@ -148,6 +149,7 @@ const FootballSummary = (props) => {
   if (penaltyContainer) {
     for (let i = 0; i < penaltyContainer.length; i += 2) {
       const j = i + 1;
+      console.log(penaltyContainer);
       const homeTeam =
         penaltyContainer[i].team === 1
           ? penaltyContainer[i]
@@ -160,32 +162,42 @@ const FootballSummary = (props) => {
         incident: homeIncident,
         playerName: homePlayer,
         score: homeScore,
-      } = homeTeam;
+      } = homeTeam || { incident: '', playerName: '', score: [] }; //To avoid errors
       const {
         incident: awayIncident,
         playerName: awayPlayer,
         score: awayScore,
-      } = awayTeam;
+      } = awayTeam || { incident: '', playerName: '', score: [] };
       const el = (
         <main key={i} className={classes['penalty-card']}>
-          <div className={classes.home}>
-            <img src={homeImageUrl} className={classes.logo} />
-            <div className={classes['player-container']}>
-              <span className={classes.player}>{homePlayer}</span>
-              <span className={classes.score}>{homeScore.join('-')}</span>
+          {!awayTeam ||
+            (!homeTeam && <div className={classes.decider}>Decider:</div>)}
+          {homeTeam && (
+            <div className={classes.home}>
+              <img src={homeImageUrl} className={classes.logo} />
+              <div className={classes['player-container']}>
+                <span className={classes.player}>{homePlayer}</span>
+                <span className={classes.score}>{homeScore.join('-')}</span>
+              </div>
+              <span>{classifyPen(homeIncident)}</span>
             </div>
-            <span>{classifyPen(homeIncident)}</span>
-          </div>
-          <div className={classes.away}>
-            <span>{classifyPen(awayIncident)}</span>
-            <div className={classes['player-container']}>
-              <span className={`${classes.player} ${classes['away-player']}`}>
-                {awayPlayer}
-              </span>
-              <span className={classes.score}>{awayScore.join('-')}</span>
+          )}
+          {awayTeam && (
+            <div className={classes.away}>
+              <span>{classifyPen(awayIncident)}</span>
+              <div className={classes['player-container']}>
+                <span className={`${classes.player} ${classes['away-player']}`}>
+                  {awayPlayer}
+                </span>
+                <span className={classes.score}>{awayScore.join('-')}</span>
+              </div>
+              <img
+                src={awayImageUrl}
+                alt="Away Image"
+                className={classes.logo}
+              />
             </div>
-            <img src={awayImageUrl} alt="Away Image" className={classes.logo} />
-          </div>
+          )}
         </main>
       );
       penaltyEl.push(el);
@@ -205,11 +217,13 @@ const FootballSummary = (props) => {
             <span className={classes.minute}>HT</span>
             {homeHTScore}-{awayHTScore}
           </div>
-          {secondHalfEl}
-          <div className={`${classes.card} ${classes.time} ${classes.full}`}>
-            <span className={classes.minute}>FT</span>
-            {homeFTScore}-{awayFTScore}
-          </div>
+          {secondHalfEl && secondHalfEl}
+          {matchStatus === 'FT' && (
+            <div className={`${classes.card} ${classes.time} ${classes.full}`}>
+              <span className={classes.minute}>FT</span>
+              {homeFTScore}-{awayFTScore}
+            </div>
+          )}
           {extraTimeEl && extraTimeEl}
           {homeScore && (
             <div className={`${classes.card} ${classes.time} ${classes.full}`}>

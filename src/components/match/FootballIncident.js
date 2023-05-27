@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import Card from '../../assets/card';
-import FootballIcon from '../../assets/football-icon';
+import Card from '../../assets/matchDetail/card';
+import FootballIcon from '../../assets/matchDetail/football-icon';
 import classes from './FootballIncident.module.css';
 import FootballContext from '../../store/football-context';
-import Boot from '../../assets/boot-icon';
-import missedGoal from '../../assets/football-cross.png';
-import football from '../../assets/football.png';
+import Boot from '../../assets/matchDetail/boot-icon';
+import missedGoal from '../../assets/matchDetail/football-cross.png';
+import football from '../../assets/matchDetail/football.png';
 // TODO:Design shootout
 const FootballIncident = (props) => {
   const {

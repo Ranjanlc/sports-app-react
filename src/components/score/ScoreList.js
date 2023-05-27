@@ -50,9 +50,7 @@ const ScoreList = (props) => {
   const [isLive, setIsLive] = useState();
   const [dateNotClicked, setDateNotClicked] = useState(true);
   // This two if clauses for loading data when user clicks back button.
-  // console.log(dateId, date, curDay);
   if (!dateId && date !== curDay) {
-    // console.log('nice');
     setDate(curDay);
   }
   if (dateId && dateId !== date) {
@@ -81,7 +79,6 @@ const ScoreList = (props) => {
     const month = date.toLocaleString('default', { month: 'short' });
     const formattedDate = [day, month].join(' ');
     const convertedDate = apiDateConverter(date);
-    // console.log(convertedDate, curDay);
     if (!dateId && convertedDate === curDay && dateNotClicked) {
       return (
         <NavLink
@@ -115,7 +112,6 @@ const ScoreList = (props) => {
   const sportForApi = `get${
     urlPath.includes('live') ? 'Live' : ''
   }${convertSlugToDisplay(sportName)}Matches`;
-  // console.log(date);
   const timeZoneOffsetHour = getTimeZoneOffSet();
   const graphqlQuery = {
     query: `
@@ -145,6 +141,7 @@ const ScoreList = (props) => {
           }
         }
         featuredMatch {
+          event {
             matchId matchStatus 
             homeTeam {
               name imageUrl id
@@ -152,6 +149,7 @@ const ScoreList = (props) => {
               name imageUrl id
             } 
             startTime homeScore awayScore winnerTeam 
+          } competitionName competitionId
         }
       }
          
@@ -170,7 +168,6 @@ const ScoreList = (props) => {
         [sportForApi]: { matches, featuredMatch },
       }, //[] for computed property
     } = await res.json();
-    // console.log(matches, featuredMatch);
     setMatches(matches);
     // IN case we load live matches
     featuredMatch && setFeaturedMatch(featuredMatch);
@@ -192,7 +189,7 @@ const ScoreList = (props) => {
     setStatsHandler([]);
     setTableHandler([]);
     setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    setLineupHandler({lineups:[],subs:[]})
+    setLineupHandler({ lineups: [], subs: [] });
     setMatchDetailHandler(matchDetail);
     if (matchStatus === 'NS') {
       navigate(`/${sportName}/match/${matchId}/lineups`);
@@ -240,14 +237,12 @@ const ScoreList = (props) => {
             id: awayTeamId,
           },
         } = event;
-        console.log(event);
         const homeUrl = homeImageUrl.includes(undefined)
           ? dummyLogo
           : homeImageUrl;
         const awayUrl = awayImageUrl.includes(undefined)
           ? dummyLogo
           : awayImageUrl;
-        // console.log(startTime);
         const { displayTime } =
           sportName === 'football'
             ? convertDateForDisplay(startTime, 'football')
@@ -511,7 +506,10 @@ const ScoreList = (props) => {
               </div>
             )}
             {!isLoading && featuredMatch && (
-              <FeaturedMatch event={featuredMatch} sportName={sportName} />
+              <FeaturedMatch
+                featuredMatchContainer={featuredMatch}
+                sportName={sportName}
+              />
             )}
           </div>
         )}

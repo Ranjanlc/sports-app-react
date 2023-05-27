@@ -1,5 +1,5 @@
-import SubIn from '../../assets/sub-in';
-import SubOut from '../../assets/sub-out';
+import SubIn from '../../assets/matchDetail/sub-in';
+import SubOut from '../../assets/matchDetail/sub-out';
 import classes from './PlayerCircle.module.css';
 const PlayerCircle = ({
   playerNumber,
