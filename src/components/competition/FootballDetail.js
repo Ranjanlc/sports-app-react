@@ -8,9 +8,10 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import Dropdown from '../layout/Dropdown';
 import FootballStandings from '../UI/FootballStandings';
 import FootballContext from '../../store/football-context';
-const FootballDetail = (props) => {
-  const URL = 'http://localhost:8080/graphql';
+import { URL } from '../../helpers/helpers';
+import CompetitionContext from '../../store/competition-context';
 
+const FootballDetail = (props) => {
   const navigate = useNavigate();
   const { loadState } = useParams();
   const { pathname } = useLocation();
@@ -29,20 +30,21 @@ const FootballDetail = (props) => {
     setTableHandler,
     setLineupHandler,
   } = ctx;
+  const { competitionSet } = useContext(CompetitionContext);
   // const [groupContainer, setGroupContainer] = useState();
   // const [curGroup, setCurGroup] = useState();
-  let competitionSet;
+  // let competitionSet;
   // For the case if user reloads the page from FootballDetail page.
-  if (props.competitionSet) {
-    competitionSet = props.competitionSet;
-    localStorage.setItem(
-      'competitionSet',
-      JSON.stringify(props.competitionSet)
-    );
-  }
-  if (!props.competitionSet) {
-    competitionSet = JSON.parse(localStorage.getItem('competitionSet'));
-  }
+  // if (props.competitionSet) {
+  //   competitionSet = props.competitionSet;
+  //   localStorage.setItem(
+  //     'competitionSet',
+  //     JSON.stringify(props.competitionSet)
+  //   );
+  // }
+  // if (!props.competitionSet) {
+  //   competitionSet = JSON.parse(localStorage.getItem('competitionSet'));
+  // }
   const { competitionName, venue, competitionImage, competitionId } =
     competitionSet;
 
@@ -115,10 +117,10 @@ const FootballDetail = (props) => {
     }
   };
   const matchClickHandler = (matchDetail) => {
-    setStatsHandler([]);
-    setTableHandler([]);
-    setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    setLineupHandler({ lineups: [], subs: [] });
+    // setStatsHandler([]);
+    // setTableHandler([]);
+    // setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+    // setLineupHandler({ lineups: [], subs: [] });
 
     const { matchStatus, matchId } = matchDetail;
     matchDetailHandler(matchDetail);

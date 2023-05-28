@@ -1,22 +1,17 @@
 import classes from './CompetitionDetail.module.css';
 import StarJsx from '../../assets/star-jsx';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import dummyLogo from '../../assets/dummy-logo.png';
-import cricketBat from '../../assets/cricket-bat.png';
-import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import {
-  convertSlugToDisplay,
-  refineCricketScores,
-} from '../../helpers/helpers';
+import { URL, convertSlugToDisplay } from '../../helpers/helpers';
 import Dropdown from '../layout/Dropdown';
+import ErrorHandler from '../layout/ErrorHandler';
+import CompetitionContext from '../../store/competition-context';
+import getCompetitionMatches from './getCompMatches';
 const CompetitionDetail = (props) => {
-  const URL = 'http://localhost:8080/graphql';
   const navigate = useNavigate();
   const { loadState, sportName } = useParams();
   const { pathname } = useLocation();
-  const urlState = pathname.split('/').slice(-1).at(0);
   const [matches, setMatches] = useState(null);
   const [matchState, setMatchState] = useState(loadState);
   const [standings, setStandings] = useState();
@@ -26,18 +21,51 @@ const CompetitionDetail = (props) => {
   const [curGroup, setCurGroup] = useState(null);
   const [groupContainer, setGroupContainer] = useState(null);
   const [nextPage, setNextPage] = useState(null);
-  let competitionSet;
-  // For the case if user reloads the page from FootballDetail page.
-  if (props.competitionSet) {
-    competitionSet = props.competitionSet;
-    localStorage.setItem(
-      'competitionSet',
-      JSON.stringify(props.competitionSet)
-    );
-  }
-  if (!props.competitionSet) {
-    competitionSet = JSON.parse(localStorage.getItem('competitionSet'));
-  }
+  const [error, setError] = useState(null);
+  const [loadMatches, setLoadMatches] = useState(false);
+  const [pageChange, setPageChange] = useState(false);
+  const urlState = pathname.split('/').slice(-1).at(0);
+  // THe whole competitionContext thing just to secure fixtures/results data when they dont have focus.
+  const {
+    competitionSet,
+    setFixtureContainerHandler,
+    fixtureContainer,
+    resultContainer,
+    setResultContainerHandler,
+    setCurFixturePage,
+    setCurResultPage,
+    curFixturePage,
+    curResultPage,
+  } = useContext(CompetitionContext);
+  // The useEffect is concerned with persistence of results and fixtures.
+  useEffect(() => {
+    console.log(curResultPage, curFixturePage, page, matchState);
+    if (matchState === 'results') {
+      if (resultContainer.matches) {
+        setMatches(resultContainer.matches);
+        setNextPage(resultContainer.hasNextPage);
+        setPage(curResultPage);
+      } else {
+        setLoadMatches((prevState) => !prevState);
+      }
+    }
+    if (matchState === 'fixtures') {
+      if (fixtureContainer.matches) {
+        setMatches(fixtureContainer.matches);
+        setNextPage(fixtureContainer.hasNextPage);
+        setPage(curFixturePage);
+      } else {
+        setLoadMatches((prevState) => !prevState);
+      }
+    }
+    // fixtureContainer && matchState === 'fixtures'
+    //   ? setMatches(fixtureContainer)
+    //   : setLoadMatches((prevState) => !prevState);
+    // resultContainer && matchState === 'results'
+    //   ? setMatches(resultContainer)
+    //   : setLoadMatches((prevState) => !prevState);
+  }, [matchState]);
+
   const { competitionName, venue, competitionImage, competitionId, uniqueId } =
     competitionSet;
 
@@ -80,43 +108,56 @@ const CompetitionDetail = (props) => {
   };
 
   const fetchCompDetails = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQueryDetails),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: {
-        [sportForDetails]: {
-          matchSet: { matches, hasNextPage },
-          standingSet,
-          seasonId,
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQueryDetails),
+        headers: {
+          'Content-Type': 'application/json',
         },
-      },
-    } = await res.json();
-    setMatches(matches);
-    setStandings(standingSet);
-    setSeasonId(seasonId);
-    setNextPage(hasNextPage);
-    if (standingSet?.length > 1) {
-      const groupSet = standingSet.map((set) => set.groupName);
-      setGroupContainer(groupSet);
-      //   Setting first element to show in first
-      setCurGroup(groupSet[0]);
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data);
+        throw new Error("Sorry Couldn't fetch competition details");
+      }
+      const {
+        data: {
+          [sportForDetails]: {
+            matchSet: { matches, hasNextPage },
+            standingSet,
+            seasonId,
+          },
+        },
+      } = data;
+      matchState === 'fixtures'
+        ? setFixtureContainerHandler({ matches, hasNextPage })
+        : setResultContainerHandler({ matches, hasNextPage });
+      setMatches(matches);
+      setStandings(standingSet);
+      setSeasonId(seasonId);
+      setNextPage(hasNextPage);
+      if (standingSet?.length > 1) {
+        const groupSet = standingSet.map((set) => set.groupName);
+        setGroupContainer(groupSet);
+        //   Setting first element to show in first
+        setCurGroup(groupSet[0]);
+      }
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
     }
-    setIsLoading(false);
   }, []);
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
   const sportForMatches = `get${convertSlugToDisplay(sportName)}CompMatches`;
+  console.log(seasonId);
   const graphqlQueryMatches = {
     query: `
     {
-        ${sportForMatches}(${compOrUniqueId},appSeasonId:${seasonId},page:${page} dateState:"${
+        ${sportForMatches}(${compOrUniqueId},appSeasonId:${seasonId},page:${+page} dateState:"${
       matchState === 'fixtures' ? 'next' : 'last'
     }") {
           matches {
@@ -147,15 +188,16 @@ const CompetitionDetail = (props) => {
         [sportForMatches]: { matches, hasNextPage },
       },
     } = await res.json();
+    matchState === 'fixtures'
+      ? setFixtureContainerHandler({ matches, hasNextPage })
+      : setResultContainerHandler({ matches, hasNextPage });
     setMatches(matches);
     setNextPage(hasNextPage);
     setIsLoading(false);
-  }, [page, urlState]);
+  }, [pageChange, loadMatches, competitionId]);
   useEffect(() => {
     // To prevent initial loading
-    if (matches) {
-      fetchMatchesHandler();
-    }
+    matches && fetchMatchesHandler();
   }, [fetchMatchesHandler]);
   const groupChangeHandler = (option) => {
     setCurGroup(option);
@@ -164,107 +206,20 @@ const CompetitionDetail = (props) => {
     // To replace fixtures/results with results/fixtures resp.
     const baseUrl = pathname.split('/').slice(0, -1).join('/');
     if (state === 'fixtures' && urlState !== 'fixtures') {
-      setPage(0);
+      // setPage(0);
+      setCurResultPage(page);
       setMatchState('fixtures');
       navigate(`${baseUrl}/fixtures`, { replace: true });
     }
     if (state === 'results' && urlState !== 'results') {
-      setPage(0);
+      // setPage(0);
+      setCurFixturePage(page);
       setMatchState('results');
       navigate(`${baseUrl}/results`, { replace: true });
     }
   };
   const events =
-    matches &&
-    matches.map((event) => {
-      const {
-        matchId,
-        matchStatus,
-        startTime,
-        awayScore,
-        homeScore,
-        homeTeam: {
-          imageUrl: homeImageUrl,
-          name: homeTeamName,
-          isBatting: homeIsBatting,
-          id: homeTeamId,
-        },
-        awayTeam: {
-          imageUrl: awayImageUrl,
-          name: awayTeamName,
-          id: awayTeamId,
-          isBatting: awayIsBatting,
-        },
-      } = event;
-      const homeUrl = homeImageUrl.includes('undefined')
-        ? dummyLogo
-        : homeImageUrl;
-      const awayUrl = awayImageUrl.includes('undefined')
-        ? dummyLogo
-        : awayImageUrl;
-      const { displayTime, displayDate } = competitionDateHandler(startTime);
-      const {
-        cricketFormat,
-        homeInnings,
-        awayInnings,
-        totalAwayScore,
-        totalHomeScore,
-      } =
-        sportName === 'cricket'
-          ? refineCricketScores(homeScore, awayScore)
-          : {}; //object coz undefined would produce an error.
-      const displayScore =
-        sportName === 'cricket' && cricketFormat === 'test' ? (
-          <div className={classes.score}>
-            <div className={classes['first-score']}>
-              <span className={classes.innings}>{homeInnings}</span>
-              <span className={classes.total}>{totalHomeScore}</span>
-            </div>
-            <div className={classes['second-score']}>
-              <span className={classes.innings}>{awayInnings}</span>
-              <span className={classes.total}>{totalAwayScore}</span>
-            </div>
-          </div>
-        ) : (
-          // Will reach here either it is one-day-cricket or basketball
-          <div className={classes.score}>
-            <div className={classes['first-score']}>{homeScore}</div>
-            <div className={classes['second-score']}>{awayScore}</div>
-          </div>
-        );
-      return (
-        <div className={classes['match-item']} key={matchId}>
-          <div className={classes.lhs}>
-            <div className={classes['date-container']}>
-              <div className={classes.date}>{displayDate}</div>
-              <div className={classes.time}>
-                {matchState === 'fixtures' ? displayTime : matchStatus}
-              </div>
-            </div>
-            <div className={classes.teams}>
-              <div>
-                <img src={homeUrl} alt="Home" />
-                {homeTeamName}
-                {homeIsBatting && matchStatus !== 'Ended' && (
-                  <img src={cricketBat} className={classes.bat} alt="" />
-                )}
-              </div>
-              <div>
-                <img src={awayUrl} alt="Away" />
-                {awayTeamName}
-                {awayIsBatting && matchStatus !== 'Ended' && (
-                  <img src={cricketBat} className={classes.bat} alt="" />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className={classes.rhs}>
-            {matchState === 'results' && displayScore}
-            <StarJsx />
-          </div>
-        </div>
-      );
-    });
+    matches && getCompetitionMatches(matches, sportName, matchState);
   // TODO:Address the situation when there is no standings or there is a group-wise standings.
   const curStandingSet = groupContainer
     ? standings.find((standingData) => standingData.groupName === curGroup)
@@ -272,7 +227,6 @@ const CompetitionDetail = (props) => {
   const curStandings = curStandingSet?.standings;
   //   To check if point data exists.
   const pointExists = curStandings?.at(0).points;
-
 
   const standingList = curStandings?.map((teamData) => {
     const {
@@ -310,6 +264,7 @@ const CompetitionDetail = (props) => {
     );
   });
   const previousClickHandler = () => {
+    setPageChange((prevVal) => !prevVal);
     if (urlState === 'results') {
       setPage((previousPage) => ++previousPage);
     }
@@ -318,6 +273,7 @@ const CompetitionDetail = (props) => {
     }
   };
   const nextClickHandler = () => {
+    setPageChange((prevVal) => !prevVal);
     if (urlState === 'fixtures') {
       setPage((previousPage) => ++previousPage);
     }
@@ -340,85 +296,94 @@ const CompetitionDetail = (props) => {
           <StarJsx />
         </div>
       </div>
-      <nav className={classes.navigation}>
-        <div className={classes['navigation--matches']}>
-          <span>Matches</span>
-        </div>
-        <div className={classes.standings}>Standings</div>
-      </nav>
-      <div className={classes['container']}>
-        <div className={classes['matches-container']}>
-          {/* <hr /> */}
-          <div className={classes['state-container']}>
-            <div
-              className={`${classes.state} ${
-                urlState === 'fixtures' && classes.active
-              }`}
-              onClick={matchStateChangeHandler.bind(null, 'fixtures')}
-            >
-              Fixtures
+      {error && <ErrorHandler message={error} />}
+      {!error && (
+        <Fragment>
+          <nav className={classes.navigation}>
+            <div className={classes['navigation--matches']}>
+              <span>Matches</span>
             </div>
-            <div
-              className={`${classes.state} ${
-                urlState === 'results' && classes.active
-              }`}
-              onClick={matchStateChangeHandler.bind(null, 'results')}
-            >
-              Results
-            </div>
-          </div>
-          <div className={classes.switch}>
-            {nextPage && urlState === 'results' && (
-              <span onClick={previousClickHandler}> &#8592;Previous</span>
-            )}
-            {urlState === 'fixtures' && page > 0 && (
-              <span onClick={previousClickHandler}> &#8592;Previous</span>
-            )}
-            {urlState === 'results' && page > 0 && (
-              <span onClick={nextClickHandler}> Next&#8594;</span>
-            )}
-            {nextPage && urlState === 'fixtures' && (
-              <span onClick={nextClickHandler}> Next&#8594;</span>
-            )}
-          </div>
-          {isLoading && (
-            <div className="centered">
-              <LoadingSpinner />
-            </div>
-          )}
-          {!isLoading && <Fragment>{events}</Fragment>}
-        </div>
-        <div className={classes.table}>
-          {groupContainer && (!isLoading || standings) && (
-            <Dropdown
-              optionSet={groupContainer}
-              groupChangeHandler={groupChangeHandler}
-            />
-          )}
-          {isLoading && !standings && (
-            <div className="centered">
-              <LoadingSpinner />
-            </div>
-          )}
-          {(!isLoading || standings) && (
-            <Fragment>
-              <header className={classes.header}>
-                <div className={classes['team-details']}>
-                  <span>#</span>
-                  <span className={classes['header-name']}>Team</span>
+            <div className={classes.standings}>Standings</div>
+          </nav>
+          <div className={classes['container']}>
+            <div className={classes['matches-container']}>
+              {/* <hr /> */}
+              <div className={classes['state-container']}>
+                <div
+                  className={`${classes.state} ${
+                    urlState === 'fixtures' && classes.active
+                  }`}
+                  onClick={matchStateChangeHandler.bind(null, 'fixtures')}
+                >
+                  Fixtures
                 </div>
-                <span>P</span>
-                <span>W</span>
-                <span>L</span>
-                {sportName === 'cricket' ? <span>NRR</span> : <span>PCT</span>}
-                {pointExists && <span>Pts</span>}
-              </header>
-              <hr />
-              {standingList}
-            </Fragment>
-          )}
-        </div>
-      </div>
+                <div
+                  className={`${classes.state} ${
+                    urlState === 'results' && classes.active
+                  }`}
+                  onClick={matchStateChangeHandler.bind(null, 'results')}
+                >
+                  Results
+                </div>
+              </div>
+              <div className={classes.switch}>
+                {nextPage && urlState === 'results' && (
+                  <span onClick={previousClickHandler}> &#8592;Previous</span>
+                )}
+                {urlState === 'fixtures' && page > 0 && (
+                  <span onClick={previousClickHandler}> &#8592;Previous</span>
+                )}
+                {urlState === 'results' && page > 0 && (
+                  <span onClick={nextClickHandler}> Next&#8594;</span>
+                )}
+                {nextPage && urlState === 'fixtures' && (
+                  <span onClick={nextClickHandler}> Next&#8594;</span>
+                )}
+              </div>
+              {isLoading && (
+                <div className="centered">
+                  <LoadingSpinner />
+                </div>
+              )}
+              {!isLoading && <Fragment>{events}</Fragment>}
+            </div>
+            <div className={classes.table}>
+              {groupContainer && (!isLoading || standings) && (
+                <Dropdown
+                  optionSet={groupContainer}
+                  groupChangeHandler={groupChangeHandler}
+                />
+              )}
+              {isLoading && !standings && (
+                <div className="centered">
+                  <LoadingSpinner />
+                </div>
+              )}
+              {(!isLoading || standings) && (
+                <Fragment>
+                  <header className={classes.header}>
+                    <div className={classes['team-details']}>
+                      <span>#</span>
+                      <span className={classes['header-name']}>Team</span>
+                    </div>
+                    <span>P</span>
+                    <span>W</span>
+                    <span>L</span>
+                    {sportName === 'cricket' ? (
+                      <span>NRR</span>
+                    ) : (
+                      <span>PCT</span>
+                    )}
+                    {pointExists && <span>Pts</span>}
+                  </header>
+                  <hr />
+                  {standingList}
+                </Fragment>
+              )}
+            </div>
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   );
 };

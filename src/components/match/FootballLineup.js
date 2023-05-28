@@ -6,10 +6,10 @@ import SubOut from '../../assets/matchDetail/sub-out';
 import SubIn from '../../assets/matchDetail/sub-in';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import Info from '../../assets/info';
+import { URL } from '../../helpers/helpers';
 const FootballLineup = (props) => {
   //   const { subs, lineups } = DUMMY_LINEUPS;
   const [isLoading, setIsLoading] = useState(false);
-  const URL = 'http://localhost:8080/graphql';
   const {
     matchDetail: {
       homeImageUrl,
@@ -66,8 +66,8 @@ const FootballLineup = (props) => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    lineupContainer.lineups.length === 0 && fetchMatchLineup();
-  }, [fetchMatchLineup]);
+    fetchMatchLineup();
+  }, [matchId]);
 
   const { lineups, subs } = lineupContainer;
   console.log(lineupContainer);

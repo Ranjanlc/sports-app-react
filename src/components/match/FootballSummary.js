@@ -6,10 +6,9 @@ import FootballIncident from './FootballIncident';
 import Info from '../../assets/info';
 import football from '../../assets/matchDetail/football.png';
 import missedGoal from '../../assets/matchDetail/football-cross.png';
+import { URL } from '../../helpers/helpers';
 
 const FootballSummary = (props) => {
-  const URL = 'http://localhost:8080/graphql';
-
   const ctx = useContext(FootballContext);
   const [isLoading, setIsLoading] = useState(false);
   // const [penaltyContainer, setPenaltyContainer] = useState(null);
@@ -104,10 +103,8 @@ const FootballSummary = (props) => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    matchStatus !== 'NS' &&
-      firstHalfIncidents.length === 0 &&
-      fetchMatchSummary();
-  }, [fetchMatchSummary]);
+    matchStatus !== 'NS' && fetchMatchSummary();
+  }, [matchId]);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>

@@ -3,8 +3,8 @@ import FootballStandings from '../UI/FootballStandings';
 import classes from './FootballTable.module.css';
 import FootballContext from '../../store/football-context';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import { URL } from '../../helpers/helpers';
 const FootballTable = (props) => {
-  const URL = 'http://localhost:8080/graphql';
   const [isLoading, setIsLoading] = useState(false);
   const {
     matchDetail: { competitionId, homeTeamId, awayTeamId },
@@ -49,8 +49,8 @@ const FootballTable = (props) => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    tableContainer.length === 0 && fetchMatchTable();
-  }, [fetchMatchTable]);
+    fetchMatchTable();
+  }, [competitionId]);
   return (
     <div
       className={tableContainer[0]?.group ? classes.group : classes.container}

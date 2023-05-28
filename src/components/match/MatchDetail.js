@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import classes from './MatchDetail.module.css';
-import { convertToReadableStatus } from '../../helpers/helpers';
+import { URL, convertToReadableStatus } from '../../helpers/helpers';
 import People from '../../assets/matchDetail/people';
 import Stadium from '../../assets/matchDetail/stadium.svg';
 import Referee from '../../assets/matchDetail/referee.svg';
@@ -13,7 +13,6 @@ const MatchDetail = () => {
   const ctx = useContext(FootballContext);
   const [matchInfo, setMatchInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const URL = 'http://localhost:8080/graphql';
   const {
     matchDetail: {
       matchStatus,
@@ -60,7 +59,7 @@ const MatchDetail = () => {
   }, []);
   useEffect(() => {
     fetchMatchInfo();
-  }, [fetchMatchInfo]);
+  }, [matchId]);
   const { spectators, refName, refCountry, venue, startDate } = matchInfo;
   return (
     <main className={classes.container}>

@@ -1,3 +1,5 @@
+export const URL = 'http://localhost:8080/graphql';
+
 export const refineCricketScores = (homeScore, awayScore) => {
   const splittedHomeScore = homeScore !== 'Yet to bat' && homeScore?.split(' ');
   const splittedAwayScore = awayScore !== 'Yet to bat' && awayScore?.split(' ');

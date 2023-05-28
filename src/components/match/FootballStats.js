@@ -4,8 +4,8 @@ import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import FootballContext from '../../store/football-context';
 import Info from '../../assets/info';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import { URL } from '../../helpers/helpers';
 const FootballStats = () => {
-  const URL = 'http://localhost:8080/graphql';
   const [isLoading, setIsLoading] = useState(false);
   const ctx = useContext(FootballContext);
   const {
@@ -46,10 +46,8 @@ const FootballStats = () => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    if (matchStatus !== 'NS' && statsContainer.length === 0) {
-      fetchStatsHandler();
-    }
-  }, [fetchStatsHandler]);
+    matchStatus !== 'NS' && fetchStatsHandler();
+  }, [matchId]);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>

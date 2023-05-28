@@ -14,18 +14,13 @@ import FootballStats from './components/match/FootballStats';
 // Major-TODO:Make the site responsive
 // Major-TODO:Make the team page working
 // Major-TODO:Make the matches page working
-// TODO:Refactor all graphql queries into one file,maybe
 // MAjOR___TODO:Make lineups responsive for various sizes
+// QLI_TODO:Add a send report button while showing error and send the report to database with the path where the error happened.
 // TODO:Maybe handle errrors.
+// TODO:Make graphql variable passing blending with the convention
+// TODO:Refactor matchClickHandler
+// MAJOR-TODO:When fetching fixtures,if its not available which is the case of finished tournaments,just load standings and results but dont load Error component.It is for competitionDetail,set similar for footballDetail too.
 function App() {
-  const [competitionDetail, setCompetitionDetail] = useState(null);
-  // const [matchDetail, setMatchDetail] = useState(null);
-  const changeCompetition = (competitionSet) => {
-    setCompetitionDetail(competitionSet);
-  };
-  // const matchDetailHandler = (matchDetail) => {
-  //   setMatchDetail(matchDetail);
-  // };
   return (
     <Layout>
       <Routes>
@@ -33,20 +28,16 @@ function App() {
         <Route path="/" element={<Navigate to={'football'} replace />} />
         {['/:sportName', '/:sportName/live', '/:sportName/:dateId'].map(
           (path, id) => (
-            <Route
-              path={path}
-              element={<ScoreList changeCompetition={changeCompetition} />}
-              key={id}
-            />
+            <Route path={path} element={<ScoreList />} key={id} />
           )
         )}
         <Route
           path="/football/:compName/:loadState"
-          element={<FootballDetail competitionSet={competitionDetail} />}
+          element={<FootballDetail />}
         ></Route>
         <Route
           path="/:sportName/:compName/:loadState"
-          element={<CompetitionDetail competitionSet={competitionDetail} />}
+          element={<CompetitionDetail />}
         ></Route>
         <Route path="/football/match/:matchId" element={<MatchDetail />}>
           <Route path="summary" element={<FootballSummary />}></Route>

@@ -30,10 +30,10 @@ const FeaturedMatch = (props) => {
   //   TODO:Handle the case when test scores are shown in the featured match
   const matchClickHandler = (matchDetail) => {
     const { matchStatus, matchId } = matchDetail;
-    setStatsHandler([]);
-    setTableHandler([]);
-    setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    setLineupHandler({ lineups: [], subs: [] });
+    // setStatsHandler([]);
+    // setTableHandler([]);
+    // setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+    // setLineupHandler({ lineups: [], subs: [] });
     setMatchDetailHandler(matchDetail);
     if (matchStatus === 'NS') {
       navigate(`/${sportName}/match/${matchId}/lineups`);

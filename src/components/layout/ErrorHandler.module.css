@@ -1,0 +1,10 @@
+.message {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 2rem;
+  color: red;
+  font-weight: 700;
+  font-size: 2rem;
+  padding: 3rem;
+  background-color: rgba(67, 61, 61, 0.53);
+}
