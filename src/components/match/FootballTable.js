@@ -4,8 +4,11 @@ import classes from './FootballTable.module.css';
 import FootballContext from '../../store/football-context';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { URL } from '../../helpers/helpers';
+import ErrorHandler from '../layout/ErrorHandler';
+
 const FootballTable = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const {
     matchDetail: { competitionId, homeTeamId, awayTeamId },
     tableContainer,
@@ -36,19 +39,30 @@ const FootballTable = (props) => {
     },
   };
   const fetchMatchTable = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: { getFootballMatchTable },
-    } = await res.json();
-    setTableHandler(getFootballMatchTable);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error('Unable to fetch table');
+      }
+      const data = await res.json();
+      if (data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
+      const {
+        data: { getFootballMatchTable },
+      } = data;
+      setTableHandler(getFootballMatchTable);
+      setIsLoading(false);
+    } catch (err) {
+      setIsError(err.message);
+    }
   }, []);
   useEffect(() => {
     tableContainer.length === 0 && fetchMatchTable();
@@ -57,7 +71,8 @@ const FootballTable = (props) => {
     <div
       className={tableContainer[0]?.group ? classes.group : classes.container}
     >
-      {isLoading && (
+      {isError && <ErrorHandler message={isError} />}
+      {isLoading && !isError && (
         <div className="centered">
           <LoadingSpinner />
         </div>

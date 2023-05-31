@@ -7,10 +7,12 @@ import Info from '../../assets/info';
 import football from '../../assets/matchDetail/football.png';
 import missedGoal from '../../assets/matchDetail/football-cross.png';
 import { URL } from '../../helpers/helpers';
+import ErrorHandler from '../layout/ErrorHandler';
 
 const FootballSummary = (props) => {
   const ctx = useContext(FootballContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   // const [penaltyContainer, setPenaltyContainer] = useState(null);
   const {
     matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },
@@ -89,20 +91,31 @@ const FootballSummary = (props) => {
     },
   };
   const fetchMatchSummary = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: { getFootballMatchSummary },
-    } = await res.json();
-    console.log(getFootballMatchSummary);
-    setSummaryHandler(getFootballMatchSummary);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error('Unable to fetch match summary');
+      }
+      const data = await res.json();
+      if (data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
+      const {
+        data: { getFootballMatchSummary },
+      } = data;
+      console.log(getFootballMatchSummary);
+      setSummaryHandler(getFootballMatchSummary);
+      setIsLoading(false);
+    } catch (err) {
+      setIsError(err.message);
+    }
   }, []);
   useEffect(() => {
     matchStatus !== 'NS' &&
@@ -206,7 +219,8 @@ const FootballSummary = (props) => {
   }
   return (
     <Fragment>
-      {isLoading && (
+      {isError && <ErrorHandler message={isError} />}
+      {isLoading && !isError && (
         <div className="centered">
           <LoadingSpinner />
         </div>

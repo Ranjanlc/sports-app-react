@@ -8,11 +8,13 @@ import Calendar from '../../assets/matchDetail/calendar.svg';
 import { NavLink, Outlet } from 'react-router-dom';
 import FootballContext from '../../store/football-context';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import ErrorHandler from '../layout/ErrorHandler';
 // import Stadium from '../../assets/stadium';
 const MatchDetail = () => {
   const ctx = useContext(FootballContext);
   const [matchInfo, setMatchInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const {
     matchDetail: {
       matchStatus,
@@ -45,19 +47,28 @@ const MatchDetail = () => {
     },
   };
   const fetchMatchInfo = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: { getFootballMatchInfo },
-    } = await res.json();
-    setMatchInfo(getFootballMatchInfo);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error('Cant fetch details');
+      }
+      const data = await res.json();
+      if (data.errors) throw new Error(data.errors.at(0).message);
+      const {
+        data: { getFootballMatchInfo },
+      } = data;
+      setMatchInfo(getFootballMatchInfo);
+      setIsLoading(false);
+    } catch (err) {
+      setIsError(err.message);
+    }
   }, []);
   useEffect(() => {
     fetchMatchInfo();
@@ -65,7 +76,8 @@ const MatchDetail = () => {
   const { spectators, refName, refCountry, venue, startDate } = matchInfo;
   return (
     <main className={classes.container}>
-      {isLoading && (
+      {isError && <ErrorHandler message={isError} />}
+      {isLoading && !isError && (
         <div className="centered">
           <LoadingSpinner />
         </div>

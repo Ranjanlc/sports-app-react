@@ -21,6 +21,7 @@ import Info from '../../assets/info';
 import FootballContext from '../../store/football-context';
 import getMatchList from './getMatchList';
 import CompetitionContext from '../../store/competition-context';
+import ErrorHandler from '../layout/ErrorHandler';
 const ScoreList = (props) => {
   const navigate = useNavigate();
   const { dateId, sportName } = useParams();
@@ -171,30 +172,36 @@ const ScoreList = (props) => {
   };
   const fetchMatches = useCallback(async () => {
     try {
+      // For the situation where either livescore or sofascore is used up and user switches to another sport.
+      setErrorMsg(null);
       setIsLoading(true);
       const res = await fetch(URL, {
         method: 'POST',
         body: JSON.stringify(graphqlQuery),
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(res);
+      // console.log(await res.json());
       if (!res.ok) {
         throw new Error("Sorry, Can't fetch matches rn.");
       }
+      const data = await res.json();
+      console.log(data);
+      if (data.errors) throw new Error(data.errors[0].message);
       const {
         data: {
           getMatchesList: { matches, featuredMatch },
         }, //[] for computed property
-      } = await res.json();
+      } = data;
+      // console.log(matches, featuredMatch);
       setMatches(matches);
       // IN case we load live matches
       featuredMatch && setFeaturedMatch(featuredMatch);
       setIsLoading(false);
     } catch (err) {
-      setErrorMsg(err);
+      setErrorMsg(err.message);
     }
     //We send another request whenever date changes.
-  }, [sportName, date, isLive, graphqlQuery]);
+  }, [sportName, date, isLive]);
   useEffect(() => {
     fetchMatches();
   }, [fetchMatches]);
@@ -234,7 +241,7 @@ const ScoreList = (props) => {
       setTableHandler,
       navigate
     );
-
+  console.log(competitionSet);
   return (
     <Fragment>
       <ul className={classes.date}>
@@ -262,7 +269,7 @@ const ScoreList = (props) => {
           />
         </li>
       </ul>
-      {!isLoading && !errorMsg && (matches?.length === 0 || !matches) && (
+      {!isLoading && (matches?.length === 0 || !matches) && (
         <div className={classes.fallback}>
           <Info /> There are no live matches as of now.
         </div>
@@ -274,23 +281,23 @@ const ScoreList = (props) => {
             : classes.container
         }
       >
-        {errorMsg && <div>{errorMsg}</div>}
+        {errorMsg && <ErrorHandler message={errorMsg} />}
         <div className={classes['match-list']}>
           {isLoading && !errorMsg && (
             <div className="centered">
               <LoadingSpinner />
             </div>
           )}
-          {!isLoading && !errorMsg && <Fragment>{competitionSet}</Fragment>}
+          {!isLoading && <Fragment>{competitionSet}</Fragment>}
         </div>
-        {!urlPath.includes('live') && (
+        {!urlPath.includes('live') && !errorMsg && (
           <div className={classes.featured}>
             {isLoading && (
               <div className="centered">
                 <LoadingSpinner />
               </div>
             )}
-            {!isLoading && !errorMsg && featuredMatch && (
+            {!isLoading && featuredMatch && (
               <FeaturedMatch
                 featuredMatchContainer={featuredMatch}
                 sportName={sportName}

@@ -7,9 +7,11 @@ import SubIn from '../../assets/matchDetail/sub-in';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import Info from '../../assets/info';
 import { URL } from '../../helpers/helpers';
+import ErrorHandler from '../layout/ErrorHandler';
 const FootballLineup = (props) => {
   //   const { subs, lineups } = DUMMY_LINEUPS;
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const {
     matchDetail: {
       homeImageUrl,
@@ -55,20 +57,32 @@ const FootballLineup = (props) => {
   };
 
   const fetchMatchLineup = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: { getFootballMatchLineup },
-    } = await res.json();
-    console.log(getFootballMatchLineup);
-    setLineupHandler(getFootballMatchLineup);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error("Can't fetch lineups");
+      }
+      const data = await res.json();
+      if (data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
+      const {
+        data: { getFootballMatchLineup },
+      } = data;
+      console.log(getFootballMatchLineup);
+      setLineupHandler(getFootballMatchLineup);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err.message);
+      setIsError(err.message);
+    }
   }, []);
   useEffect(() => {
     lineups.length === 0 && fetchMatchLineup();
@@ -200,7 +214,8 @@ const FootballLineup = (props) => {
 
   return (
     <Fragment>
-      {isLoading && (
+      {isError && <ErrorHandler message={isError} />}
+      {isLoading && !isError && (
         <div className="centered">
           <LoadingSpinner />
         </div>

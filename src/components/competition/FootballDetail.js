@@ -8,6 +8,7 @@ import FootballContext from '../../store/football-context';
 import { URL, matchClickHandler } from '../../helpers/helpers';
 import CompetitionContext from '../../store/competition-context';
 import { getFootballMatches } from './getCompMatches';
+import ErrorHandler from '../layout/ErrorHandler';
 
 const FootballDetail = (props) => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const FootballDetail = (props) => {
   const [matchState, setMatchState] = useState(loadState);
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(null);
   const ctx = useContext(FootballContext);
   const {
     matchDetailHandler,
@@ -79,27 +81,38 @@ const FootballDetail = (props) => {
     },
   };
   const fetchCompDetails = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: {
-        getFootballDetails: { matches, standings },
-      },
-    } = await res.json();
-    setMatches(matches);
-    // If there is no matches left.
-    if (matches.fixtures.length === 0) {
-      navigate(`${baseUrl}/results`, { replace: true });
-      setMatchState('results');
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error('Cant fetch competition details');
+      }
+      const data = await res.json();
+      if (data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
+      const {
+        data: {
+          getFootballDetails: { matches, standings },
+        },
+      } = data;
+      setMatches(matches);
+      // If there is no matches left.
+      if (matches.fixtures.length === 0) {
+        navigate(`${baseUrl}/results`, { replace: true });
+        setMatchState('results');
+      }
+      setStandings(standings);
+      setIsLoading(false);
+    } catch (err) {
+      setIsError(err.message);
     }
-    setStandings(standings);
-    setIsLoading(false);
   }, []);
   useEffect(() => {
     fetchCompDetails();
@@ -136,68 +149,73 @@ const FootballDetail = (props) => {
     );
   return (
     <Fragment>
-      <div className={classes['title-container']}>
-        <span className={classes.arrow} onClick={backClickHandler}>
-          &#8592;
-        </span>
-        <div className={classes.name}>
-          <img src={competitionImage} alt="Flag" />
-          <div className={classes.title}>
-            <span className={classes.competition}>{competitionName}</span>
-            <span className={classes.country}>{venue}</span>
-          </div>
-          <StarJsx />
-        </div>
-      </div>
-      <nav className={classes.navigation}>
-        <div className={classes['navigation--matches']}>
-          <span>Matches</span>
-        </div>
-        <div className={classes.standings}>Standings</div>
-      </nav>
-      <div className={classes['container']}>
-        <div className={classes['matches-container']}>
-          {/* <hr /> */}
-          <div className={classes['state-container']}>
-            {matches?.fixtures.length !== 0 && (
-              <div
-                className={`${classes.state} ${
-                  urlState === 'fixtures' && classes.active
-                }`}
-                onClick={matchStateChangeHandler.bind(null, 'fixtures')}
-              >
-                Fixtures
+      {isError && <ErrorHandler message={isError} />}
+      {!isError && (
+        <Fragment>
+          <div className={classes['title-container']}>
+            <span className={classes.arrow} onClick={backClickHandler}>
+              &#8592;
+            </span>
+            <div className={classes.name}>
+              <img src={competitionImage} alt="Flag" />
+              <div className={classes.title}>
+                <span className={classes.competition}>{competitionName}</span>
+                <span className={classes.country}>{venue}</span>
               </div>
-            )}
-            {matches?.results.length !== 0 && (
-              <div
-                className={`${classes.state} ${
-                  urlState === 'results' && classes.active
-                }`}
-                onClick={matchStateChangeHandler.bind(null, 'results')}
-              >
-                Results
-              </div>
-            )}
-          </div>
-          {isLoading && (
-            <div className="centered">
-              <LoadingSpinner />
+              <StarJsx />
             </div>
-          )}
-          {!isLoading && <Fragment>{events}</Fragment>}
-        </div>
-        {
-          <div className={classes['standing-container']}>
-            {isLoading && (
-              <div className="centered">
-                <LoadingSpinner />
-              </div>
-            )}{' '}
-            {!isLoading && <FootballStandings dirtyStandings={standings} />}
           </div>
-        }
-      </div>
+          <nav className={classes.navigation}>
+            <div className={classes['navigation--matches']}>
+              <span>Matches</span>
+            </div>
+            <div className={classes.standings}>Standings</div>
+          </nav>
+          <div className={classes['container']}>
+            <div className={classes['matches-container']}>
+              {/* <hr /> */}
+              <div className={classes['state-container']}>
+                {matches?.fixtures.length !== 0 && (
+                  <div
+                    className={`${classes.state} ${
+                      urlState === 'fixtures' && classes.active
+                    }`}
+                    onClick={matchStateChangeHandler.bind(null, 'fixtures')}
+                  >
+                    Fixtures
+                  </div>
+                )}
+                {matches?.results.length !== 0 && (
+                  <div
+                    className={`${classes.state} ${
+                      urlState === 'results' && classes.active
+                    }`}
+                    onClick={matchStateChangeHandler.bind(null, 'results')}
+                  >
+                    Results
+                  </div>
+                )}
+              </div>
+              {isLoading && (
+                <div className="centered">
+                  <LoadingSpinner />
+                </div>
+              )}
+              {!isLoading && <Fragment>{events}</Fragment>}
+            </div>
+            {
+              <div className={classes['standing-container']}>
+                {isLoading && (
+                  <div className="centered">
+                    <LoadingSpinner />
+                  </div>
+                )}{' '}
+                {!isLoading && <FootballStandings dirtyStandings={standings} />}
+              </div>
+            }
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   );
 };

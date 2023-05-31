@@ -5,8 +5,10 @@ import FootballContext from '../../store/football-context';
 import Info from '../../assets/info';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { URL } from '../../helpers/helpers';
+import ErrorHandler from '../layout/ErrorHandler';
 const FootballStats = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const ctx = useContext(FootballContext);
   const {
     matchDetail: {
@@ -34,19 +36,30 @@ const FootballStats = () => {
     },
   };
   const fetchStatsHandler = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const {
-      data: { getFootballMatchStats },
-    } = await res.json();
-    setStatsHandler(getFootballMatchStats);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error('Unable to fetch stats');
+      }
+      const data = await res.json();
+      if (data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
+      const {
+        data: { getFootballMatchStats },
+      } = data;
+      setStatsHandler(getFootballMatchStats);
+      setIsLoading(false);
+    } catch (err) {
+      setIsError(err.message);
+    }
   }, []);
   useEffect(() => {
     // || to ensure that it loads for first time and persists
@@ -61,7 +74,8 @@ const FootballStats = () => {
   }
   return (
     <Fragment>
-      {isLoading && (
+      {isError && <ErrorHandler message={isError} />}
+      {isLoading && !isError && (
         <div className="centered">
           <LoadingSpinner />
         </div>
