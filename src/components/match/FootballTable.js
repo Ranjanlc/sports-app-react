@@ -13,8 +13,8 @@ const FootballTable = (props) => {
   } = useContext(FootballContext);
   const graphqlQuery = {
     query: `
-  {
-    getFootballMatchTable(compId: ${competitionId}) {
+  query FootballTable($competitionId:ID!){
+    getFootballMatchTable(compId:$competitionId) {
       group
       teamId
       teamImageUrl
@@ -30,8 +30,10 @@ const FootballTable = (props) => {
       played
     }
   }
-  
   `,
+    variables: {
+      competitionId,
+    },
   };
   const fetchMatchTable = useCallback(async () => {
     setIsLoading(true);
@@ -49,7 +51,7 @@ const FootballTable = (props) => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    fetchMatchTable();
+    tableContainer.length === 0 && fetchMatchTable();
   }, [competitionId]);
   return (
     <div

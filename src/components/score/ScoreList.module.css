@@ -4,6 +4,7 @@
   justify-content: space-around;
   border: 0.5px solid rgba(255, 255, 255, 0.42);
   margin: 0;
+  width: 100%;
   /* width: 900px; */
   /* max-height: 27px;
   min-height: 26px; */
@@ -13,15 +14,25 @@
   color: inherit;
   cursor: pointer;
   font-weight: 600;
+  display: flex;
+
   /* min-height: 27px;
   max-height: 27px; */
   /* margin-bottom: 0; */
+}
+a span {
+  margin-right: 4px;
 }
 .date-picker {
   width: 125px;
   cursor: pointer;
   text-align: center;
   /* margin-right: 50px; */
+}
+ul .date-container {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
 }
 
 /* .date-picker {
@@ -47,6 +58,9 @@
 }
 .match-list {
   width: 50%;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
   /* background-color: black; */
 }
 .fallback {
@@ -79,4 +93,43 @@
 }
 .date .active {
   color: orangered;
+}
+
+@media (max-width: 680px) {
+  .date {
+    align-items: center;
+    font-size: smaller;
+    justify-content: space-between;
+    padding: 0;
+  }
+  .date a {
+    font-size: smaller;
+    margin: 0 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  ul .date-container {
+    width: 60%;
+  }
+  .date-picker {
+    padding: 0;
+    margin: 0;
+    width: 70px;
+  }
+  .icon {
+    width: 1.5rem;
+    height: 1rem;
+  }
+  .featured {
+    display: none;
+  }
+  .match-list {
+    width: 100%;
+    font-size: smaller;
+  }
+  .match-list img {
+    width: 1.5rem;
+    height: 1rem;
+  }
 }

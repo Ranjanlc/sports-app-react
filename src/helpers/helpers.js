@@ -4,9 +4,9 @@ export const refineCricketScores = (homeScore, awayScore) => {
   const splittedHomeScore = homeScore !== 'Yet to bat' && homeScore?.split(' ');
   const splittedAwayScore = awayScore !== 'Yet to bat' && awayScore?.split(' ');
   if (splittedHomeScore?.length === 3 || splittedAwayScore?.length === 3) {
-    const homeInnings = splittedHomeScore?.slice(0, 2).join(' ');
+    const homeInnings = splittedHomeScore?.slice(0, 2).join('');
     const totalHomeScore = splittedHomeScore?.at(2);
-    const awayInnings = splittedAwayScore?.slice(0, 2).join(' ');
+    const awayInnings = splittedAwayScore?.slice(0, 2).join('');
     const totalAwayScore = splittedAwayScore?.at(2);
     return {
       cricketFormat: 'test',
@@ -39,4 +39,26 @@ export const convertToReadableStatus = (status) => {
     ['NS', 'Yet to Start'],
   ]);
   return statusMap.get(status);
+};
+export const matchClickHandler = (
+  matchDetail,
+  matchDetailHandler,
+  setSummaryHandler,
+  setStatsHandler,
+  setLineupHandler,
+  setTableHandler,
+  navigate
+) => {
+  setStatsHandler([]);
+  setTableHandler([]);
+  console.log(setSummaryHandler);
+  setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
+  setLineupHandler({ lineups: [], subs: [] });
+  const { matchStatus, matchId } = matchDetail;
+  matchDetailHandler(matchDetail);
+  if (matchStatus === 'NS') {
+    navigate(`/football/match/${matchId}/lineups`);
+    return;
+  }
+  navigate(`/football/match/${matchId}/summary`);
 };

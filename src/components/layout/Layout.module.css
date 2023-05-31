@@ -37,6 +37,9 @@
   text-decoration: none;
   margin-right: 2rem;
   padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .action {
@@ -49,4 +52,39 @@
   color: #555555;
   /* text-decoration: dashed; */
   border-bottom: 5px solid rgb(28, 185, 220);
+}
+@media (max-width: 680px) {
+  .navigation {
+    /* margin: 0.5rem auto; */
+    /* margin-bottom: 1rem; */
+    padding: 0;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    /* max-height: 52px; */
+    border-radius: 10px;
+    top: -0.5px;
+    font-size: smaller;
+  }
+  .list {
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .list a {
+    margin: 0;
+    padding: 0.2rem;
+    font-size: smaller;
+  }
+  .list .logo {
+    margin-right: 0.2rem;
+    width: 3rem;
+    height: 2rem;
+  }
+  .list img {
+    width: 1.2rem;
+  }
 }

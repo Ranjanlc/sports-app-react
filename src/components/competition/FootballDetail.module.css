@@ -110,13 +110,6 @@
   display: flex;
   align-items: center;
 }
-.cricket-time {
-  min-width: 38px;
-  text-align: center;
-  /* transform: scale(1, 0.9); */
-  color: rgb(208, 208, 208);
-  margin-left: 0.5rem;
-}
 .date-container {
   min-width: 49px;
   /* max-width: 49px; */
@@ -129,12 +122,6 @@
 }
 .date-container .date {
   margin-bottom: 10px;
-}
-.basketball-time {
-  min-width: 80px;
-  text-align: center;
-  transform: scale(1, 0.9);
-  color: rgb(208, 208, 208);
 }
 .teams {
   margin-left: 10px;
@@ -182,4 +169,20 @@
 .standing-container {
   width: 50%;
   margin-right: 20px;
+}
+@media (max-width: 900px) {
+  .container {
+    display: block;
+  }
+  .matches-container {
+    width: 100%;
+    margin-left: 0;
+    /* margin: 1rem 0.5rem; */
+  }
+  .standing-container {
+    display: none;
+  }
+  .standings {
+    display: none;
+  }
 }

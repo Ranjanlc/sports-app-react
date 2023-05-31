@@ -32,8 +32,8 @@ const FootballSummary = (props) => {
   } = ctx;
   const graphqlQuery = {
     query: `
-    {
-      getFootballMatchSummary(matchId: ${matchId}) {
+    query FootballSummary($matchId:ID!){
+      getFootballMatchSummary(matchId:$matchId) {
         homeFTScore
         awayHTScore
         homeHTScore
@@ -83,8 +83,10 @@ const FootballSummary = (props) => {
         }
       }
     }
-    
     `,
+    variables: {
+      matchId,
+    },
   };
   const fetchMatchSummary = useCallback(async () => {
     setIsLoading(true);
@@ -103,8 +105,10 @@ const FootballSummary = (props) => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    matchStatus !== 'NS' && fetchMatchSummary();
-  }, [matchId]);
+    matchStatus !== 'NS' &&
+      firstHalfIncidents.length === 0 &&
+      fetchMatchSummary();
+  }, []);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>

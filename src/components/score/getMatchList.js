@@ -9,8 +9,14 @@ import classes from './getMatchList.module.css';
 const getMatchList = (
   matches,
   sportName,
+  competitionClickHandler,
   matchClickHandler,
-  competitionClickHandler
+  matchDetailHandler,
+  setSummaryHandler,
+  setStatsHandler,
+  setLineupHandler,
+  setTableHandler,
+  navigate
 ) => {
   const matchList = matches.map((competition) => {
     const {
@@ -130,7 +136,16 @@ const getMatchList = (
         <div
           className={classes['match-container']}
           key={matchId}
-          onClick={matchClickHandler.bind(null, matchDetail)}
+          onClick={matchClickHandler.bind(
+            null,
+            matchDetail,
+            matchDetailHandler,
+            setSummaryHandler,
+            setStatsHandler,
+            setLineupHandler,
+            setTableHandler,
+            navigate
+          )}
         >
           <div className={classes['match-item']}>
             <div className={classes.lhs}>
@@ -217,7 +232,7 @@ const getMatchList = (
                   matchStatus === 'Abandoned'
                 ) &&
                 cricketScore}
-              <img src={favourites} alt="star" />
+              <img src={favourites} alt="star" className={classes.star} />
             </div>
           </div>
           {event.note && <div className={classes.note}>{event.note}</div>}

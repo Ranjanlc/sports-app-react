@@ -80,31 +80,55 @@ const CompetitionDetail = (props) => {
       : `uniqueId:${competitionId}`;
   const graphqlQueryDetails = {
     query: `
-    {
-        ${sportForDetails}(${compOrUniqueId},dateState:"${
-      matchState === 'fixtures' ? 'next' : 'last'
-    }") {
-            matchSet {
-                matches {
-                    homeTeam {
-                    name imageUrl id 
-                    }
-                    awayTeam {
-                        name imageUrl id
-                    } matchId matchStatus startTime ${
-                      sportName === 'cricket' ? 'note' : ''
-                    } awayScore homeScore winnerTeam
-                } hasNextPage 
-            } seasonId
-            standingSet {
-                groupName
-                standings {
-                name teamId teamImageUrl position played wins losses points
-                ${sportName === 'basketball' ? 'percentage' : 'netRunRate'}
-              }       
+    query CompDetail($dateState: String!,$competitionId:ID,$uniqueId:ID!, $isCricket: Boolean!) {
+      getCompetitionDetails(compId:$competitionId,uniqueId:$uniqueId, dateState: $dateState,isCricket:$isCricket) {
+        matchSet {
+          matches {
+            homeTeam {
+              name
+              imageUrl
+              id
             }
-       }
+            awayTeam {
+              name
+              imageUrl
+              id
+            }
+            matchId
+            matchStatus
+            startTime
+            note @include(if: $isCricket)
+            awayScore
+            homeScore
+            winnerTeam
+          }
+          hasNextPage
+        }
+        seasonId
+        standingSet {
+          groupName
+          standings {
+            name
+            teamId
+            teamImageUrl
+            position
+            played
+            wins
+            losses
+            points
+            percentage @skip(if:$isCricket)
+            netRunRate @include(if:$isCricket)
+          }
+        }
+      }
     }`,
+    variables: {
+      dateState: matchState === 'fixtures' ? 'next' : 'last',
+      isCricket: sportName === 'cricket',
+      // It is done because while storing id of basketball competition,we only fetch uniqueId and set it in competitionId.
+      uniqueId: sportName === 'cricket' ? uniqueId : competitionId,
+      competitionId: sportName === 'cricket' ? competitionId : null,
+    },
   };
 
   const fetchCompDetails = useCallback(async () => {
@@ -124,7 +148,7 @@ const CompetitionDetail = (props) => {
       }
       const {
         data: {
-          [sportForDetails]: {
+          getCompetitionDetails: {
             matchSet: { matches, hasNextPage },
             standingSet,
             seasonId,
@@ -156,23 +180,28 @@ const CompetitionDetail = (props) => {
   console.log(seasonId);
   const graphqlQueryMatches = {
     query: `
-    {
-        ${sportForMatches}(${compOrUniqueId},appSeasonId:${seasonId},page:${+page} dateState:"${
-      matchState === 'fixtures' ? 'next' : 'last'
-    }") {
+     query FetchCompMatches($dateState:String!,$seasonId:ID!,$page:Int,$uniqueId:ID!,$isCricket:Boolean!){
+        getCompMatches(uniqueId:$uniqueId,appSeasonId:$seasonId,page:$page,dateState:$dateState,isCricket:$isCricket) {
           matches {
               homeTeam {
               name imageUrl id
               }
               awayTeam {
                   name imageUrl id
-              } matchId matchStatus startTime homeScore awayScore winnerTeam ${
-                sportName === 'cricket' ? 'note' : ''
-              }
+              } matchId matchStatus startTime homeScore awayScore winnerTeam 
+              note @include(if: $isCricket)
           } hasNextPage
         } 
        
     }`,
+    variables: {
+      dateState: matchState === 'fixtures' ? 'next' : 'last',
+      isCricket: sportName === 'cricket',
+      page: +page,
+      seasonId,
+      // It is done because while storing id of basketball competition,we only fetch uniqueId and set it in competitionId.
+      uniqueId: sportName === 'cricket' ? uniqueId : competitionId,
+    },
   };
   const fetchMatchesHandler = useCallback(async () => {
     setIsLoading(true);
@@ -185,7 +214,7 @@ const CompetitionDetail = (props) => {
     });
     const {
       data: {
-        [sportForMatches]: { matches, hasNextPage },
+        getCompMatches: { matches, hasNextPage },
       },
     } = await res.json();
     matchState === 'fixtures'

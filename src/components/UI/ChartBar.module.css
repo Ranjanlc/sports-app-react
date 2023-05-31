@@ -52,3 +52,12 @@
   color: white;
   min-width: 71px;
 }
+@media (max-width: 600px) {
+  .chart-bar__label {
+    font-size: small;
+    margin: 0rem 0.1rem;
+  }
+  .chart-bar__inner {
+    height: 10px;
+  }
+}

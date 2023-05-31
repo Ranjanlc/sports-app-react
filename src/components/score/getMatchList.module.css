@@ -103,7 +103,7 @@
 }
 .teams div {
   display: flex;
-  /* align-items: center; */
+  align-items: center;
   /* justify-content: center; */
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
@@ -111,8 +111,43 @@
 }
 .rhs {
   display: flex;
+  align-items: center;
+}
+.match-item .star {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
 }
 .loser {
   color: #808080;
   font-weight: 600;
+}
+
+@media (max-width: 680px) {
+  .match-container {
+    font-size: smaller;
+  }
+  .lhs {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .lhs .time {
+    margin: 0;
+    /* margin-left: 2px; */
+    min-width: 14%;
+  }
+  .lhs .teams {
+    margin: 0;
+    width: 80%;
+  }
+  .rhs .score {
+    text-align: right;
+    margin: 0;
+  }
+  .match-item .star {
+    margin: 0;
+    margin-left: 6px;
+    padding-right: 0;
+  }
 }

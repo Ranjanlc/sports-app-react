@@ -163,3 +163,39 @@ a.active {
 .details::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+@media (max-width: 1000px) and (min-width: 650px) {
+  .container {
+    display: block;
+    margin: 0 2rem;
+  }
+  .match-container {
+    width: 100%;
+  }
+  .details-container {
+    width: 100%;
+  }
+  .lineup {
+    display: none;
+  }
+}
+@media (max-width: 650px) {
+  .container {
+    display: block;
+    font-size: small;
+  }
+  .match-container {
+    width: 100%;
+  }
+  .lineup {
+    display: none;
+  }
+  .details-container {
+    width: 100%;
+  }
+}
+@media (max-width: 320px) {
+  .table {
+    display: none;
+  }
+}

@@ -30,8 +30,8 @@ const MatchDetail = () => {
   } = ctx;
   const graphqlQuery = {
     query: `
-    {
-      getFootballMatchInfo(matchId: ${matchId}) {
+    query FootballInfo($matchId:ID!){
+      getFootballMatchInfo(matchId: $matchId) {
         venue
         refName
         refCountry
@@ -39,8 +39,10 @@ const MatchDetail = () => {
         startDate
       }
     }
-    
   `,
+    variables: {
+      matchId,
+    },
   };
   const fetchMatchInfo = useCallback(async () => {
     setIsLoading(true);
@@ -59,7 +61,7 @@ const MatchDetail = () => {
   }, []);
   useEffect(() => {
     fetchMatchInfo();
-  }, [matchId]);
+  }, [fetchMatchInfo]);
   const { spectators, refName, refCountry, venue, startDate } = matchInfo;
   return (
     <main className={classes.container}>
@@ -127,7 +129,7 @@ const MatchDetail = () => {
                 {startDate}
               </span>
               <span>
-                <img src={Stadium} /> {venue}
+                <img src={Stadium} alt="stadium" /> {venue}
               </span>
             </div>
             <div>
@@ -137,10 +139,12 @@ const MatchDetail = () => {
                   {spectators}
                 </span>
               )}
-              <span>
-                <img src={Referee} alt="Ref" />
-                {refName}({refCountry})
-              </span>
+              {refName && (
+                <span>
+                  <img src={Referee} alt="Ref" />
+                  {refName}({refCountry})
+                </span>
+              )}
             </div>
           </main>
         </section>
@@ -164,14 +168,18 @@ const MatchDetail = () => {
           <NavLink
             to="lineups"
             replace
-            className={({ isActive }) => (isActive ? classes.active : '')}
+            className={({ isActive }) =>
+              isActive ? `${classes.lineup} ${classes.active}` : classes.lineup
+            }
           >
             Lineups
           </NavLink>
           <NavLink
             to="table"
             replace
-            className={({ isActive }) => (isActive ? classes.active : '')}
+            className={({ isActive }) =>
+              isActive ? `${classes.active} ${classes.table}` : classes.table
+            }
           >
             Table
           </NavLink>

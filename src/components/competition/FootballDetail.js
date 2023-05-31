@@ -2,14 +2,12 @@ import classes from './FootballDetail.module.css';
 import StarJsx from '../../assets/star-jsx';
 import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import dummyLogo from '../../assets/dummy-logo.png';
-import { competitionDateHandler } from '../../helpers/date-picker';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import Dropdown from '../layout/Dropdown';
 import FootballStandings from '../UI/FootballStandings';
 import FootballContext from '../../store/football-context';
-import { URL } from '../../helpers/helpers';
+import { URL, matchClickHandler } from '../../helpers/helpers';
 import CompetitionContext from '../../store/competition-context';
+import { getFootballMatches } from './getCompMatches';
 
 const FootballDetail = (props) => {
   const navigate = useNavigate();
@@ -53,12 +51,12 @@ const FootballDetail = (props) => {
   };
   const graphqlQuery = {
     query: `
-      {
-        getFootballDetails(compId:${+competitionId}) {
+      query FootballDetails($competitionId: Int!) {
+        getFootballDetails(compId:$competitionId) {
           matches {
             fixtures {
                matchId homeTeam {
-                name imageUrl id
+               name imageUrl id
                 } awayTeam {
                   name imageUrl id
                 }startTime matchStatus homeScore awayScore winnerTeam 
@@ -74,7 +72,11 @@ const FootballDetail = (props) => {
             position name group teamId teamImageUrl played wins draws loses GF GA GD points
             }
         }
-      }`,
+      }
+    `,
+    variables: {
+      competitionId: +competitionId,
+    },
   };
   const fetchCompDetails = useCallback(async () => {
     setIsLoading(true);
@@ -116,101 +118,22 @@ const FootballDetail = (props) => {
       navigate(`${baseUrl}/results`, { replace: true });
     }
   };
-  const matchClickHandler = (matchDetail) => {
-    // setStatsHandler([]);
-    // setTableHandler([]);
-    // setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    // setLineupHandler({ lineups: [], subs: [] });
 
-    const { matchStatus, matchId } = matchDetail;
-    matchDetailHandler(matchDetail);
-    if (matchStatus === 'NS') {
-      navigate(`/football/match/${matchId}/lineups`);
-      return;
-    }
-    navigate(`/football/match/${matchId}/summary`);
-  };
   const events =
     matches &&
-    matches[matchState].map((event) => {
-      const {
-        matchId,
-        matchStatus,
-        startTime,
-        awayScore,
-        homeScore,
-        homeTeam: {
-          imageUrl: homeImageUrl,
-          name: homeTeamName,
-          id: homeTeamId,
-        },
-        awayTeam: {
-          imageUrl: awayImageUrl,
-          name: awayTeamName,
-          id: awayTeamId,
-        },
-        winnerTeam,
-      } = event;
-      const homeUrl = homeImageUrl.includes(undefined)
-        ? dummyLogo
-        : homeImageUrl;
-      const awayUrl = awayImageUrl.includes(undefined)
-        ? dummyLogo
-        : awayImageUrl;
-      const { displayTime, displayDate } = competitionDateHandler(startTime);
-      const matchDetail = {
-        matchId,
-        matchStatus,
-        homeTeamName,
-        awayTeamName,
-        homeImageUrl,
-        awayImageUrl,
-        homeScore,
-        awayScore,
-        winnerTeam,
-        displayTime,
-        competitionName,
-        competitionId,
-        homeTeamId,
-        awayTeamId,
-      };
-      return (
-        <div
-          className={classes['match-item']}
-          key={matchId}
-          onClick={matchClickHandler.bind(null, matchDetail)}
-        >
-          <div className={classes.lhs}>
-            <div className={classes['date-container']}>
-              <div className={classes.date}>{displayDate}</div>
-              <div className={classes.time}>
-                {matchState === 'fixtures' ? displayTime : matchStatus}
-              </div>
-            </div>
-            <div className={classes.teams}>
-              <div>
-                <img src={homeUrl} alt="Home" />
-                {homeTeamName}
-              </div>
-              <div>
-                <img src={awayUrl} alt="Away" />
-                {awayTeamName}
-              </div>
-            </div>
-          </div>
-          <div className={classes.rhs}>
-            {matchState === 'results' && (
-              <div className={classes.score}>
-                <div className={classes['first-score']}>{homeScore}</div>
-                <div className={classes['second-score']}>{awayScore}</div>
-              </div>
-            )}
-            <StarJsx />
-          </div>
-        </div>
-      );
-    });
-
+    getFootballMatches(
+      matches,
+      matchState,
+      competitionId,
+      competitionName,
+      matchClickHandler,
+      matchDetailHandler,
+      setSummaryHandler,
+      setStatsHandler,
+      setLineupHandler,
+      setTableHandler,
+      navigate
+    );
   return (
     <Fragment>
       <div className={classes['title-container']}>

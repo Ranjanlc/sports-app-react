@@ -71,3 +71,12 @@ hr {
   background-color: rgba(193, 40, 228, 0.566);
   font-weight: 500;
 }
+
+@media (max-width: 500px) {
+  .header .header-name {
+    width: 100px;
+  }
+  .table .name {
+    width: 100px;
+  }
+}

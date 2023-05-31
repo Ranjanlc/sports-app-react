@@ -22,13 +22,16 @@ const FootballStats = () => {
   } = ctx;
   const graphqlQuery = {
     query: `
-    {
-      getFootballMatchStats(matchId: ${matchId}) {
+    query FootballStats($matchId:ID!){
+      getFootballMatchStats(matchId:$matchId) {
         stat
         home
         away
       }
     }`,
+    variables: {
+      matchId,
+    },
   };
   const fetchStatsHandler = useCallback(async () => {
     setIsLoading(true);
@@ -46,8 +49,9 @@ const FootballStats = () => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    matchStatus !== 'NS' && fetchStatsHandler();
-  }, [matchId]);
+    // || to ensure that it loads for first time and persists
+    matchStatus !== 'NS' && statsContainer.length === 0 && fetchStatsHandler();
+  }, []);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>
@@ -80,7 +84,7 @@ const FootballStats = () => {
               const capitalizedStat =
                 stat.slice(0, 1).toUpperCase() + stat.slice(1);
               const totalMaximum = home + away;
-              if (totalMaximum === 0) return <Fragment></Fragment>;
+              if (totalMaximum === 0) return <Fragment key={stat}></Fragment>;
               return (
                 <ChartBar
                   key={stat}

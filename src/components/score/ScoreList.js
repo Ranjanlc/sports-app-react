@@ -11,7 +11,12 @@ import liveicon from '../../assets/liveicon.png';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import FeaturedMatch from './FeaturedMatch';
-import { URL, convertSlugToDisplay, slugMaker } from '../../helpers/helpers';
+import {
+  URL,
+  convertSlugToDisplay,
+  matchClickHandler,
+  slugMaker,
+} from '../../helpers/helpers';
 import Info from '../../assets/info';
 import FootballContext from '../../store/football-context';
 import getMatchList from './getMatchList';
@@ -23,7 +28,7 @@ const ScoreList = (props) => {
   // const { changeCompetition } = props;
   const ctx = useContext(FootballContext);
   const {
-    matchDetailHandler: setMatchDetailHandler,
+    matchDetailHandler,
     setStatsHandler,
     setSummaryHandler,
     setTableHandler,
@@ -49,6 +54,7 @@ const ScoreList = (props) => {
   // For initial rendering of active class on todays date.
   const [isLive, setIsLive] = useState();
   const [dateNotClicked, setDateNotClicked] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
   // This two if clauses for loading data when user clicks back button.
   if (!dateId && date !== curDay) {
     setDate(curDay);
@@ -77,7 +83,6 @@ const ScoreList = (props) => {
   const dateList = dateContainer?.map((date) => {
     const day = date.getDate();
     const month = date.toLocaleString('default', { month: 'short' });
-    const formattedDate = [day, month].join(' ');
     const convertedDate = apiDateConverter(date);
     if (!dateId && convertedDate === curDay && dateNotClicked) {
       return (
@@ -94,7 +99,9 @@ const ScoreList = (props) => {
           onClick={changeStateHandler.bind(null, convertedDate)}
           to={`/${sportName}/${convertedDate}`}
         >
-          {formattedDate}
+          <span>{day}</span>
+          <span>{month}</span>
+          {/* {formattedDate} */}
         </NavLink>
       );
     }
@@ -105,39 +112,39 @@ const ScoreList = (props) => {
         onClick={changeStateHandler.bind(null, convertedDate)}
         to={`/${sportName}/${convertedDate}`}
       >
-        {formattedDate}
+        <span>{day}</span>
+        <span>{month}</span>
+        {/* {formattedDate} */}
       </NavLink>
     );
   });
-  const sportForApi = `get${
-    urlPath.includes('live') ? 'Live' : ''
-  }${convertSlugToDisplay(sportName)}Matches`;
   const timeZoneOffsetHour = getTimeZoneOffSet();
+  // `(date:"${date}"${
+  //   sportName === 'football'
+  //     ? `,timeZoneDiff:"${timeZoneOffsetHour}")`
+  //     : ')'
+  // }`
   const graphqlQuery = {
     query: `
-     {
-      ${sportForApi}${
-      urlPath.includes('live')
-        ? ''
-        : `(date:"${date}"${
-            sportName === 'football'
-              ? `,timeZoneDiff:"${timeZoneOffsetHour}")`
-              : ')'
-          }`
-    }{
+     query FetchScoreList($isLive:Boolean!,$date:String!,$timeZoneDiff:String,$isCricket:Boolean!,$sportName:String!){
+      getMatchesList(date:$date,timeZoneDiff:$timeZoneDiff,sportName:$sportName,isLive:$isLive,isCricket:$isCricket)
+      {
         matches {
-          competitionId competitionName competitionImage venue ${
-            sportName === 'cricket' ? 'uniqueId' : ''
-          }
+          competitionId competitionName competitionImage venue 
+          uniqueId @include (if:$isCricket)
           events {
             matchId matchStatus
             homeTeam {
-              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''} id
+              name imageUrl
+              id
+              isBatting @include(if:$isCricket)
             },awayTeam {
-              name imageUrl ${sportName === 'cricket' ? 'isBatting' : ''} id
+              name imageUrl
+              id
+              isBatting @include(if:$isCricket) 
             } 
             startTime homeScore awayScore winnerTeam 
-            ${sportName === 'cricket' ? 'note' : ''}
+            note @include(if:$isCricket)
           }
         }
         featuredMatch {
@@ -151,29 +158,43 @@ const ScoreList = (props) => {
             startTime homeScore awayScore winnerTeam 
           } competitionName competitionId
         }
-      }
-         
+      }     
     }
      `,
+    variables: {
+      isCricket: sportName === 'cricket',
+      sportName,
+      isLive: urlPath.includes('live'),
+      date,
+      timeZoneDiff: timeZoneOffsetHour,
+    },
   };
   const fetchMatches = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const {
-      data: {
-        [sportForApi]: { matches, featuredMatch },
-      }, //[] for computed property
-    } = await res.json();
-    setMatches(matches);
-    // IN case we load live matches
-    featuredMatch && setFeaturedMatch(featuredMatch);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const res = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify(graphqlQuery),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log(res);
+      if (!res.ok) {
+        throw new Error("Sorry, Can't fetch matches rn.");
+      }
+      const {
+        data: {
+          getMatchesList: { matches, featuredMatch },
+        }, //[] for computed property
+      } = await res.json();
+      setMatches(matches);
+      // IN case we load live matches
+      featuredMatch && setFeaturedMatch(featuredMatch);
+      setIsLoading(false);
+    } catch (err) {
+      setErrorMsg(err);
+    }
     //We send another request whenever date changes.
-  }, [sportName, date, isLive]);
+  }, [sportName, date, isLive, graphqlQuery]);
   useEffect(() => {
     fetchMatches();
   }, [fetchMatches]);
@@ -198,27 +219,20 @@ const ScoreList = (props) => {
     setCompetitionHandler(compDetails);
     navigate(`/${sportName}/${compSlug}/fixtures`);
   };
-  const matchClickHandler = (matchDetail) => {
-    const { matchStatus, homeTeamName, awayTeamName, matchId } = matchDetail;
-    // setStatsHandler([]);
-    // setTableHandler([]);
-    // setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    // setLineupHandler({ lineups: [], subs: [] });
-    setMatchDetailHandler(matchDetail);
-    if (matchStatus === 'NS') {
-      navigate(`/${sportName}/match/${matchId}/lineups`);
-      return;
-    }
-    navigate(`/${sportName}/match/${matchId}/summary`);
-  };
 
   const competitionSet =
     matches?.length >= 1 &&
     getMatchList(
       matches,
       sportName,
+      competitionClickHandler,
       matchClickHandler,
-      competitionClickHandler
+      matchDetailHandler,
+      setSummaryHandler,
+      setStatsHandler,
+      setLineupHandler,
+      setTableHandler,
+      navigate
     );
 
   return (
@@ -229,10 +243,11 @@ const ScoreList = (props) => {
           src={liveicon}
           className={classes.icon}
           onClick={liveClickHandler}
+          alt="Live icon"
         />
         {/* </NavLink> */}
-        {dateList}
-        <li>
+        <li className={classes['date-container']}>{dateList}</li>
+        <li className={classes['date-picker__container']}>
           <DatePicker
             // Conditional selector to display placeHolder text on initial loading
             selected={dateId ? startDate : null}
@@ -247,7 +262,7 @@ const ScoreList = (props) => {
           />
         </li>
       </ul>
-      {!isLoading && (matches?.length === 0 || !matches) && (
+      {!isLoading && !errorMsg && (matches?.length === 0 || !matches) && (
         <div className={classes.fallback}>
           <Info /> There are no live matches as of now.
         </div>
@@ -259,13 +274,14 @@ const ScoreList = (props) => {
             : classes.container
         }
       >
+        {errorMsg && <div>{errorMsg}</div>}
         <div className={classes['match-list']}>
-          {isLoading && (
+          {isLoading && !errorMsg && (
             <div className="centered">
               <LoadingSpinner />
             </div>
           )}
-          {!isLoading && <Fragment>{competitionSet}</Fragment>}
+          {!isLoading && !errorMsg && <Fragment>{competitionSet}</Fragment>}
         </div>
         {!urlPath.includes('live') && (
           <div className={classes.featured}>
@@ -274,7 +290,7 @@ const ScoreList = (props) => {
                 <LoadingSpinner />
               </div>
             )}
-            {!isLoading && featuredMatch && (
+            {!isLoading && !errorMsg && featuredMatch && (
               <FeaturedMatch
                 featuredMatchContainer={featuredMatch}
                 sportName={sportName}

@@ -33,6 +33,9 @@ img {
   font-weight: normal;
   color: rgba(255, 255, 255, 0.689);
 }
+.away-assister {
+  justify-content: flex-end;
+}
 /* .away {
     display: flex;
     justify-content: flex-end;
@@ -109,4 +112,25 @@ img {
   font-style: italic;
   font-size: medium;
   font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  img {
+    width: 15px;
+  }
+  .card svg {
+    margin: 0 2px;
+    width: 15px;
+  }
+  .right-goal .center {
+    flex: 0.5;
+    min-width: 30px;
+    /* display: flex;
+    align-items: center;
+    justify-content: flex-end; */
+  }
+  .player {
+    min-width: 0;
+    /* flex: 0.5; */
+  }
 }

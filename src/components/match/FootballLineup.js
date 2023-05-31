@@ -22,10 +22,11 @@ const FootballLineup = (props) => {
     setLineupHandler,
     lineupContainer,
   } = useContext(FootballContext);
+  const { lineups, subs } = lineupContainer;
   const graphqlQuery = {
     query: `
-  {
-    getFootballMatchLineup(matchId: ${matchId}) {
+  query FootballLineup($matchId:ID!){
+    getFootballMatchLineup(matchId:$matchId) {
       lineups {
         team
         coach
@@ -48,6 +49,9 @@ const FootballLineup = (props) => {
     }
   }
   `,
+    variables: {
+      matchId,
+    },
   };
 
   const fetchMatchLineup = useCallback(async () => {
@@ -62,24 +66,18 @@ const FootballLineup = (props) => {
     const {
       data: { getFootballMatchLineup },
     } = await res.json();
+    console.log(getFootballMatchLineup);
     setLineupHandler(getFootballMatchLineup);
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    fetchMatchLineup();
-  }, [matchId]);
+    lineups.length === 0 && fetchMatchLineup();
+  }, []);
 
-  const { lineups, subs } = lineupContainer;
-  console.log(lineupContainer);
-  const { players: homePlayers, coach: homeCoach } =
-    lineups.length !== 0
-      ? lineups.find((el) => el.team === 1)
-      : { players: '', coach: '' };
-  const { players: awayPlayers, coach: awayCoach } =
-    lineups.length !== 0
-      ? lineups.find((el) => el.team === 2)
-      : { players: '', coach: '' };
-  //   TODO:While refining player names,take length of word into the account in the case of 3 or 4 player names.
+  const { players: homePlayers = '', coach: homeCoach = '' } =
+    lineups.find((el) => el.team === 1) || {};
+  const { players: awayPlayers = '', coach: awayCoach = '' } =
+    lineups.find((el) => el.team === 2) || {};
   const lineupReducer = (playerSet) => {
     const reducedLineup = playerSet.reduce((acc, curPlayer) => {
       const { playerId, playerName, playerNumber, formatPosition } = curPlayer;
@@ -123,7 +121,10 @@ const FootballLineup = (props) => {
         );
       });
       return (
-        <div className={classes.position} key={i}>
+        <div
+          className={` ${classes['away-position']} ${classes.position}`}
+          key={i}
+        >
           {playerEl}
         </div>
       );
@@ -164,14 +165,13 @@ const FootballLineup = (props) => {
     lineups.length !== 0 &&
     matchStatus !== 'NS' &&
     getIndvSubEl(awayLineupObj.subs, true);
-
   const subsEl =
     subs &&
     Object.values(subs)
       .flat()
       .map((subContainer) => {
         const {
-          minute,
+          minute = '23',
           team,
           subOutPlayerName,
           subInPlayerName,
@@ -205,7 +205,14 @@ const FootballLineup = (props) => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && (
+      {/* Case where there is no predicted lineups */}
+      {!isLoading && lineups[0]?.players?.length === 0 && (
+        <div className={classes.predicted}>
+          <Info />
+          No predicted lineups yet
+        </div>
+      )}
+      {!isLoading && lineups[0]?.players?.length !== 0 && (
         <article className={classes.container}>
           <main className={classes['lineup-container']}>
             {!isLoading && matchStatus === 'NS' && (

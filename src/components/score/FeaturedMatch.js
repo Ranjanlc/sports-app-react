@@ -3,10 +3,11 @@ import classes from './FeaturedMatch.module.css';
 import { convertDateForDisplay } from '../../helpers/date-picker';
 import FootballContext from '../../store/football-context';
 import { useNavigate } from 'react-router-dom';
+import { matchClickHandler } from '../../helpers/helpers';
 const FeaturedMatch = (props) => {
   const { featuredMatchContainer, sportName } = props;
   const {
-    matchDetailHandler: setMatchDetailHandler,
+    matchDetailHandler,
     setStatsHandler,
     setSummaryHandler,
     setLineupHandler,
@@ -28,19 +29,6 @@ const FeaturedMatch = (props) => {
     competitionName,
   } = featuredMatchContainer;
   //   TODO:Handle the case when test scores are shown in the featured match
-  const matchClickHandler = (matchDetail) => {
-    const { matchStatus, matchId } = matchDetail;
-    // setStatsHandler([]);
-    // setTableHandler([]);
-    // setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-    // setLineupHandler({ lineups: [], subs: [] });
-    setMatchDetailHandler(matchDetail);
-    if (matchStatus === 'NS') {
-      navigate(`/${sportName}/match/${matchId}/lineups`);
-      return;
-    }
-    navigate(`/${sportName}/match/${matchId}/summary`);
-  };
   const { displayTime } = convertDateForDisplay(startTime, sportName);
   const matchDetail = {
     matchId,
@@ -63,7 +51,16 @@ const FeaturedMatch = (props) => {
       <span className={classes['featured-title']}>Featured Match</span>
       <div
         className={classes['featured-match']}
-        onClick={matchClickHandler.bind(null, matchDetail)}
+        onClick={matchClickHandler.bind(
+          null,
+          matchDetail,
+          matchDetailHandler,
+          setSummaryHandler,
+          setStatsHandler,
+          setLineupHandler,
+          setTableHandler,
+          navigate
+        )}
       >
         <div className={classes['featured-lhs']}>
           {homeTeamName.split(' ').at(0)}

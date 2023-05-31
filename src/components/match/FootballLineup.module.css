@@ -185,3 +185,12 @@
   width: 20px;
   margin-left: 5px;
 }
+
+@media (max-width: 1000px) {
+  .container {
+    display: none;
+  }
+  .lineup {
+    display: none;
+  }
+}

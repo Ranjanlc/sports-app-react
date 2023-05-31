@@ -144,7 +144,9 @@ const FootballIncident = (props) => {
           >
             <span>{playerName ? playerName : scorer}</span>
             {hasAssisted && (
-              <span className={classes.assister}>
+              <span
+                className={`${classes.assister} ${classes['away-assister']}`}
+              >
                 <Boot />
                 {assister}
               </span>
