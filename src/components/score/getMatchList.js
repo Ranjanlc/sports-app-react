@@ -12,10 +12,7 @@ const getMatchList = (
   competitionClickHandler,
   matchClickHandler,
   matchDetailHandler,
-  setSummaryHandler,
-  setStatsHandler,
-  setLineupHandler,
-  setTableHandler,
+  clearFootballDetailHandler,
   navigate
 ) => {
   const matchList = matches.map((competition) => {
@@ -140,10 +137,7 @@ const getMatchList = (
             null,
             matchDetail,
             matchDetailHandler,
-            setSummaryHandler,
-            setStatsHandler,
-            setLineupHandler,
-            setTableHandler,
+            clearFootballDetailHandler,
             navigate
           )}
         >

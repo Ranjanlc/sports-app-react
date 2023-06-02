@@ -11,10 +11,10 @@ import LoadingSpinner from '../UI/LoadingSpinner';
 import ErrorHandler from '../layout/ErrorHandler';
 // import Stadium from '../../assets/stadium';
 const MatchDetail = () => {
-  const ctx = useContext(FootballContext);
   const [matchInfo, setMatchInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
+  const ctx = useContext(FootballContext);
   const {
     matchDetail: {
       matchStatus,
@@ -56,11 +56,10 @@ const MatchDetail = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error('Cant fetch details');
-      }
       const data = await res.json();
-      if (data.errors) throw new Error(data.errors.at(0).message);
+      if (!res.ok || data.errors) {
+        throw new Error(data.errors.at(0).message);
+      }
       const {
         data: { getFootballMatchInfo },
       } = data;

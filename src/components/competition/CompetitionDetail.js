@@ -1,70 +1,174 @@
 import classes from './CompetitionDetail.module.css';
 import StarJsx from '../../assets/star-jsx';
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../UI/LoadingSpinner';
-import { URL, convertSlugToDisplay } from '../../helpers/helpers';
+import { URL } from '../../helpers/helpers';
 import Dropdown from '../layout/Dropdown';
 import ErrorHandler from '../layout/ErrorHandler';
 import CompetitionContext from '../../store/competition-context';
 import getCompetitionMatches from './getCompMatches';
+
+const competitionReducer = (state, { type, value }) => {
+  console.log(state, type, value);
+  if (type === 'SET_MATCHES') {
+    return { ...state, matches: value };
+  }
+  if (type === 'SET_STANDINGS') {
+    return { ...state, standings: value };
+  }
+  if (type === 'SET_PAGE') {
+    return { ...state, page: value };
+  }
+  if (type === 'SET_LOADING') {
+    return { ...state, isLoading: value };
+  }
+  if (type === 'SET_ERROR') {
+    return { ...state, error: value };
+  }
+  if (type === 'SET_NEXT_PAGE') {
+    return { ...state, nextPage: value };
+  }
+  if (type === 'SET_CUR_GROUP') {
+    return { ...state, curGroup: value };
+  }
+  if (type === 'SET_GROUP_CONTAINER') {
+    return { ...state, groupContainer: value };
+  }
+  if (type === 'SET_LOAD_MATCHES') {
+    return { ...state, loadMatches: value };
+  }
+  if (type === 'SET_PAGE_CHANGE') {
+    return { ...state, pageChange: value };
+  }
+  if (type === 'SET_SEASON_ID') {
+    return { ...state, seasonId: value };
+  }
+  if (type === 'SET_NO_FIXTURE') {
+    return { ...state, noFixture: value };
+  }
+  if (type === 'SET_MATCH_STATE') {
+    return { ...state, matchState: value };
+  }
+};
+
 const CompetitionDetail = (props) => {
+  // const [matches, setMatches] = useState(null);
+  // const [standings, setStandings] = useState();
+  // const [page, setPage] = useState(0);
+  // const [seasonId, setSeasonId] = useState(null);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [curGroup, setCurGroup] = useState(null);
+  // const [groupContainer, setGroupContainer] = useState(null);
+  // const [nextPage, setNextPage] = useState(null);
+  // const [error, setError] = useState(null);
+  // const [loadMatches, setLoadMatches] = useState(false);
+  // const [pageChange, setPageChange] = useState(false);
+  // const [noFixture, setNoFixture] = useState(false);
   const navigate = useNavigate();
   const { loadState, sportName } = useParams();
   const { pathname } = useLocation();
-  const [matches, setMatches] = useState(null);
-  const [matchState, setMatchState] = useState(loadState);
-  const [standings, setStandings] = useState();
-  const [page, setPage] = useState(0);
-  const [seasonId, setSeasonId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [curGroup, setCurGroup] = useState(null);
-  const [groupContainer, setGroupContainer] = useState(null);
-  const [nextPage, setNextPage] = useState(null);
-  const [error, setError] = useState(null);
-  const [loadMatches, setLoadMatches] = useState(false);
-  const [pageChange, setPageChange] = useState(false);
+  // const [matchState, setMatchState] = useState(loadState);
   const urlState = pathname.split('/').slice(-1).at(0);
+
+  const [competitionState, dispatchCompetition] = useReducer(
+    competitionReducer,
+    {
+      matches: null,
+      standings: null,
+      page: 0,
+      seasonId: null,
+      isLoading: false,
+      curGroup: null,
+      groupContainer: null,
+      nextPage: null,
+      error: null,
+      loadMatches: false,
+      pageChange: false,
+      noFixture: false,
+      matchState: loadState,
+    }
+  );
+  const {
+    matches,
+    standings,
+    page,
+    seasonId,
+    isLoading,
+    curGroup,
+    groupContainer,
+    nextPage,
+    error,
+    loadMatches,
+    pageChange,
+    noFixture,
+    matchState,
+  } = competitionState;
   // THe whole competitionContext thing just to secure fixtures/results data when they dont have focus.
   const {
     competitionSet,
-    setFixtureContainerHandler,
     fixtureContainer,
     resultContainer,
-    setResultContainerHandler,
-    setCurFixturePage,
-    setCurResultPage,
+    setCurPage,
+    setMatchContainerHandler,
     curFixturePage,
     curResultPage,
   } = useContext(CompetitionContext);
   // The useEffect is concerned with persistence of results and fixtures.
   useEffect(() => {
-    console.log(curResultPage, curFixturePage, page, matchState);
+    console.log(resultContainer, fixtureContainer, matchState);
     if (matchState === 'results') {
       if (resultContainer.matches) {
-        setMatches(resultContainer.matches);
-        setNextPage(resultContainer.hasNextPage);
-        setPage(curResultPage);
+        dispatchCompetition({
+          type: 'SET_MATCHES',
+          value: resultContainer.matches,
+        });
+        dispatchCompetition({
+          type: 'SET_NEXT_PAGE',
+          value: resultContainer.hasNextPage,
+        });
+        dispatchCompetition({ type: 'SET_PAGE', value: curResultPage });
+        // setMatches(resultContainer.matches);
+        // setNextPage(resultContainer.hasNextPage);
+        // setPage(curResultPage);
       } else {
-        setLoadMatches((prevState) => !prevState);
+        dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
+        // setLoadMatches((prevState) => !prevState);
       }
     }
     if (matchState === 'fixtures') {
       if (fixtureContainer.matches) {
-        setMatches(fixtureContainer.matches);
-        setNextPage(fixtureContainer.hasNextPage);
-        setPage(curFixturePage);
+        dispatchCompetition({
+          type: 'SET_MATCHES',
+          value: fixtureContainer.matches,
+        });
+        dispatchCompetition({
+          type: 'SET_NEXT_PAGE',
+          value: fixtureContainer.hasNextPage,
+        });
+        dispatchCompetition({ type: 'SET_PAGE', value: curFixturePage });
+        // setMatches(fixtureContainer.matches);
+        // setNextPage(fixtureContainer.hasNextPage);
+        // setPage(curFixturePage);
       } else {
-        setLoadMatches((prevState) => !prevState);
+        dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
+        // setLoadMatches((prevState) => !prevState);
       }
     }
-    // fixtureContainer && matchState === 'fixtures'
-    //   ? setMatches(fixtureContainer)
-    //   : setLoadMatches((prevState) => !prevState);
-    // resultContainer && matchState === 'results'
-    //   ? setMatches(resultContainer)
-    //   : setLoadMatches((prevState) => !prevState);
-  }, [matchState]);
+  }, [
+    matchState,
+    fixtureContainer,
+    curFixturePage,
+    resultContainer,
+    curResultPage,
+  ]);
 
   const { competitionName, venue, competitionImage, competitionId, uniqueId } =
     competitionSet;
@@ -72,12 +176,7 @@ const CompetitionDetail = (props) => {
   const backClickHandler = () => {
     navigate(-1);
   };
-  const sportForDetails = `get${convertSlugToDisplay(sportName)}Details`;
-  // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
-  const compOrUniqueId =
-    sportName === 'cricket'
-      ? `compId:${competitionId},uniqueId:${uniqueId}`
-      : `uniqueId:${competitionId}`;
+
   const graphqlQueryDetails = {
     query: `
     query CompDetail($dateState: String!,$competitionId:ID,$uniqueId:ID!, $isCricket: Boolean!) {
@@ -127,13 +226,15 @@ const CompetitionDetail = (props) => {
       isCricket: sportName === 'cricket',
       // It is done because while storing id of basketball competition,we only fetch uniqueId and set it in competitionId.
       uniqueId: sportName === 'cricket' ? uniqueId : competitionId,
+      // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
       competitionId: sportName === 'cricket' ? competitionId : null,
     },
   };
 
   const fetchCompDetails = useCallback(async () => {
     try {
-      setIsLoading(true);
+      dispatchCompetition({ type: 'SET_LOADING', value: true });
+      // setIsLoading(true);
       const res = await fetch(URL, {
         method: 'POST',
         body: JSON.stringify(graphqlQueryDetails),
@@ -142,42 +243,56 @@ const CompetitionDetail = (props) => {
         },
       });
       const data = await res.json();
-      if (!res.ok) {
-        console.log(data);
-        throw new Error("Sorry Couldn't fetch competition details");
+      if (!res.ok || data.errors) {
+        console.log(res);
+        throw new Error(data.errors.at(0).message);
       }
       const {
-        data: {
-          getCompetitionDetails: {
-            matchSet: { matches, hasNextPage },
-            standingSet,
-            seasonId,
-          },
-        },
+        data: { getCompetitionDetails },
       } = data;
-      matchState === 'fixtures'
-        ? setFixtureContainerHandler({ matches, hasNextPage })
-        : setResultContainerHandler({ matches, hasNextPage });
-      setMatches(matches);
-      setStandings(standingSet);
-      setSeasonId(seasonId);
-      setNextPage(hasNextPage);
+      if (!getCompetitionDetails.matchSet) {
+        dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
+        dispatchCompetition({ type: 'SET_LOADING', value: false });
+        dispatchCompetition({ type: 'SET_NO_FIXTURE', value: true });
+        // setMatchState('results');
+        // setIsLoading(false);
+        // setNoFixture(true);
+        return;
+      }
+      const {
+        matchSet: { matches, hasNextPage },
+        standingSet,
+        seasonId,
+      } = getCompetitionDetails;
+
+      setMatchContainerHandler({ matches, hasNextPage }, matchState);
+
+      dispatchCompetition({ type: 'SET_MATCHES', value: matches });
+      dispatchCompetition({ type: 'SET_STANDINGS', value: standingSet });
+      dispatchCompetition({ type: 'SET_SEASON_ID', value: seasonId });
+      dispatchCompetition({ type: 'SET_NEXT_PAGE', value: hasNextPage });
+      // setMatches(matches);
+      // setStandings(standingSet);
+      // setSeasonId(seasonId);
+      // setNextPage(hasNextPage);
       if (standingSet?.length > 1) {
         const groupSet = standingSet.map((set) => set.groupName);
-        setGroupContainer(groupSet);
+        dispatchCompetition({ type: 'SET_GROUP_CONTAINER', value: groupSet });
+        dispatchCompetition({ type: 'SET_CUR_GROUP', value: groupSet[0] });
+        // setGroupContainer(groupSet);
         //   Setting first element to show in first
-        setCurGroup(groupSet[0]);
+        // setCurGroup(groupSet[0]);
       }
-      setIsLoading(false);
+      dispatchCompetition({ type: 'SET_LOADING', value: false });
+      // setIsLoading(false);
     } catch (err) {
-      setError(err.message);
+      dispatchCompetition({ type: 'SET_ERROR', value: err.message });
+      // setError(err.message);
     }
   }, []);
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
-  const sportForMatches = `get${convertSlugToDisplay(sportName)}CompMatches`;
-  console.log(seasonId);
   const graphqlQueryMatches = {
     query: `
      query FetchCompMatches($dateState:String!,$seasonId:ID!,$page:Int,$uniqueId:ID!,$isCricket:Boolean!){
@@ -204,7 +319,8 @@ const CompetitionDetail = (props) => {
     },
   };
   const fetchMatchesHandler = useCallback(async () => {
-    setIsLoading(true);
+    dispatchCompetition({ type: 'SET_LOADING', value: true });
+    // setIsLoading(true);
     const res = await fetch(URL, {
       method: 'POST',
       body: JSON.stringify(graphqlQueryMatches),
@@ -217,39 +333,45 @@ const CompetitionDetail = (props) => {
         getCompMatches: { matches, hasNextPage },
       },
     } = await res.json();
-    matchState === 'fixtures'
-      ? setFixtureContainerHandler({ matches, hasNextPage })
-      : setResultContainerHandler({ matches, hasNextPage });
-    setMatches(matches);
-    setNextPage(hasNextPage);
-    setIsLoading(false);
+    dispatchCompetition({ type: 'SET_MATCHES', value: matches });
+    dispatchCompetition({ type: 'SET_NEXT_PAGE', value: hasNextPage });
+    dispatchCompetition({ type: 'SET_LOADING', value: false });
+    setMatchContainerHandler({ matches, hasNextPage }, matchState);
+    // matchState === 'fixtures'
+    //   ? setFixtureContainerHandler({ matches, hasNextPage })
+    //   : setResultContainerHandler({ matches, hasNextPage });
+    // setMatches(matches);
+    // setNextPage(hasNextPage);
+    // setIsLoading(false);
   }, [pageChange, loadMatches, competitionId]);
   useEffect(() => {
     // To prevent initial loading
     matches && fetchMatchesHandler();
   }, [fetchMatchesHandler]);
   const groupChangeHandler = (option) => {
-    setCurGroup(option);
+    dispatchCompetition({ type: 'SET_CUR_GROUP', value: option });
   };
   const matchStateChangeHandler = (state, e) => {
     // To replace fixtures/results with results/fixtures resp.
     const baseUrl = pathname.split('/').slice(0, -1).join('/');
     if (state === 'fixtures' && urlState !== 'fixtures') {
       // setPage(0);
-      setCurResultPage(page);
-      setMatchState('fixtures');
+      // Coz we have to pass the current page and when changing to fixtures,it becomes of results.
+      setCurPage(page, 'results');
+      dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'fixtures' });
+      // setMatchState('fixtures');
       navigate(`${baseUrl}/fixtures`, { replace: true });
     }
     if (state === 'results' && urlState !== 'results') {
       // setPage(0);
-      setCurFixturePage(page);
-      setMatchState('results');
+      dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
+      setCurPage(page, 'fixtures');
+      // setMatchState('results');
       navigate(`${baseUrl}/results`, { replace: true });
     }
   };
   const events =
     matches && getCompetitionMatches(matches, sportName, matchState);
-  // TODO:Address the situation when there is no standings or there is a group-wise standings.
   const curStandingSet = groupContainer
     ? standings.find((standingData) => standingData.groupName === curGroup)
     : standings?.at(0);
@@ -264,7 +386,6 @@ const CompetitionDetail = (props) => {
       teamId,
       teamImageUrl,
       wins,
-      draws,
       losses,
       played,
       percentage,
@@ -293,21 +414,27 @@ const CompetitionDetail = (props) => {
     );
   });
   const previousClickHandler = () => {
-    setPageChange((prevVal) => !prevVal);
+    dispatchCompetition({ type: 'SET_PAGE_CHANGE', value: !pageChange });
+    // setPageChange((prevVal) => !prevVal);
     if (urlState === 'results') {
-      setPage((previousPage) => ++previousPage);
+      dispatchCompetition({ type: 'SET_PAGE', value: ++page });
+      // setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'fixtures' && page > 0) {
-      setPage((previousPage) => --previousPage);
+      dispatchCompetition({ type: 'SET_PAGE', value: ++page });
+      // setPage((previousPage) => --previousPage);
     }
   };
   const nextClickHandler = () => {
-    setPageChange((prevVal) => !prevVal);
+    dispatchCompetition({ type: 'SET_PAGE_CHANGE', value: !pageChange });
+    // setPageChange((prevVal) => !prevVal);
     if (urlState === 'fixtures') {
-      setPage((previousPage) => ++previousPage);
+      dispatchCompetition({ type: 'SET_PAGE', value: ++page });
+      // setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'results' && page > 0) {
-      setPage((previousPage) => --previousPage);
+      dispatchCompetition({ type: 'SET_PAGE', value: --page });
+      // setPage((previousPage) => --previousPage);
     }
   };
   return (
@@ -332,20 +459,23 @@ const CompetitionDetail = (props) => {
             <div className={classes['navigation--matches']}>
               <span>Matches</span>
             </div>
-            <div className={classes.standings}>Standings</div>
+            {standings && <div className={classes.standings}>Standings</div>}
           </nav>
           <div className={classes['container']}>
             <div className={classes['matches-container']}>
               {/* <hr /> */}
               <div className={classes['state-container']}>
-                <div
-                  className={`${classes.state} ${
-                    urlState === 'fixtures' && classes.active
-                  }`}
-                  onClick={matchStateChangeHandler.bind(null, 'fixtures')}
-                >
-                  Fixtures
-                </div>
+                {/* If theres no fixture we dont give user a button to toggle there actually. */}
+                {!noFixture && (
+                  <div
+                    className={`${classes.state} ${
+                      urlState === 'fixtures' && classes.active
+                    }`}
+                    onClick={matchStateChangeHandler.bind(null, 'fixtures')}
+                  >
+                    Fixtures
+                  </div>
+                )}
                 <div
                   className={`${classes.state} ${
                     urlState === 'results' && classes.active
@@ -388,7 +518,7 @@ const CompetitionDetail = (props) => {
                   <LoadingSpinner />
                 </div>
               )}
-              {(!isLoading || standings) && (
+              {!isLoading && standings && (
                 <Fragment>
                   <header className={classes.header}>
                     <div className={classes['team-details']}>

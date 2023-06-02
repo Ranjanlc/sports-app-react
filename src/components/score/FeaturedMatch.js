@@ -6,13 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { matchClickHandler } from '../../helpers/helpers';
 const FeaturedMatch = (props) => {
   const { featuredMatchContainer, sportName } = props;
-  const {
-    matchDetailHandler,
-    setStatsHandler,
-    setSummaryHandler,
-    setLineupHandler,
-    setTableHandler,
-  } = useContext(FootballContext);
+  const { matchDetailHandler, clearFootballDetailHandler } =
+    useContext(FootballContext);
   const navigate = useNavigate();
   const {
     event: {
@@ -55,10 +50,7 @@ const FeaturedMatch = (props) => {
           null,
           matchDetail,
           matchDetailHandler,
-          setSummaryHandler,
-          setStatsHandler,
-          setLineupHandler,
-          setTableHandler,
+          clearFootballDetailHandler,
           navigate
         )}
       >

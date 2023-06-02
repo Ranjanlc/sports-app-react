@@ -12,7 +12,7 @@ const FootballTable = (props) => {
   const {
     matchDetail: { competitionId, homeTeamId, awayTeamId },
     tableContainer,
-    setTableHandler,
+    setFootballDetailHandler,
   } = useContext(FootballContext);
   const graphqlQuery = {
     query: `
@@ -48,17 +48,14 @@ const FootballTable = (props) => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error('Unable to fetch table');
-      }
       const data = await res.json();
-      if (data.errors) {
+      if (!res.ok || data.errors) {
         throw new Error(data.errors.at(0).message);
       }
       const {
         data: { getFootballMatchTable },
       } = data;
-      setTableHandler(getFootballMatchTable);
+      setFootballDetailHandler(getFootballMatchTable, 'table');
       setIsLoading(false);
     } catch (err) {
       setIsError(err.message);

@@ -49,7 +49,7 @@
   color: #9fa5b5;
   position: absolute;
   /* For the scrolling in dropdown */
-  height: 200px;
+  max-height: 200px;
   overflow-y: auto;
   /* top: 3em; */
   top: 2rem;

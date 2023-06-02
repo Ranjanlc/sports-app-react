@@ -25,7 +25,7 @@ const Layout = (props) => {
             className={({ isActive }) => (isActive ? classes.active : '')}
             onClick={sportClickHandler.bind(null, 'football')}
           >
-            <img src={football} alt="football" />
+            <img src={football} alt="footballes" />
             Football
           </NavLink>
           <NavLink

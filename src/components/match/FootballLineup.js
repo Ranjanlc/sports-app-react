@@ -9,7 +9,6 @@ import Info from '../../assets/info';
 import { URL } from '../../helpers/helpers';
 import ErrorHandler from '../layout/ErrorHandler';
 const FootballLineup = (props) => {
-  //   const { subs, lineups } = DUMMY_LINEUPS;
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const {
@@ -21,7 +20,7 @@ const FootballLineup = (props) => {
       matchId,
       matchStatus,
     },
-    setLineupHandler,
+    setFootballDetailHandler,
     lineupContainer,
   } = useContext(FootballContext);
   const { lineups, subs } = lineupContainer;
@@ -66,18 +65,15 @@ const FootballLineup = (props) => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error("Can't fetch lineups");
-      }
       const data = await res.json();
-      if (data.errors) {
+      if (!res.ok || data.errors) {
         throw new Error(data.errors.at(0).message);
       }
       const {
         data: { getFootballMatchLineup },
       } = data;
       console.log(getFootballMatchLineup);
-      setLineupHandler(getFootballMatchLineup);
+      setFootballDetailHandler(getFootballMatchLineup, 'lineup');
       setIsLoading(false);
     } catch (err) {
       console.log(err.message);

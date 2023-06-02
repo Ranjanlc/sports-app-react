@@ -11,40 +11,20 @@ import { getFootballMatches } from './getCompMatches';
 import ErrorHandler from '../layout/ErrorHandler';
 
 const FootballDetail = (props) => {
-  const navigate = useNavigate();
-  const { loadState } = useParams();
-  const { pathname } = useLocation();
-  const baseUrl = pathname.split('/').slice(0, -1).join('/');
-  const urlState = pathname.split('/').slice(-1).at(0);
-
   const [matches, setMatches] = useState(null);
-  const [matchState, setMatchState] = useState(loadState);
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(null);
+
+  const navigate = useNavigate();
+  const { loadState } = useParams();
+  const { pathname } = useLocation();
+  const [matchState, setMatchState] = useState(loadState);
+  const baseUrl = pathname.split('/').slice(0, -1).join('/');
+  const urlState = pathname.split('/').slice(-1).at(0);
   const ctx = useContext(FootballContext);
-  const {
-    matchDetailHandler,
-    setSummaryHandler,
-    setStatsHandler,
-    setTableHandler,
-    setLineupHandler,
-  } = ctx;
+  const { matchDetailHandler, clearFootballDetailHandler } = ctx;
   const { competitionSet } = useContext(CompetitionContext);
-  // const [groupContainer, setGroupContainer] = useState();
-  // const [curGroup, setCurGroup] = useState();
-  // let competitionSet;
-  // For the case if user reloads the page from FootballDetail page.
-  // if (props.competitionSet) {
-  //   competitionSet = props.competitionSet;
-  //   localStorage.setItem(
-  //     'competitionSet',
-  //     JSON.stringify(props.competitionSet)
-  //   );
-  // }
-  // if (!props.competitionSet) {
-  //   competitionSet = JSON.parse(localStorage.getItem('competitionSet'));
-  // }
   const { competitionName, venue, competitionImage, competitionId } =
     competitionSet;
 
@@ -90,11 +70,8 @@ const FootballDetail = (props) => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error('Cant fetch competition details');
-      }
       const data = await res.json();
-      if (data.errors) {
+      if (!res.ok || data.errors) {
         throw new Error(data.errors.at(0).message);
       }
       const {
@@ -113,7 +90,7 @@ const FootballDetail = (props) => {
     } catch (err) {
       setIsError(err.message);
     }
-  }, []);
+  }, [baseUrl]);
   useEffect(() => {
     fetchCompDetails();
   }, [fetchCompDetails]);
@@ -141,10 +118,7 @@ const FootballDetail = (props) => {
       competitionName,
       matchClickHandler,
       matchDetailHandler,
-      setSummaryHandler,
-      setStatsHandler,
-      setLineupHandler,
-      setTableHandler,
+      clearFootballDetailHandler,
       navigate
     );
   return (

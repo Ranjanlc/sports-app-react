@@ -63,14 +63,14 @@ const getCompetitionMatches = (matches, sportName, matchState) => {
               matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
             }`}
           >
-            {homeScore}
+            {matchStatus !== 'Abandoned' && homeScore}
           </div>
           <div
             className={`${classes['second-score']} ${
               matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
             } `}
           >
-            {awayScore}
+            {matchStatus !== 'Abandoned' && awayScore}
           </div>
         </div>
       );
@@ -125,10 +125,7 @@ export const getFootballMatches = (
   competitionName,
   matchClickHandler,
   matchDetailHandler,
-  setSummaryHandler,
-  setStatsHandler,
-  setLineupHandler,
-  setTableHandler,
+  clearFootballDetailHandler,
   navigate
 ) => {
   const matchSet = matches[matchState].map((event) => {
@@ -169,10 +166,7 @@ export const getFootballMatches = (
           null,
           matchDetail,
           matchDetailHandler,
-          setSummaryHandler,
-          setStatsHandler,
-          setLineupHandler,
-          setTableHandler,
+          clearFootballDetailHandler,
           navigate
         )}
       >

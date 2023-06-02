@@ -20,7 +20,7 @@ const FootballStats = () => {
       matchId,
     },
     statsContainer,
-    setStatsHandler,
+    setFootballDetailHandler,
   } = ctx;
   const graphqlQuery = {
     query: `
@@ -45,17 +45,14 @@ const FootballStats = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error('Unable to fetch stats');
-      }
       const data = await res.json();
-      if (data.errors) {
+      if (!res.ok || data.errors) {
         throw new Error(data.errors.at(0).message);
       }
       const {
         data: { getFootballMatchStats },
       } = data;
-      setStatsHandler(getFootballMatchStats);
+      setFootballDetailHandler(getFootballMatchStats, 'stats');
       setIsLoading(false);
     } catch (err) {
       setIsError(err.message);

@@ -10,10 +10,10 @@ import { URL } from '../../helpers/helpers';
 import ErrorHandler from '../layout/ErrorHandler';
 
 const FootballSummary = (props) => {
-  const ctx = useContext(FootballContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   // const [penaltyContainer, setPenaltyContainer] = useState(null);
+  const ctx = useContext(FootballContext);
   const {
     matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },
     summaryContainer: {
@@ -30,7 +30,7 @@ const FootballSummary = (props) => {
       extraTimeIncidents,
       penaltyShootout: penaltyContainer,
     },
-    setSummaryHandler,
+    setFootballDetailHandler,
   } = ctx;
   const graphqlQuery = {
     query: `
@@ -100,18 +100,15 @@ const FootballSummary = (props) => {
           'Content-Type': 'application/json',
         },
       });
-      if (!res.ok) {
-        throw new Error('Unable to fetch match summary');
-      }
       const data = await res.json();
-      if (data.errors) {
+      if (!res.ok || data.errors) {
         throw new Error(data.errors.at(0).message);
       }
       const {
         data: { getFootballMatchSummary },
       } = data;
       console.log(getFootballMatchSummary);
-      setSummaryHandler(getFootballMatchSummary);
+      setFootballDetailHandler(getFootballMatchSummary, 'summary');
       setIsLoading(false);
     } catch (err) {
       setIsError(err.message);

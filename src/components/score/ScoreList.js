@@ -1,10 +1,15 @@
-import { Fragment, useCallback, useContext, useEffect } from 'react';
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react';
 import datePicker, {
   apiDateConverter,
   getTimeZoneOffSet,
 } from '../../helpers/date-picker';
 import DatePicker from 'react-datepicker';
-import { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import classes from './ScoreList.module.css';
 import liveicon from '../../assets/liveicon.png';
@@ -22,59 +27,95 @@ import FootballContext from '../../store/football-context';
 import getMatchList from './getMatchList';
 import CompetitionContext from '../../store/competition-context';
 import ErrorHandler from '../layout/ErrorHandler';
+
+const scoreReducer = (state, { type, value }) => {
+  if (type === 'SET_DATE') {
+    return { ...state, date: value };
+  }
+  if (type === 'SET_START_DATE') {
+    return { ...state, startDate: value };
+  }
+  if (type === 'SET_DATE_NOT_CLICKED') {
+    return { ...state, dateNotClicked: value };
+  }
+  if (type === 'SET_LIVE') {
+    return { ...state, isLive: value };
+  }
+  if (type === 'SET_LOADING') {
+    return { ...state, isLoading: value };
+  }
+  if (type === 'SET_ERROR') {
+    return { ...state, errorMsg: value };
+  }
+  if (type === 'SET_MATCHES') {
+    return { ...state, matches: value };
+  }
+  if (type === 'SET_FEATURED_MATCH') {
+    return { ...state, featuredMatch: value };
+  }
+};
+
 const ScoreList = (props) => {
-  const navigate = useNavigate();
+  // const [matches, setMatches] = useState(null);
+  // const [featuredMatch, setFeaturedMatch] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // For initial rendering of active class on todays date.
+  // const [isLive, setIsLive] = useState();
+  // const [dateNotClicked, setDateNotClicked] = useState(true);
+  // const [errorMsg, setErrorMsg] = useState(null);
   const { dateId, sportName } = useParams();
   const { pathname: urlPath } = useLocation();
-  // const { changeCompetition } = props;
-  const ctx = useContext(FootballContext);
-  const {
-    matchDetailHandler,
-    setStatsHandler,
-    setSummaryHandler,
-    setTableHandler,
-    setLineupHandler,
-  } = ctx;
-  const {
-    setCompetitionHandler,
-    setCurFixturePage,
-    setCurResultPage,
-    setFixtureContainerHandler,
-    setResultContainerHandler,
-  } = useContext(CompetitionContext);
   // startDate's type is date because that is what accepted by datePicker
-  const [startDate, setStartDate] = useState(
-    dateId ? new Date(dateId) : new Date()
-  );
-  const curDay = apiDateConverter(new Date());
+  // const [startDate, setStartDate] = useState(
+  //   dateId ? new Date(dateId) : new Date()
+  // );
   // This date is for api uses.
-  const [date, setDate] = useState(dateId);
-  const [matches, setMatches] = useState(null);
-  const [featuredMatch, setFeaturedMatch] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  // For initial rendering of active class on todays date.
-  const [isLive, setIsLive] = useState();
-  const [dateNotClicked, setDateNotClicked] = useState(true);
-  const [errorMsg, setErrorMsg] = useState(null);
+  // const [date, setDate] = useState(dateId);
+  const [scoreState, dispatchScore] = useReducer(scoreReducer, {
+    matches: null,
+    featuredMatch: null,
+    isLoading: false,
+    isLive: null,
+    dateNotClicked: true,
+    errorMsg: null,
+    startDate: dateId ? new Date(dateId) : new Date(),
+    date: dateId,
+  });
+  const {
+    date,
+    startDate,
+    dateNotClicked,
+    errorMsg,
+    isLoading,
+    isLive,
+    featuredMatch,
+    matches,
+  } = scoreState;
+  const curDay = apiDateConverter(new Date());
+  const ctx = useContext(FootballContext);
+  const navigate = useNavigate();
+  const { matchDetailHandler, clearFootballDetailHandler } = ctx;
+  const { setCompetitionHandler, clearCompetitionSet } =
+    useContext(CompetitionContext);
   // This two if clauses for loading data when user clicks back button.
   if (!dateId && date !== curDay) {
-    setDate(curDay);
+    dispatchScore({ type: 'SET_DATE', value: curDay });
   }
   if (dateId && dateId !== date) {
-    setDate(dateId);
+    dispatchScore({ type: 'SET_DATE', value: dateId });
   }
   // FOr loading data if it is set to live
   if (!isLive && urlPath.includes('live')) {
-    setIsLive(true);
+    dispatchScore({ type: 'SET_LIVE', value: true });
   }
   // If user clicks back an gets redirected to /sportName when isLive is true,we need to change state to again fetch data
   if (isLive && !urlPath.includes('live')) {
-    setIsLive(false);
+    dispatchScore({ type: 'SET_LIVE', value: false });
   }
   const changeStateHandler = (date) => {
-    setStartDate(new Date(date));
-    setDate(date);
-    setDateNotClicked(false);
+    dispatchScore({ type: 'SET_START_DATE', value: new Date(date) });
+    dispatchScore({ type: 'SET_DATE', value: date });
+    dispatchScore({ type: 'SET_DATE_NOT_CLICKED', value: false });
   };
   // To set title of document.
   useEffect(() => {
@@ -173,8 +214,8 @@ const ScoreList = (props) => {
   const fetchMatches = useCallback(async () => {
     try {
       // For the situation where either livescore or sofascore is used up and user switches to another sport.
-      setErrorMsg(null);
-      setIsLoading(true);
+      dispatchScore({ type: 'SET_ERROR', value: null });
+      dispatchScore({ type: 'SET_LOADING', value: true });
       const res = await fetch(URL, {
         method: 'POST',
         body: JSON.stringify(graphqlQuery),
@@ -193,12 +234,14 @@ const ScoreList = (props) => {
         }, //[] for computed property
       } = data;
       // console.log(matches, featuredMatch);
-      setMatches(matches);
+      dispatchScore({ type: 'SET_MATCHES', value: matches });
       // IN case we load live matches
-      featuredMatch && setFeaturedMatch(featuredMatch);
-      setIsLoading(false);
+      featuredMatch &&
+        dispatchScore({ type: 'SET_FEATURED_MATCH', value: featuredMatch });
+      dispatchScore({ type: 'SET_LOADING', value: false });
+      // setIsLoading(false);
     } catch (err) {
-      setErrorMsg(err.message);
+      dispatchScore({ type: 'SET_ERROR', value: err.message });
     }
     //We send another request whenever date changes.
   }, [sportName, date, isLive]);
@@ -207,8 +250,10 @@ const ScoreList = (props) => {
   }, [fetchMatches]);
   const dateChangeHandler = (dateValue) => {
     const convertedDate = apiDateConverter(dateValue);
-    setDate(convertedDate);
-    setStartDate(dateValue);
+    dispatchScore({ type: 'SET_DATE', value: convertedDate });
+    dispatchScore({ type: 'SET_START_DATE', value: dateValue });
+    // setDate(convertedDate);
+    // setStartDate(dateValue);
     navigate(`/${sportName}/${convertedDate}`);
   };
   const liveClickHandler = (e) => {
@@ -219,10 +264,8 @@ const ScoreList = (props) => {
     const { competitionName: compName } = compDetails;
     const compSlug = slugMaker(compName);
     // For resetting the fixtures/results and page once another competition is clicked
-    setFixtureContainerHandler({});
-    setResultContainerHandler({});
-    setCurFixturePage(0);
-    setCurResultPage(0);
+    clearCompetitionSet();
+
     setCompetitionHandler(compDetails);
     navigate(`/${sportName}/${compSlug}/fixtures`);
   };
@@ -235,10 +278,7 @@ const ScoreList = (props) => {
       competitionClickHandler,
       matchClickHandler,
       matchDetailHandler,
-      setSummaryHandler,
-      setStatsHandler,
-      setLineupHandler,
-      setTableHandler,
+      clearFootballDetailHandler,
       navigate
     );
   console.log(competitionSet);

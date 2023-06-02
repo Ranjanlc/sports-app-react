@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useReducer, useState } from 'react';
 
 const CompetitionContext = createContext({
   competitionSet: {},
@@ -10,51 +10,85 @@ const CompetitionContext = createContext({
   curFixturePage: '',
   setCurFixturePage: () => {},
   curResultPage: '',
+  setCurPage: () => {},
+  setMatchContainerHandler: () => {},
   setCurResultPage: () => {},
+  clearCompetitionSet: () => {},
 });
+
+const competitionReducer = (state, { type, value }) => {
+  if (type === 'SET_COMPETITION') {
+    return { ...state, compContainer: value };
+  }
+  if (type === 'SET_FIXTURES') {
+    return { ...state, fixtures: value };
+  }
+  if (type === 'SET_RESULTS') {
+    return { ...state, results: value };
+  }
+  if (type === 'SET_FIXTURES_PAGE') {
+    return { ...state, fixturePage: value };
+  }
+  if (type === 'SET_RESULTS_PAGE') {
+    return { ...state, resultPage: value };
+  }
+  if (type === 'DEFAULT_STATE') {
+    return { ...value };
+  }
+};
 
 export const CompetitionContextProvider = (props) => {
   const storedCompSet =
     JSON.parse(localStorage.getItem('competitionSet')) || {};
-  const [compContainer, setCompetitionContainer] = useState(
-    storedCompSet || {
+  const initialState = {
+    fixtures: {},
+    results: {},
+    compContainer: storedCompSet || {
       competitionName: '',
       venue: '',
       competitionImage: '',
       competitionId: '',
-    }
+    },
+    fixturePage: 0,
+    resultPage: 0,
+  };
+  const [compContextState, dispatchCompContext] = useReducer(
+    competitionReducer,
+    initialState
   );
-  const [fixtures, setFixtures] = useState({});
-  const [results, setResults] = useState({});
-  const [fixturePage, setFixturePage] = useState(0);
-  const [resultPage, setResultPage] = useState(0);
+  const { fixtures, results, fixturePage, resultPage, compContainer } =
+    compContextState;
   const setCompetitionSetHandler = (compSet) => {
-    setCompetitionContainer(compSet);
+    dispatchCompContext({ type: 'SET_COMPETITION', value: compSet });
+    // setCompetitionContainer(compSet);
     localStorage.setItem('competitionSet', JSON.stringify(compSet));
   };
-  const setFixtureHandler = (fixtureSet) => {
-    setFixtures(fixtureSet);
+  const setMatchContainerHandler = (matchSet, state) => {
+    console.log(matchSet, state);
+    dispatchCompContext({
+      type: `SET_${state.toUpperCase()}`,
+      value: matchSet,
+    });
   };
-  const setResultHandler = (resultSet) => {
-    setResults(resultSet);
+  const setCurPage = (page, state) => {
+    dispatchCompContext({
+      type: `SET_${state.toUpperCase()}_PAGE`,
+      value: page,
+    });
   };
-  const setCurResultPage = (page) => {
-    setResultPage(page);
-  };
-  const setCurFixturePage = (page) => {
-    setFixturePage(page);
+  const clearCompetitionSet = () => {
+    dispatchCompContext({ type: 'DEFAULT_STATE', value: initialState });
   };
   const competitionObj = {
     competitionSet: compContainer,
     setCompetitionHandler: setCompetitionSetHandler,
-    setFixtureContainerHandler: setFixtureHandler,
-    setResultContainerHandler: setResultHandler,
+    setMatchContainerHandler,
     resultContainer: results,
     fixtureContainer: fixtures,
-    setCurFixturePage,
-    setCurResultPage,
+    setCurPage,
     curFixturePage: fixturePage,
     curResultPage: resultPage,
+    clearCompetitionSet,
   };
   return (
     <CompetitionContext.Provider value={competitionObj}>

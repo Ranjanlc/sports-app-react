@@ -43,17 +43,10 @@ export const convertToReadableStatus = (status) => {
 export const matchClickHandler = (
   matchDetail,
   matchDetailHandler,
-  setSummaryHandler,
-  setStatsHandler,
-  setLineupHandler,
-  setTableHandler,
+  clearFootballDetailHandler,
   navigate
 ) => {
-  setStatsHandler([]);
-  setTableHandler([]);
-  console.log(setSummaryHandler);
-  setSummaryHandler({ firstHalfIncidents: [], secondHalfIncidents: [] });
-  setLineupHandler({ lineups: [], subs: [] });
+  clearFootballDetailHandler();
   const { matchStatus, matchId } = matchDetail;
   matchDetailHandler(matchDetail);
   if (matchStatus === 'NS') {
