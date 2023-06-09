@@ -1,0 +1,218 @@
+.arrow {
+  font-size: 20px;
+  padding: 0 10px;
+  padding-bottom: 5px;
+  margin-left: 30px;
+  margin-top: 7px;
+  cursor: pointer;
+  display: inline-block;
+  transform: scale(1.5);
+  border: 1px solid rgb(82, 74, 74);
+  border-radius: 20%;
+  background-color: #4e4949a0;
+}
+.arrow:hover {
+  background-color: #040404;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+.match-container {
+  width: 35%;
+  background-color: #454545;
+  margin-top: 1.5rem;
+  height: fit-content;
+  border-radius: 15px;
+  margin-left: 4px;
+}
+.competition-title {
+  display: block;
+  text-align: center;
+  font-size: large;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+.match {
+  /* width: 90%; */
+  background-color: rgba(8, 8, 5);
+  margin: 0 1rem;
+  border-radius: 5px;
+  min-height: 110px;
+  /* margin-left: 2rem; */
+  margin-top: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.match img {
+  margin-top: 0.5rem;
+  width: 3rem;
+}
+.match-lhs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  /* align-content: center; */
+  /* margin-left: 3rem; */
+}
+.match-score {
+  font-size: 30px;
+  font-weight: 700;
+  display: flex;
+  width: 80px;
+  justify-content: space-around;
+}
+.match-rhs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* margin-right: 3rem; */
+}
+.date .active {
+  color: orangered;
+}
+.loser {
+  color: #808080;
+  font-weight: 600;
+}
+
+.score-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* align-content: space-around; */
+  /* justify-content: space-between; */
+}
+.status {
+  margin-top: 0.8rem;
+  color: rgb(245, 150, 8);
+}
+.info {
+  /* margin: 0 1rem; */
+  /* display: flex; */
+  /* justify-content: space-evenly; */
+  /* flex-wrap: nowrap; */
+  padding: 0.6rem 0;
+}
+.info div {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+}
+.info svg {
+  width: 25px;
+  margin-right: 4px;
+}
+.info span {
+  /* min-width: 50%; */
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+}
+.info img {
+  width: 25px;
+  margin-right: 4px;
+}
+
+.details-container {
+  width: 62%;
+  /* background-color: #454545; */
+  margin-top: 1.5rem;
+  margin-right: 0.8rem;
+  height: fit-content;
+  /* margin-bottom: 20px; */
+  border-radius: 15px;
+}
+.link-container {
+  display: flex;
+  justify-content: space-around;
+  /* padding-bottom: 5px; */
+  padding-top: 5px;
+  background-color: #5f5c5c38;
+  border-radius: 20px;
+  align-items: center;
+  margin: 0 20px;
+  /* height: 40px; */
+  /* border-bottom: 1px ridge white; */
+}
+.link-container a {
+  text-decoration: none;
+  font-weight: bolder;
+  color: aliceblue;
+}
+a.active {
+  border-radius: 5px;
+  color: rgb(107, 192, 225);
+  font-style: italic;
+  border-bottom: 3px solid rgb(6, 178, 236);
+}
+.details {
+  /* padding: 0 10px; */
+  /* height: 580px; */
+  margin: 10px 0;
+  height: fit-content;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* display: flex; */
+}
+.details::-webkit-scrollbar {
+  width: 10px;
+}
+
+.details::-webkit-scrollbar-track {
+  border-radius: 50px;
+  background: #a4a3a3;
+}
+
+.details::-webkit-scrollbar-thumb {
+  background: rgb(87, 162, 233);
+  border-radius: 50px;
+}
+
+.details::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 1000px) and (min-width: 650px) {
+  .container {
+    display: block;
+    margin: 0 2rem;
+  }
+  .match-container {
+    width: 100%;
+  }
+  .details-container {
+    width: 100%;
+  }
+  .lineup {
+    display: none;
+  }
+}
+@media (max-width: 650px) {
+  .container {
+    display: block;
+    font-size: small;
+  }
+  .match-container {
+    width: 100%;
+  }
+  .lineup {
+    display: none;
+  }
+  .details-container {
+    width: 100%;
+  }
+}
+@media (max-width: 320px) {
+  .table {
+    display: none;
+  }
+}

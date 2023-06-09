@@ -1,13 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import ScoreList from './components/score/ScoreList';
-import FootballDetail from './components/competition/FootballDetail';
-import CompetitionDetail from './components/competition/CompetitionDetail';
-import MatchDetail from './components/match/MatchDetail';
-import FootballSummary from './components/match/FootballSummary';
-import FootballLineup from './components/match/FootballLineup';
-import FootballTable from './components/match/FootballTable';
-import FootballStats from './components/match/FootballStats';
+import Layout from './layout/Layout';
+import ScoreList from './components/scoreList/ScoreList';
+import FootballDetail from './pages/competition/FootballDetail';
+import CompetitionDetail from './pages/competition/CompetitionDetail';
+import MatchDetail from './pages/footballMatchDetail/matchDetail/MatchDetail';
+import FootballSummary from './pages/footballMatchDetail/footballSummary/FootballSummary';
+import FootballLineup from './pages/footballMatchDetail/footballLineup/FootballLineup';
+import FootballTable from './pages/footballMatchDetail/footballTable/FootballTable';
+import FootballStats from './pages/footballMatchDetail/footballStats/FootballStats';
+import FootballScore from './pages/score/FootballScore';
+import CricketScore from './pages/score/CricketScore';
+import BasketballScore from './pages/score/BasketballScore';
+import LiveMatches from './pages/live/LiveMatches';
 //TODO:Special class while game is playing.
 //NOT-IMP-TODO:If match is abandoned,do some styling
 // Major-TODO:Make the site responsive
@@ -25,11 +29,16 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Navigate to={'cricket'} replace />} /> */}
         <Route path="/" element={<Navigate to={'football'} replace />} />
-        {['/:sportName', '/:sportName/live', '/:sportName/:dateId'].map(
-          (path, id) => (
-            <Route path={path} element={<ScoreList />} key={id} />
-          )
-        )}
+        {/* {['/:sportName', '/:sportName/:dateId'].map((path, id) => (
+          <Route path={path} element={<ScoreList />} key={id} />
+        ))} */}
+        <Route path="/:sportName/live" element={<LiveMatches />} />
+        <Route path="/football/:dateId?" element={<FootballScore />}></Route>
+        <Route path="/cricket/:dateId?" element={<CricketScore />}></Route>
+        <Route
+          path="/basketball/:dateId?"
+          element={<BasketballScore />}
+        ></Route>
         <Route
           path="/football/:compName/:loadState"
           element={<FootballDetail />}

@@ -4,13 +4,10 @@ const FootballContext = createContext({
   matchDetail: {},
   matchDetailHandler: () => {},
   statsContainer: [],
-  // setStatsHandler: () => {},
   summaryContainer: {},
-  // setSummaryHandler: () => {},
   tableContainer: [],
-  // setTableHandler: () => {},
   lineupContainer: { lineups: [], subs: [] },
-  // setLineupHandler: () => {},
+
   setFootballDetailHandler: () => {},
   clearFootballDetailHandler: () => {},
 });
@@ -50,30 +47,10 @@ export const FootballContextProvider = (props) => {
     initialState
   );
   const { table, lineup, stats, summary, matchDetail } = footballState;
-  // const [matchDetail, setMatchDetail] = useState(storedMatchDetail || {});
-  // const [stats, setStats] = useState([]);
-  // const [summary, setSummary] = {
-  //   firstHalfIncidents: [],
-  //   secondHalfIncidents: [],
-  // };
-  // const [table, setTable] = useState([]);
-  // const [lineup, setLineup] = useState({ lineups: [], subs: [] });
   const matchDetailHandler = (matchDetail) => {
     dispatchFootball({ type: 'SET_MATCH_DETAIL', value: matchDetail });
     localStorage.setItem('matchDetail', JSON.stringify(matchDetail));
   };
-  // const setStatsHandler = (statSet) => {
-  //   setStats(statSet);
-  // };
-  // const setSummaryHandler = (summaryContainer) => {
-  //   setSummary(summaryContainer);
-  // };
-  // const setTableHandler = (tableContainer) => {
-  //   setTable(tableContainer);
-  // };
-  // const setLineupHandler = (lineupContainer) => {
-  //   setLineup(lineupContainer);
-  // };
   const setFootballDetailHandler = (container, detail) => {
     dispatchFootball({ type: `SET_${detail.toUpperCase()}`, value: container });
   };
@@ -89,10 +66,6 @@ export const FootballContextProvider = (props) => {
     tableContainer: table,
     setFootballDetailHandler,
     clearFootballDetailHandler,
-    // setSummaryHandler,
-    // setStatsHandler,
-    // setLineupHandler,
-    // setTableHandler,
   };
   return (
     <FootballContext.Provider value={matchContainer}>
