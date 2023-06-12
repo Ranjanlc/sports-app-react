@@ -1,17 +1,8 @@
 import classes from './CompetitionDetail.module.css';
 import StarJsx from '../../assets/scoreList/star-jsx';
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import { Fragment, useContext, useEffect, useReducer } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { URL } from '../../helpers/helpers';
 import Dropdown from '../../components/dropdown/Dropdown';
 import ErrorHandler from '../../components/error/ErrorHandler';
 import CompetitionContext from '../../store/competition-context';

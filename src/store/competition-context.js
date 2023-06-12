@@ -38,12 +38,10 @@ const competitionReducer = (state, { type, value }) => {
 };
 
 export const CompetitionContextProvider = (props) => {
-  const storedCompSet =
-    JSON.parse(localStorage.getItem('competitionSet')) || {};
   const initialState = {
     fixtures: {},
     results: {},
-    compContainer: storedCompSet || {
+    compContainer: JSON.parse(localStorage.getItem('competitionSet')) || {
       competitionName: '',
       venue: '',
       competitionImage: '',

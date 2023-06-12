@@ -34,9 +34,8 @@ const footballReducer = (state, { type, value }) => {
 };
 
 export const FootballContextProvider = (props) => {
-  const storedMatchDetail = JSON.parse(localStorage.getItem('matchDetail'));
   const initialState = {
-    matchDetail: storedMatchDetail || {},
+    matchDetail: JSON.parse(localStorage.getItem('matchDetail')) || {},
     table: [],
     lineup: { lineups: [], subs: [] },
     stats: [],

@@ -14,12 +14,6 @@ const DateList = ({ dateId, setDateHandler, date, sportName }) => {
   );
   const [dateNotClicked, setDateNotClicked] = useState(true);
   const curDay = apiDateConverter(new Date());
-  // if (!dateId && date !== curDay) {
-  //   setDateHandler(curDay);
-  // }
-  // if (dateId && dateId !== date) {
-  //   setDateHandler(dateId);
-  // }
   const changeStateHandler = (date) => {
     setDateHandler(date);
     setDateNotClicked(false);

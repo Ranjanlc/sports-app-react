@@ -60,7 +60,7 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
   const timeZoneOffsetHour = getTimeZoneOffSet();
   const graphqlQuery = {
     query: `
-     query FetchScoreList($isLive:Boolean!,$date:String,$timeZoneDiff:String,$isCricket:Boolean!,$sportName:String!){
+     query FetchScoreList($isLive:Boolean!,$date:String!,$timeZoneDiff:String,$isCricket:Boolean!,$sportName:String!){
       getMatchesList(date:$date,timeZoneDiff:$timeZoneDiff,sportName:$sportName,isLive:$isLive,isCricket:$isCricket)
       {
         matches {
@@ -158,7 +158,7 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
         date={date}
         sportName={sportName}
       />
-      {!isLoading && (matches?.length === 0 || !matches) && (
+      {!isLoading && isLive && !matches && (
         <div className={classes.fallback}>
           <Info /> There are no live matches as of now.
         </div>
