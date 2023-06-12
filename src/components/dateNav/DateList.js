@@ -7,7 +7,6 @@ import liveicon from '../../assets/scoreList/liveicon.png';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const DateList = ({ dateId, setDateHandler, date, sportName }) => {
-  console.log(dateId, date, sportName);
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(
     dateId ? new Date(dateId) : new Date()
