@@ -32,8 +32,8 @@ const FootballDetail = (props) => {
   };
   const graphqlQuery = {
     query: `
-      query FootballDetails($competitionId: Int!) {
-        getFootballDetails(compId:$competitionId) {
+      query FootballDetails($compId: Int!) {
+        getFootballDetails(compId:$compId) {
           matches {
             fixtures {
                matchId homeTeam {
@@ -56,7 +56,7 @@ const FootballDetail = (props) => {
       }
     `,
     variables: {
-      competitionId: +competitionId,
+      compId: +competitionId,
     },
   };
   const [data, isError, isLoading] = useHttp(

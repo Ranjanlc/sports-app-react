@@ -138,8 +138,8 @@ const CompetitionDetail = (props) => {
 
   const graphqlQueryDetails = {
     query: `
-    query CompDetail($dateState: String!,$competitionId:ID,$uniqueId:ID!, $isCricket: Boolean!) {
-      getCompetitionDetails(compId:$competitionId,uniqueId:$uniqueId, dateState: $dateState,isCricket:$isCricket) {
+    query CompDetail($dateState: String!,$compId:ID,$uniqueId:ID!, $isCricket: Boolean!) {
+      getCompetitionDetails(compId:$compId,uniqueId:$uniqueId, dateState: $dateState,isCricket:$isCricket) {
         matchSet {
           matches {
             homeTeam {
@@ -186,7 +186,7 @@ const CompetitionDetail = (props) => {
       // It is done because while storing id of basketball competition,we only fetch uniqueId and set it in competitionId.
       uniqueId: sportName === 'cricket' ? uniqueId : competitionId,
       // If cricket we are supposed to provide both uniqueId and tournament id for api reasons and for basketball,the competitionId is itself the uniqueId as we set in scoreList component.
-      competitionId: sportName === 'cricket' ? competitionId : null,
+      compId: sportName === 'cricket' ? competitionId : null,
     },
   };
 
@@ -227,8 +227,8 @@ const CompetitionDetail = (props) => {
 
   const graphqlQueryMatches = {
     query: `
-     query FetchCompMatches($dateState:String!,$seasonId:ID!,$page:Int,$uniqueId:ID!,$isCricket:Boolean!){
-        getCompMatches(uniqueId:$uniqueId,appSeasonId:$seasonId,page:$page,dateState:$dateState,isCricket:$isCricket) {
+     query FetchCompMatches($dateState:String!,$appSeasonId:ID!,$page:Int,$uniqueId:ID!,$isCricket:Boolean!){
+        getCompMatches(uniqueId:$uniqueId,appSeasonId:$appSeasonId,page:$page,dateState:$dateState,isCricket:$isCricket) {
           matches {
               homeTeam {
               name imageUrl id
@@ -245,7 +245,7 @@ const CompetitionDetail = (props) => {
       dateState: matchState === 'fixtures' ? 'next' : 'last',
       isCricket: sportName === 'cricket',
       page: +page,
-      seasonId,
+      appSeasonId: seasonId,
       // It is done because while storing id of basketball competition,we only fetch uniqueId and set it in competitionId.
       uniqueId: sportName === 'cricket' ? uniqueId : competitionId,
     },
