@@ -62,7 +62,7 @@ const FootballIncident = (props) => {
         <span className={classes.minute}>{`${minute}${
           minuteExtended ? `+${minuteExtended}'` : `'`
         }`}</span>
-        <img src={homeImageUrl} />
+        <img src={homeImageUrl} alt="Home Team" />
         <span className={classes.player}>{playerName}</span>
         {incident === 'yellowCard' ? (
           <Card color="yellow" />
@@ -119,7 +119,7 @@ const FootballIncident = (props) => {
             <Card color="red" />
           )}
           <span className={classes.player}>{playerName}</span>
-          <img src={awayImageUrl} />
+          <img src={awayImageUrl} alt="Away Team" />
         </div>
       </div>
     );

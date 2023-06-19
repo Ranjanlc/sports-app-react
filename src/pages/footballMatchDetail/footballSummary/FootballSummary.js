@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect } from 'react';
 import FootballContext from '../../../store/football-context';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import classes from './FootballSummary.module.css';
@@ -6,7 +6,6 @@ import FootballIncident from './FootballIncident';
 import Info from '../../../assets/scoreList/info';
 import football from '../../../assets/matchDetail/football.png';
 import missedGoal from '../../../assets/matchDetail/football-cross.png';
-import { URL } from '../../../helpers/helpers';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
 
@@ -91,7 +90,7 @@ const FootballSummary = (props) => {
       matchId,
     },
   };
-  const toFetch = firstHalfIncidents.length === 0 && matchStatus !== 'NS';
+  const toFetch = firstHalfIncidents?.length === 0 && matchStatus !== 'NS';
   console.log(toFetch);
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
@@ -104,41 +103,6 @@ const FootballSummary = (props) => {
       setFootballDetailHandler(data, 'summary');
     }
   }, [data, setFootballDetailHandler]);
-  // if (isLoading !== loading) {
-  //   setIsLoading(loading);
-  // }
-  // if (error) {
-  //   setIsError(error);
-  // }
-  // const fetchMatchSummary = useCallback(async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await fetch(URL, {
-  //       method: 'POST',
-  //       body: JSON.stringify(graphqlQuery),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     const data = await res.json();
-  //     if (!res.ok || data.errors) {
-  //       throw new Error(data.errors.at(0).message);
-  //     }
-  //     const {
-  //       data: { getFootballMatchSummary },
-  //     } = data;
-  //     console.log(getFootballMatchSummary);
-  //     setFootballDetailHandler(getFootballMatchSummary, 'summary');
-  //     setIsLoading(false);
-  //   } catch (err) {
-  //     setIsError(err.message);
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   matchStatus !== 'NS' &&
-  //     firstHalfIncidents.length === 0 &&
-  //     fetchMatchSummary();
-  // }, []);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>
@@ -146,8 +110,8 @@ const FootballSummary = (props) => {
       </div>
     );
   }
-  console.log(firstHalfIncidents, extraTimeIncidents);
-  const firstHalfEl = firstHalfIncidents.map((incidentSet, i) => {
+  console.log(firstHalfIncidents, secondHalfIncidents, extraTimeIncidents);
+  const firstHalfEl = firstHalfIncidents?.map((incidentSet, i) => {
     return <FootballIncident incidentSet={incidentSet} key={i} />;
   });
   const secondHalfEl = secondHalfIncidents?.map((incidentSet, i) => (
@@ -171,7 +135,7 @@ const FootballSummary = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           PEN
-          <img src={missedGoal} />
+          <img src={missedGoal} alt="Missed Goal" />
         </div>
       );
     }
@@ -205,7 +169,11 @@ const FootballSummary = (props) => {
             (!homeTeam && <div className={classes.decider}>Decider:</div>)}
           {homeTeam && (
             <div className={classes.home}>
-              <img src={homeImageUrl} className={classes.logo} />
+              <img
+                src={homeImageUrl}
+                className={classes.logo}
+                alt="Home team logo"
+              />
               <div className={classes['player-container']}>
                 <span className={classes.player}>{homePlayer}</span>
                 <span className={classes.score}>{homeScore.join('-')}</span>
@@ -222,11 +190,7 @@ const FootballSummary = (props) => {
                 </span>
                 <span className={classes.score}>{awayScore.join('-')}</span>
               </div>
-              <img
-                src={awayImageUrl}
-                alt="Away Image"
-                className={classes.logo}
-              />
+              <img src={awayImageUrl} alt="Away " className={classes.logo} />
             </div>
           )}
         </main>
@@ -250,7 +214,9 @@ const FootballSummary = (props) => {
             {homeHTScore}-{awayHTScore}
           </div>
           {secondHalfEl && secondHalfEl}
-          {matchStatus === 'FT' && (
+          {(matchStatus === 'FT' ||
+            matchStatus === 'AET' ||
+            matchStatus === 'AP') && (
             <div className={`${classes.card} ${classes.time} ${classes.full}`}>
               <span className={classes.minute}>FT</span>
               {homeFTScore}-{awayFTScore}
@@ -270,9 +236,17 @@ const FootballSummary = (props) => {
             >
               <span>Penalty Shootout</span>
               <div className={classes['penalty-score']}>
-                <img src={homeImageUrl} className={classes.logo} />
+                <img
+                  src={homeImageUrl}
+                  className={classes.logo}
+                  alt="Home team"
+                />
                 {homeShootoutScore}-{awayShootoutScore}
-                <img src={awayImageUrl} className={classes.logo} />
+                <img
+                  src={awayImageUrl}
+                  className={classes.logo}
+                  alt="Away team"
+                />
               </div>
             </div>
           )}

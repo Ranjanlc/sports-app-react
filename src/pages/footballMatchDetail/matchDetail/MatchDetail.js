@@ -1,6 +1,6 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import classes from './MatchDetail.module.css';
-import { URL, convertToReadableStatus } from '../../../helpers/helpers';
+import { convertToReadableStatus } from '../../../helpers/helpers';
 import People from '../../../assets/matchDetail/people';
 import Stadium from '../../../assets/matchDetail/stadium.svg';
 import Referee from '../../../assets/matchDetail/referee.svg';
@@ -133,9 +133,11 @@ const MatchDetail = () => {
                   <img src={Calendar} alt="dcsa" />
                   {startDate}
                 </span>
-                <span>
-                  <img src={Stadium} alt="stadium" /> {venue}
-                </span>
+                {venue && (
+                  <span>
+                    <img src={Stadium} alt="stadium" /> {venue}
+                  </span>
+                )}
               </div>
               <div>
                 {spectators && (
