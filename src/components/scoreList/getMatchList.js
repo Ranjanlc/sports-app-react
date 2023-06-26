@@ -5,14 +5,15 @@ import dummyLogo from '../../assets/scoreList/dummy-logo.png';
 import cricketBat from '../../assets/scoreList/cricket-bat.png';
 import { refineCricketScores } from '../../helpers/helpers';
 import classes from './getMatchList.module.css';
+import { matchClickHandler } from '../../helpers/helpers';
+import Image from '../ui/Image';
 
 const getMatchList = (
   matches,
   sportName,
   competitionClickHandler,
-  matchClickHandler,
   matchDetailHandler,
-  clearFootballDetailHandler,
+  clearMatchDetailHandler,
   navigate
 ) => {
   const matchList = matches.map((competition) => {
@@ -39,6 +40,7 @@ const getMatchList = (
         awayScore,
         homeScore,
         winnerTeam,
+        note,
         homeTeam: {
           imageUrl: homeImageUrl,
           name: homeTeamName,
@@ -114,7 +116,7 @@ const getMatchList = (
         ));
       const matchDetail = {
         matchId,
-        matchStatus,
+        matchStatus: matchStatus !== 'Ended' ? matchStatus : note,
         homeTeamName,
         awayTeamName,
         homeImageUrl,
@@ -125,6 +127,7 @@ const getMatchList = (
         displayTime,
         competitionName,
         competitionId,
+        uniqueId,
         homeTeamId,
         awayTeamId,
       };
@@ -136,8 +139,9 @@ const getMatchList = (
             null,
             matchDetail,
             matchDetailHandler,
-            clearFootballDetailHandler,
-            navigate
+            clearMatchDetailHandler,
+            navigate,
+            sportName
           )}
         >
           <div className={classes['match-item']}>
@@ -167,10 +171,10 @@ const getMatchList = (
                       : ''
                   }
                 >
-                  <img src={`${homeUrl}`} alt="Home" />
+                  <Image src={`${homeUrl}`} alt="Home" />
                   {homeTeamName}
                   {homeIsBatting && matchStatus !== 'Ended' && (
-                    <img src={cricketBat} className={classes.bat} alt="" />
+                    <Image src={cricketBat} className={classes.bat} alt="" />
                   )}
                 </div>
                 <div
@@ -180,10 +184,10 @@ const getMatchList = (
                       : ''
                   }
                 >
-                  <img src={`${awayUrl}`} alt="Away" />
+                  <Image src={`${awayUrl}`} alt="Away" />
                   {awayTeamName}
                   {awayIsBatting && matchStatus !== 'Ended' && (
-                    <img src={cricketBat} className={classes.bat} alt="" />
+                    <Image src={cricketBat} className={classes.bat} alt="" />
                   )}
                 </div>
               </div>
@@ -225,10 +229,10 @@ const getMatchList = (
                   matchStatus === 'Abandoned'
                 ) &&
                 cricketScore}
-              <img src={favourites} alt="star" className={classes.star} />
+              <Image src={favourites} alt="star" className={classes.star} />
             </div>
           </div>
-          {event.note && <div className={classes.note}>{event.note}</div>}
+          {note && <div className={classes.note}>{note}</div>}
         </div>
       );
     });
@@ -240,7 +244,7 @@ const getMatchList = (
         }`}
       >
         <div className={classes['title-container']}>
-          <img src={`${competitionImage}`} alt="Flag" />
+          <Image src={`${competitionImage}`} alt="Flag" />
           <div className={classes.title}>
             <span
               className={classes.competition}

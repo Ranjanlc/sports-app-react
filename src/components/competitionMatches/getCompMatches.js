@@ -2,11 +2,21 @@ import StarJsx from '../../assets/scoreList/star-jsx';
 import dummyLogo from '../../assets/scoreList/dummy-logo.png';
 import cricketBat from '../../assets/scoreList/cricket-bat.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
-import { refineCricketScores } from '../../helpers/helpers';
+import { matchClickHandler, refineCricketScores } from '../../helpers/helpers';
 
 import classes from './getCompMatches.module.css';
+import Image from '../ui/Image';
 
-const getCompetitionMatches = (matches, sportName, matchState) => {
+const getCompetitionMatches = (
+  matches,
+  sportName,
+  competitionId,
+  competitionName,
+  matchState,
+  matchDetailHandler,
+  clearMatchDetailHandler,
+  navigate
+) => {
   const compMatches = matches.map((event) => {
     const {
       matchId,
@@ -74,8 +84,35 @@ const getCompetitionMatches = (matches, sportName, matchState) => {
           </div>
         </div>
       );
+    const matchDetail = {
+      matchId,
+      matchStatus,
+      homeTeamName,
+      awayTeamName,
+      homeImageUrl,
+      awayImageUrl,
+      homeScore,
+      awayScore,
+      winnerTeam,
+      displayTime,
+      competitionName,
+      competitionId,
+      homeTeamId,
+      awayTeamId,
+    };
     return (
-      <div className={classes['match-item']} key={matchId}>
+      <div
+        className={classes['match-item']}
+        key={matchId}
+        onClick={matchClickHandler.bind(
+          null,
+          matchDetail,
+          matchDetailHandler,
+          clearMatchDetailHandler,
+          navigate,
+          sportName
+        )}
+      >
         <div className={classes.lhs}>
           <div className={classes['date-container']}>
             <div className={classes.date}>{displayDate}</div>
@@ -89,10 +126,10 @@ const getCompetitionMatches = (matches, sportName, matchState) => {
                 matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
               }
             >
-              <img src={homeUrl} alt="Home" />
+              <Image src={homeUrl} alt="Home" />
               {homeTeamName}
               {homeIsBatting && matchStatus !== 'Ended' && (
-                <img src={cricketBat} className={classes.bat} alt="" />
+                <Image src={cricketBat} className={classes.bat} alt="" />
               )}
             </div>
             <div
@@ -100,10 +137,10 @@ const getCompetitionMatches = (matches, sportName, matchState) => {
                 matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
               }
             >
-              <img src={awayUrl} alt="Away" />
+              <Image src={awayUrl} alt="Away" />
               {awayTeamName}
               {awayIsBatting && matchStatus !== 'Ended' && (
-                <img src={cricketBat} className={classes.bat} alt="" />
+                <Image src={cricketBat} className={classes.bat} alt="" />
               )}
             </div>
           </div>
@@ -123,9 +160,8 @@ export const getFootballMatches = (
   matchState,
   competitionId,
   competitionName,
-  matchClickHandler,
   matchDetailHandler,
-  clearFootballDetailHandler,
+  clearMatchDetailHandler,
   navigate
 ) => {
   const matchSet = matches[matchState].map((event) => {
@@ -166,8 +202,9 @@ export const getFootballMatches = (
           null,
           matchDetail,
           matchDetailHandler,
-          clearFootballDetailHandler,
-          navigate
+          clearMatchDetailHandler,
+          navigate,
+          'football'
         )}
       >
         <div className={classes.lhs}>
@@ -183,7 +220,7 @@ export const getFootballMatches = (
                 matchStatus === 'FT' && winnerTeam !== 1 ? classes.loser : ''
               }
             >
-              <img src={homeUrl} alt="Home" />
+              <Image src={homeUrl} alt="Home" />
               {homeTeamName}
             </div>
             <div
@@ -191,7 +228,7 @@ export const getFootballMatches = (
                 matchStatus === 'FT' && winnerTeam !== 2 ? classes.loser : ''
               }
             >
-              <img src={awayUrl} alt="Away" />
+              <Image src={awayUrl} alt="Away" />
               {awayTeamName}
             </div>
           </div>

@@ -6,17 +6,18 @@ import Stadium from '../../../assets/matchDetail/stadium.svg';
 import Referee from '../../../assets/matchDetail/referee.svg';
 import Calendar from '../../../assets/matchDetail/calendar.svg';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import FootballContext from '../../../store/football-context';
+import MatchContext from '../../../store/match-context';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
+import Image from '../../../components/ui/Image';
 // import Stadium from '../../assets/stadium';
 const MatchDetail = () => {
   const [matchInfo, setMatchInfo] = useState({});
   // const [isLoading, setIsLoading] = useState(false);
   // const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
-  const ctx = useContext(FootballContext);
+  const ctx = useContext(MatchContext);
   const {
     matchDetail: {
       matchStatus,
@@ -81,7 +82,7 @@ const MatchDetail = () => {
             <article className={classes['match']}>
               <div className={classes['match-lhs']}>
                 {homeTeamName}
-                <img src={homeImageUrl} alt="dasd" />
+                <Image src={homeImageUrl} alt="dasd" />
               </div>
               <main className={classes['score-container']}>
                 <div className={classes['match-score']}>
@@ -124,18 +125,18 @@ const MatchDetail = () => {
 
               <div className={classes['match-rhs']}>
                 {awayTeamName}
-                <img src={awayImageUrl} alt="" />
+                <Image src={awayImageUrl} alt="" />
               </div>
             </article>
             <main className={classes.info}>
               <div>
                 <span>
-                  <img src={Calendar} alt="dcsa" />
+                  <Image src={Calendar} alt="dcsa" />
                   {startDate}
                 </span>
                 {venue && (
                   <span>
-                    <img src={Stadium} alt="stadium" /> {venue}
+                    <Image src={Stadium} alt="stadium" /> {venue}
                   </span>
                 )}
               </div>
@@ -148,7 +149,7 @@ const MatchDetail = () => {
                 )}
                 {refName && (
                   <span>
-                    <img src={Referee} alt="Ref" />
+                    <Image src={Referee} alt="Ref" />
                     {refName}({refCountry})
                   </span>
                 )}

@@ -1,15 +1,15 @@
 import classes from './FootballDetail.module.css';
 import StarJsx from '../../assets/scoreList/star-jsx';
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import FootballStandings from '../../components/standings/FootballStandings';
-import FootballContext from '../../store/football-context';
-import { URL, matchClickHandler } from '../../helpers/helpers';
+import MatchContext from '../../store/match-context';
 import CompetitionContext from '../../store/competition-context';
 import { getFootballMatches } from '../../components/competitionMatches/getCompMatches';
 import ErrorHandler from '../../components/error/ErrorHandler';
 import useHttp from '../../hooks/use-http';
+import Image from '../../components/ui/Image';
 
 const FootballDetail = (props) => {
   const [matches, setMatches] = useState(null);
@@ -21,8 +21,8 @@ const FootballDetail = (props) => {
   const [matchState, setMatchState] = useState(loadState);
   const baseUrl = pathname.split('/').slice(0, -1).join('/');
   const urlState = pathname.split('/').slice(-1).at(0);
-  const ctx = useContext(FootballContext);
-  const { matchDetailHandler, clearFootballDetailHandler } = ctx;
+  const ctx = useContext(MatchContext);
+  const { matchDetailHandler, clearMatchDetailHandler } = ctx;
   const { competitionSet } = useContext(CompetitionContext);
   const { competitionName, venue, competitionImage, competitionId } =
     competitionSet;
@@ -64,52 +64,18 @@ const FootballDetail = (props) => {
     'getFootballDetails',
     !matches
   );
-  if (data) {
-    const { matches, standings } = data;
-    setMatches(matches);
-    setStandings(standings);
-    // If there is no matches left.
-    if (matches.fixtures.length === 0) {
-      navigate(`${baseUrl}/results`, { replace: true });
-      setMatchState('results');
-    }
-  }
-  /*
-  const fetchCompDetails = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(URL, {
-        method: 'POST',
-        body: JSON.stringify(graphqlQuery),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await res.json();
-      if (!res.ok || data.errors) {
-        throw new Error(data.errors.at(0).message);
-      }
-      const {
-        data: {
-          getFootballDetails: { matches, standings },
-        },
-      } = data;
+  useEffect(() => {
+    if (data) {
+      const { matches, standings } = data;
       setMatches(matches);
+      setStandings(standings);
       // If there is no matches left.
       if (matches.fixtures.length === 0) {
         navigate(`${baseUrl}/results`, { replace: true });
         setMatchState('results');
       }
-      setStandings(standings);
-      setIsLoading(false);
-    } catch (err) {
-      setIsError(err.message);
     }
-  }, [baseUrl]);
-  useEffect(() => {
-    fetchCompDetails();
-  }, [fetchCompDetails]);
-  */
+  }, [data, navigate, baseUrl]);
   const matchStateChangeHandler = (state) => {
     // To replace fixtures/results with results/fixtures resp.
     if (state === 'fixtures' && urlState !== 'fixtures') {
@@ -129,9 +95,8 @@ const FootballDetail = (props) => {
       matchState,
       competitionId,
       competitionName,
-      matchClickHandler,
       matchDetailHandler,
-      clearFootballDetailHandler,
+      clearMatchDetailHandler,
       navigate
     );
   return (
@@ -144,7 +109,7 @@ const FootballDetail = (props) => {
               &#8592;
             </span>
             <div className={classes.name}>
-              <img src={competitionImage} alt="Flag" />
+              <Image src={competitionImage} alt="Flag" />
               <div className={classes.title}>
                 <span className={classes.competition}>{competitionName}</span>
                 <span className={classes.country}>{venue}</span>
@@ -190,16 +155,17 @@ const FootballDetail = (props) => {
               )}
               {!isLoading && <Fragment>{events}</Fragment>}
             </div>
-            {
-              <div className={classes['standing-container']}>
-                {isLoading && (
-                  <div className="centered">
-                    <LoadingSpinner />
-                  </div>
-                )}{' '}
-                {!isLoading && <FootballStandings dirtyStandings={standings} />}
-              </div>
-            }
+
+            <div className={classes['standing-container']}>
+              {isLoading && (
+                <div className="centered">
+                  <LoadingSpinner />
+                </div>
+              )}{' '}
+              {!isLoading && standings.length && (
+                <FootballStandings dirtyStandings={standings} />
+              )}
+            </div>
           </div>
         </Fragment>
       )}

@@ -2,10 +2,11 @@ import { useContext } from 'react';
 import Card from '../../../assets/matchDetail/card';
 import FootballIcon from '../../../assets/matchDetail/football-icon';
 import classes from './FootballIncident.module.css';
-import FootballContext from '../../../store/football-context';
+import MatchContext from '../../../store/match-context';
 import Boot from '../../../assets/matchDetail/boot-icon';
 import missedGoal from '../../../assets/matchDetail/football-cross.png';
 import football from '../../../assets/matchDetail/football.png';
+import Image from '../../../components/ui/Image';
 const FootballIncident = (props) => {
   const {
     minute,
@@ -18,7 +19,7 @@ const FootballIncident = (props) => {
     playerName,
     minuteExtended,
   } = props.incidentSet;
-  const ctx = useContext(FootballContext);
+  const ctx = useContext(MatchContext);
   // const playerName=dirtyPlayerName.split(' ').length>3?dirtyPlayerName
   const {
     matchDetail: { homeImageUrl, awayImageUrl },
@@ -26,7 +27,7 @@ const FootballIncident = (props) => {
   const classifyGoal = (incident) => {
     if (incident === 'goal') {
       // return <FootballIcon />;
-      return <img src={football} alt="football" />;
+      return <Image src={football} alt="football" />;
     }
     if (incident === 'ownGoal') {
       return <FootballIcon color="red" />;
@@ -35,7 +36,7 @@ const FootballIncident = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           VAR
-          <img src={missedGoal} alt="VAR" />
+          <Image src={missedGoal} alt="VAR" />
         </div>
       );
     }
@@ -43,7 +44,7 @@ const FootballIncident = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           PEN
-          <img src={football} alt="football" />
+          <Image src={football} alt="football" />
         </div>
       );
     }
@@ -51,7 +52,7 @@ const FootballIncident = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           PEN
-          <img src={missedGoal} alt="MissedPEN" />
+          <Image src={missedGoal} alt="MissedPEN" />
         </div>
       );
     }
@@ -62,7 +63,7 @@ const FootballIncident = (props) => {
         <span className={classes.minute}>{`${minute}${
           minuteExtended ? `+${minuteExtended}'` : `'`
         }`}</span>
-        <img src={homeImageUrl} alt="Home Team" />
+        <Image src={homeImageUrl} alt="Home Team" />
         <span className={classes.player}>{playerName}</span>
         {incident === 'yellowCard' ? (
           <Card color="yellow" />
@@ -82,7 +83,7 @@ const FootballIncident = (props) => {
           minuteExtended ? `+${minuteExtended}'` : `'`
         }`}</span>
         <div className={classes.left}>
-          <img
+          <Image
             src={incident !== 'ownGoal' ? homeImageUrl : awayImageUrl}
             alt="dcas"
           />
@@ -119,7 +120,7 @@ const FootballIncident = (props) => {
             <Card color="red" />
           )}
           <span className={classes.player}>{playerName}</span>
-          <img src={awayImageUrl} alt="Away Team" />
+          <Image src={awayImageUrl} alt="Away Team" />
         </div>
       </div>
     );
@@ -151,7 +152,7 @@ const FootballIncident = (props) => {
               </span>
             )}
           </span>
-          <img
+          <Image
             src={incident !== 'ownGoal' ? awayImageUrl : homeImageUrl}
             alt="dcas"
           />

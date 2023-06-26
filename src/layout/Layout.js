@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import classes from './Layout.module.css';
 import logo from '../assets/layout/logo.png';
 import football from '../assets/layout/layout-football.png';

@@ -1,16 +1,16 @@
 import ChartBar from '../../../components/chart/ChartBar';
 import classes from './FootballStats.module.css';
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react';
-import FootballContext from '../../../store/football-context';
+import { Fragment, useContext, useEffect } from 'react';
+import MatchContext from '../../../store/match-context';
 import Info from '../../../assets/scoreList/info';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import { URL } from '../../../helpers/helpers';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
+import Image from '../../../components/ui/Image';
 const FootballStats = () => {
   // const [isLoading, setIsLoading] = useState(false);
   // const [isError, setIsError] = useState(null);
-  const ctx = useContext(FootballContext);
+  const ctx = useContext(MatchContext);
   const {
     matchDetail: {
       matchStatus,
@@ -21,7 +21,7 @@ const FootballStats = () => {
       matchId,
     },
     statsContainer,
-    setFootballDetailHandler,
+    setMatchDetailHandler,
   } = ctx;
   const graphqlQuery = {
     query: `
@@ -45,9 +45,9 @@ const FootballStats = () => {
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
     if (data) {
-      setFootballDetailHandler(data, 'stats');
+      setMatchDetailHandler(data, 'stats');
     }
-  }, [data, setFootballDetailHandler]);
+  }, [data, setMatchDetailHandler]);
   // if (isLoading !== loading) {
   //   setIsLoading(loading);
   // }
@@ -72,7 +72,7 @@ const FootballStats = () => {
       const {
         data: { getFootballMatchStats },
       } = data;
-      setFootballDetailHandler(getFootballMatchStats, 'stats');
+      setMatchDetailHandler(getFootballMatchStats, 'stats');
       setIsLoading(false);
     } catch (err) {
       setIsError(err.message);
@@ -102,11 +102,11 @@ const FootballStats = () => {
         <Fragment>
           <nav className={classes['team-container']}>
             <div className={classes.home}>
-              <img src={homeImageUrl} alt="hehe" />
+              <Image src={homeImageUrl} alt="hehe" />
               <span>{homeTeamName}</span>
             </div>
             <div className={classes.away}>
-              <img src={awayImageUrl} alt="hehe" />
+              <Image src={awayImageUrl} alt="hehe" />
               <span>{awayTeamName}</span>
             </div>
           </nav>

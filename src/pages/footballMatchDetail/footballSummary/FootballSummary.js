@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect } from 'react';
-import FootballContext from '../../../store/football-context';
+import MatchContext from '../../../store/match-context';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import classes from './FootballSummary.module.css';
 import FootballIncident from './FootballIncident';
@@ -8,12 +8,13 @@ import football from '../../../assets/matchDetail/football.png';
 import missedGoal from '../../../assets/matchDetail/football-cross.png';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
+import Image from '../../../components/ui/Image';
 
 const FootballSummary = (props) => {
   // const [isLoading, setIsLoading] = useState(false);
   // const [isError, setIsError] = useState(null);
   // const [penaltyContainer, setPenaltyContainer] = useState(null);
-  const ctx = useContext(FootballContext);
+  const ctx = useContext(MatchContext);
   const {
     matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },
     summaryContainer: {
@@ -30,7 +31,7 @@ const FootballSummary = (props) => {
       extraTimeIncidents,
       penaltyShootout: penaltyContainer,
     },
-    setFootballDetailHandler,
+    setMatchDetailHandler,
   } = ctx;
   const graphqlQuery = {
     query: `
@@ -91,7 +92,6 @@ const FootballSummary = (props) => {
     },
   };
   const toFetch = firstHalfIncidents?.length === 0 && matchStatus !== 'NS';
-  console.log(toFetch);
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getFootballMatchSummary',
@@ -100,9 +100,9 @@ const FootballSummary = (props) => {
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
     if (data) {
-      setFootballDetailHandler(data, 'summary');
+      setMatchDetailHandler(data, 'summary');
     }
-  }, [data, setFootballDetailHandler]);
+  }, [data, setMatchDetailHandler]);
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>
@@ -110,7 +110,6 @@ const FootballSummary = (props) => {
       </div>
     );
   }
-  console.log(firstHalfIncidents, secondHalfIncidents, extraTimeIncidents);
   const firstHalfEl = firstHalfIncidents?.map((incidentSet, i) => {
     return <FootballIncident incidentSet={incidentSet} key={i} />;
   });
@@ -127,7 +126,7 @@ const FootballSummary = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           PEN
-          <img src={football} alt="football" />
+          <Image src={football} alt="football" />
         </div>
       );
     }
@@ -135,7 +134,7 @@ const FootballSummary = (props) => {
       return (
         <div className={classes['goal-icon__container']}>
           PEN
-          <img src={missedGoal} alt="Missed Goal" />
+          <Image src={missedGoal} alt="Missed Goal" />
         </div>
       );
     }
@@ -144,7 +143,6 @@ const FootballSummary = (props) => {
   if (penaltyContainer) {
     for (let i = 0; i < penaltyContainer.length; i += 2) {
       const j = i + 1;
-      console.log(penaltyContainer);
       const homeTeam =
         penaltyContainer[i].team === 1
           ? penaltyContainer[i]
@@ -169,7 +167,7 @@ const FootballSummary = (props) => {
             (!homeTeam && <div className={classes.decider}>Decider:</div>)}
           {homeTeam && (
             <div className={classes.home}>
-              <img
+              <Image
                 src={homeImageUrl}
                 className={classes.logo}
                 alt="Home team logo"
@@ -190,7 +188,7 @@ const FootballSummary = (props) => {
                 </span>
                 <span className={classes.score}>{awayScore.join('-')}</span>
               </div>
-              <img src={awayImageUrl} alt="Away " className={classes.logo} />
+              <Image src={awayImageUrl} alt="Away " className={classes.logo} />
             </div>
           )}
         </main>
@@ -236,13 +234,13 @@ const FootballSummary = (props) => {
             >
               <span>Penalty Shootout</span>
               <div className={classes['penalty-score']}>
-                <img
+                <Image
                   src={homeImageUrl}
                   className={classes.logo}
                   alt="Home team"
                 />
                 {homeShootoutScore}-{awayShootoutScore}
-                <img
+                <Image
                   src={awayImageUrl}
                   className={classes.logo}
                   alt="Away team"

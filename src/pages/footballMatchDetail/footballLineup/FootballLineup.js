@@ -1,13 +1,14 @@
 import classes from './FootballLineup.module.css';
 import PlayerCircle from '../../../components/ui/PlayerCircle';
 import { Fragment, useContext, useEffect } from 'react';
-import FootballContext from '../../../store/football-context';
+import MatchContext from '../../../store/match-context';
 import SubOut from '../../../assets/matchDetail/sub-out';
 import SubIn from '../../../assets/matchDetail/sub-in';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import Info from '../../../assets/scoreList/info';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
+import Image from '../../../components/ui/Image';
 const FootballLineup = (props) => {
   const {
     matchDetail: {
@@ -18,9 +19,11 @@ const FootballLineup = (props) => {
       matchId,
       matchStatus,
     },
-    setFootballDetailHandler,
+    setMatchDetailHandler,
     lineupContainer,
-  } = useContext(FootballContext);
+    setMatchDetailError,
+    matchDetailError: { lineupError },
+  } = useContext(MatchContext);
   const { lineups, subs } = lineupContainer;
   const graphqlQuery = {
     query: `
@@ -53,7 +56,6 @@ const FootballLineup = (props) => {
     },
   };
   const toFetch = lineups.length === 0;
-  console.log(toFetch);
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getFootballMatchLineup',
@@ -61,10 +63,13 @@ const FootballLineup = (props) => {
   );
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
-    if (data) {
-      setFootballDetailHandler(data, 'lineup');
-    }
-  }, [data, setFootballDetailHandler]);
+    data && setMatchDetailHandler(data, 'lineup');
+    isError &&
+      setMatchDetailError(
+        'Lineups will appear once the match starts',
+        'lineup'
+      );
+  }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
   const { players: homePlayers = '', coach: homeCoach = '' } =
     lineups.find((el) => el.team === 1) || {};
   const { players: awayPlayers = '', coach: awayCoach = '' } =
@@ -78,12 +83,11 @@ const FootballLineup = (props) => {
           : formatPosition.slice(0, 1);
       if (acc[index]) {
         acc[index].push({ playerId, playerName, playerNumber });
-        return acc;
       }
       if (!acc[index]) {
         acc[index] = [{ playerId, playerName, playerNumber }];
-        return acc;
       }
+      return acc;
     }, {});
     return reducedLineup;
   };
@@ -176,7 +180,10 @@ const FootballLineup = (props) => {
               {minuteExtended ? `+${minuteExtended}` : ``}'
             </span>
             <span>
-              <img src={team === 1 ? homeImageUrl : awayImageUrl} />
+              <Image
+                src={team === 1 ? homeImageUrl : awayImageUrl}
+                alt="team"
+              />
             </span>
             <span className={classes['sub-out']}>
               <span>{subOutPlayerName}</span>
@@ -191,8 +198,8 @@ const FootballLineup = (props) => {
 
   return (
     <Fragment>
-      {isError && <ErrorHandler message={isError} />}
-      {isLoading && !isError && (
+      {lineupError && <ErrorHandler message={lineupError} />}
+      {isLoading && !lineupError && (
         <div className="centered">
           <LoadingSpinner />
         </div>
@@ -204,7 +211,7 @@ const FootballLineup = (props) => {
           No predicted lineups yet
         </div>
       )}
-      {!isLoading && lineups[0]?.players?.length !== 0 && (
+      {!isLoading && !lineupError && lineups[0]?.players?.length !== 0 && (
         <article className={classes.container}>
           <main className={classes['lineup-container']}>
             {!isLoading && matchStatus === 'NS' && (
@@ -216,7 +223,7 @@ const FootballLineup = (props) => {
             <div className={classes['lineups']}>
               <div className={classes.summary}>
                 <span>
-                  <img src={homeImageUrl} />
+                  <Image src={homeImageUrl} alt="team" />
                   {homeTeamName}
                 </span>
                 <span>Coach : {homeCoach}</span>
@@ -227,7 +234,7 @@ const FootballLineup = (props) => {
               <section className={classes['away-lineups']}>
                 <div className={classes.summary}>
                   <span>
-                    <img src={awayImageUrl} />
+                    <Image src={awayImageUrl} alt="Away Team" />
                     {awayTeamName}
                   </span>
                   <span>Coach : {awayCoach}</span>
@@ -246,11 +253,11 @@ const FootballLineup = (props) => {
                 <span className={classes.title}>Substitute Players :</span>
                 <div className={classes['team-name__container']}>
                   <span>
-                    <img src={homeImageUrl} />
+                    <Image src={homeImageUrl} alt="Team" />
                     {homeTeamName}
                   </span>
                   <span className={classes.away}>
-                    <img src={awayImageUrl} />
+                    <Image src={awayImageUrl} alt="Away Team" />
                     {awayTeamName}
                   </span>
                 </div>

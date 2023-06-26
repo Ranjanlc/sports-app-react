@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './layout/Layout';
-import ScoreList from './components/scoreList/ScoreList';
 import FootballDetail from './pages/competition/FootballDetail';
 import CompetitionDetail from './pages/competition/CompetitionDetail';
 import MatchDetail from './pages/footballMatchDetail/matchDetail/MatchDetail';
@@ -12,17 +11,15 @@ import FootballScore from './pages/score/FootballScore';
 import CricketScore from './pages/score/CricketScore';
 import BasketballScore from './pages/score/BasketballScore';
 import LiveMatches from './pages/live/LiveMatches';
+import CricketMatchDetail from './pages/cricketMatchDetail/CricketMatchDetail';
+import CricketInnings from './pages/cricketMatchDetail/CricketInnings';
+import CricketTable from './pages/cricketMatchDetail/CricketTable';
 //TODO:Special class while game is playing.
 //NOT-IMP-TODO:If match is abandoned,do some styling
-// Major-TODO:Make the site responsive
-// Major-TODO:Make the team page working
-// Major-TODO:Make the matches page working
 // MAjOR___TODO:Make lineups responsive for various sizes
 // QLI_TODO:Add a send report button while showing error and send the report to database with the path where the error happened.
-// TODO:Maybe handle errrors.
-// TODO:Make graphql variable passing blending with the convention
-// TODO:Refactor matchClickHandler
-// MAJOR-TODO:When fetching fixtures,if its not available which is the case of finished tournaments,just load standings and results but dont load Error component.It is for competitionDetail,set similar for footballDetail too.
+// Major-TODO:Make competitionDetail page overflowing only in matches container. And make standings a table container
+// MAJOR_TODO:Add features like showing info on hover using position relative and absolute on cricket innings and many other pages.
 function App() {
   return (
     <Layout>
@@ -48,10 +45,16 @@ function App() {
           element={<CompetitionDetail />}
         ></Route>
         <Route path="/football/match/:matchId" element={<MatchDetail />}>
+          <Route index element={<Navigate to="summary" replace />} />
           <Route path="summary" element={<FootballSummary />}></Route>
           <Route path="stats" element={<FootballStats />}></Route>
           <Route path="lineups" element={<FootballLineup />}></Route>
           <Route path="table" element={<FootballTable />}></Route>
+        </Route>
+        <Route path="/cricket/match/:matchId" element={<CricketMatchDetail />}>
+          <Route index element={<Navigate to="innings" replace />} />
+          <Route path="innings" element={<CricketInnings />} />
+          <Route path="table" element={<CricketTable />}></Route>
         </Route>
       </Routes>
     </Layout>

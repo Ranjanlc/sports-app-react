@@ -3,15 +3,15 @@
   width: 50%;
   /* height: 10px; */
   position: relative;
-  margin: 2em;
+  margin: 1em 2em;
 }
 .select {
-  background-color: #2a2f3b;
+  background-color: #111213e1;
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px #2a2f3b solid;
+  border: 2px #141518 solid;
   border-radius: 0.5rem;
   padding: 1rem;
   width: fit-content;
@@ -24,7 +24,7 @@
   box-shadow: 0 0 0.8em #26489a;
 }
 .select:hover {
-  background: #323741;
+  background: #2e3136;
 }
 .caret {
   width: 0;

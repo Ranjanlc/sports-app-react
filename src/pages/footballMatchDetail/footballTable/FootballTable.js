@@ -1,24 +1,23 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import FootballStandings from '../../../components/standings/FootballStandings';
 import classes from './FootballTable.module.css';
-import FootballContext from '../../../store/football-context';
+import MatchContext from '../../../store/match-context';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import { URL } from '../../../helpers/helpers';
 import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
 
 const FootballTable = (props) => {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isError, setIsError] = useState(null);
   const {
     matchDetail: { competitionId, homeTeamId, awayTeamId },
     tableContainer,
-    setFootballDetailHandler,
-  } = useContext(FootballContext);
+    setMatchDetailHandler,
+    setMatchDetailError,
+    matchDetailError: { tableError },
+  } = useContext(MatchContext);
   const graphqlQuery = {
     query: `
-  query FootballTable($competitionId:ID!){
-    getFootballMatchTable(compId:$competitionId) {
+  query FootballTable($compId:ID!){
+    getFootballMatchTable(compId:$compId) {
       group
       teamId
       teamImageUrl
@@ -36,64 +35,35 @@ const FootballTable = (props) => {
   }
   `,
     variables: {
-      competitionId,
+      compId: competitionId,
     },
   };
-  const toFetch = tableContainer.length === 0;
+  const toFetch = !tableContainer.length && !tableError;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getFootballMatchTable',
     toFetch
   );
   useEffect(() => {
-    // To avoid mutating FootballContext while rendering of this component.
-    if (data) {
-      setFootballDetailHandler(data, 'table');
-    }
-  }, [data, setFootballDetailHandler]);
-  // if (isLoading !== loading) {
-  //   setIsLoading(loading);
-  // }
-  // if (error) {
-  //   setIsError(error);
-  // }
-  // const fetchMatchTable = useCallback(async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await fetch(URL, {
-  //       method: 'POST',
-  //       body: JSON.stringify(graphqlQuery),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     const data = await res.json();
-  //     if (!res.ok || data.errors) {
-  //       throw new Error(data.errors.at(0).message);
-  //     }
-  //     const {
-  //       data: { getFootballMatchTable },
-  //     } = data;
-  //     setFootballDetailHandler(getFootballMatchTable, 'table');
-  //     setIsLoading(false);
-  //   } catch (err) {
-  //     setIsError(err.message);
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   tableContainer.length === 0 && fetchMatchTable();
-  // }, [competitionId]);
+    if (data?.length === 0)
+      return setMatchDetailError(
+        'No standings available for this match',
+        'table'
+      );
+    data && setMatchDetailHandler(data, 'table');
+    isError && setMatchDetailError(isError, 'table');
+  }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
   return (
     <div
       className={tableContainer[0]?.group ? classes.group : classes.container}
     >
-      {isError && <ErrorHandler message={isError} />}
-      {isLoading && !isError && (
+      {tableError && <ErrorHandler message={tableError} />}
+      {isLoading && !tableError && (
         <div className="centered">
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && (
+      {!isLoading && !tableError && (
         <FootballStandings
           dirtyStandings={tableContainer}
           homeTeamId={homeTeamId}

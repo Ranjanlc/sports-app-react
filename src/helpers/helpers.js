@@ -44,15 +44,13 @@ export const convertToReadableStatus = (status) => {
 export const matchClickHandler = (
   matchDetail,
   matchDetailHandler,
-  clearFootballDetailHandler,
-  navigate
+  clearMatchDetailHandler,
+  navigate,
+  sport
 ) => {
-  clearFootballDetailHandler();
-  const { matchStatus, matchId } = matchDetail;
+  clearMatchDetailHandler();
+  const { matchId } = matchDetail;
   matchDetailHandler(matchDetail);
-  if (matchStatus === 'NS') {
-    navigate(`/football/match/${matchId}/lineups`);
-    return;
-  }
-  navigate(`/football/match/${matchId}/summary`);
+  navigate(`/${sport}/match/${matchId}`);
+  // redirect('/cricket');
 };

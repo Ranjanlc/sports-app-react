@@ -1,4 +1,4 @@
-import { createContext, useReducer, useState } from 'react';
+import { createContext, useCallback, useReducer } from 'react';
 
 const CompetitionContext = createContext({
   competitionSet: {},
@@ -61,13 +61,12 @@ export const CompetitionContextProvider = (props) => {
     // setCompetitionContainer(compSet);
     localStorage.setItem('competitionSet', JSON.stringify(compSet));
   };
-  const setMatchContainerHandler = (matchSet, state) => {
-    console.log(matchSet, state);
+  const setMatchContainerHandler = useCallback((matchSet, state) => {
     dispatchCompContext({
       type: `SET_${state.toUpperCase()}`,
       value: matchSet,
     });
-  };
+  }, []);
   const setCurPage = (page, state) => {
     dispatchCompContext({
       type: `SET_${state.toUpperCase()}_PAGE`,

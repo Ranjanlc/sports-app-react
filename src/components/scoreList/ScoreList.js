@@ -5,14 +5,10 @@ import classes from './ScoreList.module.css';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import FeaturedMatch from '../featuredMatch/FeaturedMatch';
-import {
-  convertSlugToDisplay,
-  matchClickHandler,
-  slugMaker,
-} from '../../helpers/helpers';
+import { convertSlugToDisplay, slugMaker } from '../../helpers/helpers';
 import Info from '../../assets/scoreList/info';
-import FootballContext from '../../store/football-context';
-import getMatchList from '../matchList/getMatchList';
+import MatchContext from '../../store/match-context';
+import getMatchList from './getMatchList';
 import CompetitionContext from '../../store/competition-context';
 import ErrorHandler from '../error/ErrorHandler';
 import DateList from '../dateNav/DateList';
@@ -28,9 +24,6 @@ const scoreReducer = (state, { type, value }) => {
   if (type === 'SET_FEATURED_MATCH') {
     return { ...state, featuredMatch: value };
   }
-  if (type === 'SET_LOAD_MATCHES') {
-    return { ...state, loadMatches: value };
-  }
   if (type === 'SET_LOADING') {
     return { ...state, isLoading: value };
   }
@@ -45,12 +38,11 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
     matches: null,
     featuredMatch: null,
     date: dateId || curDay,
-    loadMatches: true,
   });
-  const { date, featuredMatch, matches, loadMatches } = scoreState;
-  const ctx = useContext(FootballContext);
+  const { date, featuredMatch, matches } = scoreState;
+  const ctx = useContext(MatchContext);
   const navigate = useNavigate();
-  const { matchDetailHandler, clearFootballDetailHandler } = ctx;
+  const { matchDetailHandler, clearMatchDetailHandler } = ctx;
   const { setCompetitionHandler, clearCompetitionSet } =
     useContext(CompetitionContext);
   // To set title of document.
@@ -103,7 +95,6 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
       timeZoneDiff: timeZoneOffsetHour,
     },
   };
-  console.log(date, matches);
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getMatchesList',
@@ -113,7 +104,6 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
   useEffect(() => {
     if (data) {
       // setFetchD(false);
-      console.log('data bhitra kasari chiryoooo हँ', data);
       const { matches, featuredMatch } = data;
       dispatchScore({ type: 'SET_MATCHES', value: matches });
       // IN case we load live matches
@@ -129,12 +119,10 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
     // For resetting the fixtures/results and page once another competition is clicked
     clearCompetitionSet();
     setCompetitionHandler(compDetails);
-    navigate(`/${sportName}/${compSlug}/fixtures`);
+    // replaced coz it is seen that some have names like prem-22/23 which would result in routes not to be found.
+    navigate(`/${sportName}/${compSlug.replaceAll('/', '-')}/fixtures`);
   };
   const setDateHandler = (dateValue) => {
-    // setFetchD(true);
-    // dispatchScore({ type: 'SET_MATCHES', value: null });
-    // dispatchScore({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
     dispatchScore({ type: 'SET_DATE', value: dateValue });
   };
 
@@ -144,12 +132,10 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
       matches,
       sportName,
       competitionClickHandler,
-      matchClickHandler,
       matchDetailHandler,
-      clearFootballDetailHandler,
+      clearMatchDetailHandler,
       navigate
     );
-  console.log(competitionSet);
   return (
     <Fragment>
       <DateList

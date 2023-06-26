@@ -10,6 +10,7 @@
   font-weight: 700;
   /* to maintain aspect ratio */
   width: 759.5px;
+  flex-shrink: 0;
 }
 .predicted {
   display: flex;

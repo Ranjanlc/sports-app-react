@@ -1,13 +1,14 @@
 import { Fragment, useContext } from 'react';
 import classes from './FeaturedMatch.module.css';
 import { convertDateForDisplay } from '../../helpers/date-picker';
-import FootballContext from '../../store/football-context';
+import MatchContext from '../../store/match-context';
 import { useNavigate } from 'react-router-dom';
 import { matchClickHandler } from '../../helpers/helpers';
+import Image from '../ui/Image';
 const FeaturedMatch = (props) => {
   const { featuredMatchContainer, sportName } = props;
-  const { matchDetailHandler, clearFootballDetailHandler } =
-    useContext(FootballContext);
+  const { matchDetailHandler, clearMatchDetailHandler } =
+    useContext(MatchContext);
   const navigate = useNavigate();
   const {
     event: {
@@ -49,13 +50,14 @@ const FeaturedMatch = (props) => {
           null,
           matchDetail,
           matchDetailHandler,
-          clearFootballDetailHandler,
-          navigate
+          clearMatchDetailHandler,
+          navigate,
+          sportName
         )}
       >
         <div className={classes['featured-lhs']}>
           {homeTeamName.split(' ').at(0)}
-          <img src={homeImageUrl} alt="dasd" />
+          <Image src={homeImageUrl} alt="dasd" />
         </div>
         <div
           className={
@@ -102,7 +104,7 @@ const FeaturedMatch = (props) => {
         </div>
         <div className={classes['featured-rhs']}>
           {awayTeamName.split(' ').at(0)}
-          <img src={awayImageUrl} alt="" />
+          <Image src={awayImageUrl} alt="Away" />
         </div>
       </div>
     </Fragment>

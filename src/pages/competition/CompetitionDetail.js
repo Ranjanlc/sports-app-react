@@ -3,11 +3,13 @@ import StarJsx from '../../assets/scoreList/star-jsx';
 import { Fragment, useContext, useEffect, useReducer } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import Dropdown from '../../components/dropdown/Dropdown';
 import ErrorHandler from '../../components/error/ErrorHandler';
 import CompetitionContext from '../../store/competition-context';
 import getCompetitionMatches from '../../components/competitionMatches/getCompMatches';
 import useHttp from '../../hooks/use-http';
+import MatchContext from '../../store/match-context';
+import CompetitionStandings from '../../components/standings/CompetitionStandings';
+import Image from '../../components/ui/Image';
 
 const competitionReducer = (state, { type, value }) => {
   if (type === 'SET_MATCHES') {
@@ -21,12 +23,6 @@ const competitionReducer = (state, { type, value }) => {
   }
   if (type === 'SET_NEXT_PAGE') {
     return { ...state, nextPage: value };
-  }
-  if (type === 'SET_CUR_GROUP') {
-    return { ...state, curGroup: value };
-  }
-  if (type === 'SET_GROUP_CONTAINER') {
-    return { ...state, groupContainer: value };
   }
   if (type === 'SET_LOAD_MATCHES') {
     return { ...state, loadMatches: value };
@@ -46,6 +42,7 @@ const CompetitionDetail = (props) => {
   const navigate = useNavigate();
   const { loadState, sportName } = useParams();
   const { pathname } = useLocation();
+  const baseUrl = pathname.split('/').slice(0, -1).join('/');
   const urlState = pathname.split('/').slice(-1).at(0);
 
   const [competitionState, dispatchCompetition] = useReducer(
@@ -55,9 +52,6 @@ const CompetitionDetail = (props) => {
       standings: null,
       page: 0,
       seasonId: null,
-
-      curGroup: null,
-      groupContainer: null,
       nextPage: null,
 
       loadMatches: false,
@@ -70,8 +64,6 @@ const CompetitionDetail = (props) => {
     standings,
     page,
     seasonId,
-    curGroup,
-    groupContainer,
     nextPage,
     loadMatches,
     noFixture,
@@ -87,6 +79,8 @@ const CompetitionDetail = (props) => {
     curFixturePage,
     curResultPage,
   } = useContext(CompetitionContext);
+  const { matchDetailHandler, clearMatchDetailHandler } =
+    useContext(MatchContext);
   // The useEffect is concerned with persistence of results and fixtures.
   useEffect(() => {
     if (matchState === 'results') {
@@ -189,20 +183,20 @@ const CompetitionDetail = (props) => {
       compId: sportName === 'cricket' ? competitionId : null,
     },
   };
-
   const [data, isError, isLoading] = useHttp(
     graphqlQueryDetails,
     'getCompetitionDetails',
     !matches
   );
   useEffect(() => {
-    console.log('execute bhacha ra?');
     if (data) {
       if (!data.matchSet) {
-        console.log('surely yahaaa chirena');
-        dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
-        // dispatchCompetition({ type: 'SET_LOADING', value: false });
         dispatchCompetition({ type: 'SET_NO_FIXTURE', value: true });
+        dispatchCompetition({ type: 'SET_STANDINGS', value: data.standingSet });
+        dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
+        dispatchCompetition({ type: 'SET_SEASON_ID', value: data.seasonId });
+        // setCurPage(0, 'fixtures');
+        navigate(`${baseUrl}/results`, { replace: true });
         return;
       }
       const {
@@ -210,20 +204,21 @@ const CompetitionDetail = (props) => {
         standingSet,
         seasonId,
       } = data;
-      console.log('yaaaha?');
       setMatchContainerHandler({ matches, hasNextPage }, matchState);
 
       dispatchCompetition({ type: 'SET_MATCHES', value: matches });
       dispatchCompetition({ type: 'SET_STANDINGS', value: standingSet });
       dispatchCompetition({ type: 'SET_SEASON_ID', value: seasonId });
       dispatchCompetition({ type: 'SET_NEXT_PAGE', value: hasNextPage });
-      if (standingSet?.length > 1) {
-        const groupSet = standingSet.map((set) => set.groupName);
-        dispatchCompetition({ type: 'SET_GROUP_CONTAINER', value: groupSet });
-        dispatchCompetition({ type: 'SET_CUR_GROUP', value: groupSet[0] });
-      }
     }
-  }, [data]);
+  }, [
+    data,
+    baseUrl,
+    navigate,
+    matchState,
+    setCurPage,
+    setMatchContainerHandler,
+  ]);
 
   const graphqlQueryMatches = {
     query: `
@@ -253,7 +248,8 @@ const CompetitionDetail = (props) => {
   const [matchData, matchError, matchLoading] = useHttp(
     graphqlQueryMatches,
     'getCompMatches',
-    matches,
+    // To set toFetch to true as to fetch results when there is no fixture😝
+    matches || noFixture,
     loadMatches
   );
   useEffect(() => {
@@ -262,16 +258,12 @@ const CompetitionDetail = (props) => {
       dispatchCompetition({ type: 'SET_MATCHES', value: matches });
       dispatchCompetition({ type: 'SET_NEXT_PAGE', value: hasNextPage });
       setMatchContainerHandler({ matches, hasNextPage }, matchState);
-      setMatchContainerHandler({ matches, hasNextPage }, matchState);
     }
+    // Well matchState changing would re-fetch it and re-set it and f up whole app
   }, [matchData]);
-
-  const groupChangeHandler = (option) => {
-    dispatchCompetition({ type: 'SET_CUR_GROUP', value: option });
-  };
   const matchStateChangeHandler = (state, e) => {
     // To replace fixtures/results with results/fixtures resp.
-    const baseUrl = pathname.split('/').slice(0, -1).join('/');
+
     if (state === 'fixtures' && urlState !== 'fixtures') {
       // setPage(0);
       // Coz we have to pass the current page and when changing to fixtures,it becomes of results.
@@ -289,48 +281,18 @@ const CompetitionDetail = (props) => {
     }
   };
   const events =
-    matches && getCompetitionMatches(matches, sportName, matchState);
-  const curStandingSet = groupContainer
-    ? standings.find((standingData) => standingData.groupName === curGroup)
-    : standings?.at(0);
-  const curStandings = curStandingSet?.standings;
-  //   To check if point data exists.
-  const pointExists = curStandings?.at(0).points;
-
-  const standingList = curStandings?.map((teamData) => {
-    const {
-      position,
-      name,
-      teamId,
-      teamImageUrl,
-      wins,
-      losses,
-      played,
-      percentage,
-      netRunRate,
-      points,
-    } = teamData;
-    return (
-      <article className={classes['team-data']} key={teamId}>
-        <div className={classes['team-data__details']}>
-          <span className={classes.position}>{position}</span>
-          <span className={classes.name}>
-            <img src={teamImageUrl} alt="" />
-            {name}
-          </span>
-        </div>
-        <span>{played}</span>
-        <span>{wins}</span>
-        <span>{losses}</span>
-        {sportName === 'cricket' ? (
-          <span>{netRunRate}</span>
-        ) : (
-          <span>{percentage}</span>
-        )}
-        {points && <span>{points}</span>}
-      </article>
+    matches &&
+    getCompetitionMatches(
+      matches,
+      sportName,
+      competitionId,
+      competitionName,
+      matchState,
+      matchDetailHandler,
+      clearMatchDetailHandler,
+      navigate
     );
-  });
+
   const previousClickHandler = () => {
     // dispatchCompetition({ type: 'SET_PAGE_CHANGE', value: !pageChange });
     dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
@@ -340,7 +302,7 @@ const CompetitionDetail = (props) => {
       // setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'fixtures' && page > 0) {
-      dispatchCompetition({ type: 'SET_PAGE', value: page + 1 });
+      dispatchCompetition({ type: 'SET_PAGE', value: page - 1 });
       // setPage((previousPage) => --previousPage);
     }
   };
@@ -364,7 +326,7 @@ const CompetitionDetail = (props) => {
           &#8592;
         </span>
         <div className={classes.name}>
-          <img src={competitionImage} alt="Flag" />
+          <Image src={competitionImage} alt="Flag" />
           <div className={classes.title}>
             <span className={classes.competition}>{competitionName}</span>
             <span className={classes.country}>{venue}</span>
@@ -428,38 +390,17 @@ const CompetitionDetail = (props) => {
               )}
               {!matchLoading && <Fragment>{events}</Fragment>}
             </div>
-            <div className={classes.table}>
-              {groupContainer && (!isLoading || standings) && (
-                <Dropdown
-                  optionSet={groupContainer}
-                  groupChangeHandler={groupChangeHandler}
-                />
-              )}
+            <div className={classes['standings-container']}>
               {isLoading && !standings && (
                 <div className="centered">
                   <LoadingSpinner />
                 </div>
               )}
               {!isLoading && standings && (
-                <Fragment>
-                  <header className={classes.header}>
-                    <div className={classes['team-details']}>
-                      <span>#</span>
-                      <span className={classes['header-name']}>Team</span>
-                    </div>
-                    <span>P</span>
-                    <span>W</span>
-                    <span>L</span>
-                    {sportName === 'cricket' ? (
-                      <span>NRR</span>
-                    ) : (
-                      <span>PCT</span>
-                    )}
-                    {pointExists && <span>Pts</span>}
-                  </header>
-                  <hr />
-                  {standingList}
-                </Fragment>
+                <CompetitionStandings
+                  standings={standings}
+                  sportName={sportName}
+                />
               )}
             </div>
           </div>

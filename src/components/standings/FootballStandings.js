@@ -3,6 +3,7 @@ import classes from './FootballStandings.module.css';
 import Dropdown from '../dropdown/Dropdown';
 import { Fragment } from 'react';
 import { convertSlugToDisplay } from '../../helpers/helpers';
+import Image from '../ui/Image';
 const FootballStandings = (props) => {
   const { dirtyStandings, homeTeamId, awayTeamId } = props;
   const [standings, setStandings] = useState();
@@ -20,13 +21,12 @@ const FootballStandings = (props) => {
 
       if (acc[group]) {
         acc[group].push(curStanding);
-        return acc;
       }
       if (!acc[group]) {
         totalGroups.push(group);
         acc[group] = [curStanding];
-        return acc;
       }
+      return acc;
     }, {});
     // For determining starting position for standings in case of standings from match
     const standingsArr = Object.values(refinedStandings);
@@ -76,7 +76,7 @@ const FootballStandings = (props) => {
         <div className={classes['team-data__details']}>
           <span className={classes.position}>{position}</span>
           <span className={classes.name}>
-            <img src={teamImageUrl} alt="" />
+            <Image src={teamImageUrl} alt="" />
             {name}
           </span>
         </div>

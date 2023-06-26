@@ -5,9 +5,7 @@ const useHttp = (query, endpoint, toFetch = true, reFetch) => {
   const [isError, setIsError] = useState(null);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(toFetch, reFetch, data);
   const fetchData = useCallback(async () => {
-    console.log('fetch bhachaina ra sathi?');
     setIsLoading(true);
     try {
       const res = await fetch(URL, {
@@ -24,15 +22,14 @@ const useHttp = (query, endpoint, toFetch = true, reFetch) => {
       const {
         data: { [endpoint]: actualData },
       } = fetchedData;
-      console.log(actualData);
       setData(actualData);
     } catch (err) {
       setIsError(err.message);
     }
     setIsLoading(false);
+    // It's weird how it works.
   }, [reFetch]);
   useEffect(() => {
-    console.log('execute bhako??');
     toFetch && fetchData();
   }, [fetchData]);
   if (!toFetch) return [];
