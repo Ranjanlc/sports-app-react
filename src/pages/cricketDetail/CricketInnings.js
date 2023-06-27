@@ -14,6 +14,8 @@ function CricketInnings() {
     matchDetail: { matchId, matchStatus },
     inningsContainer,
     setMatchDetailHandler,
+    setMatchDetailError,
+    matchDetailError: { inningsError },
   } = useContext(MatchContext);
   // To store user's index preferences
   const [curIndex, setCurIndex] = useState(
@@ -54,15 +56,20 @@ function CricketInnings() {
     graphqlQuery,
     'getCricketMatchInnings',
     !inningsContainer.length &&
-      !(matchStatus === 'Not started' || matchStatus === 'Abandoned')
+      !(
+        matchStatus === 'Not started' ||
+        matchStatus === 'Abandoned' ||
+        matchStatus === 'Start delayed'
+      )
   );
   useEffect(() => {
     data && setMatchDetailHandler(data, 'innings');
-  }, [data, setMatchDetailHandler]);
+    isError && setMatchDetailError(isError, 'innings');
+  }, [data, setMatchDetailHandler, setMatchDetailError, isError]);
 
   const options = inningsContainer.map((inning, i) => {
     if (inningsContainer.length > 2) {
-      if (i >= 3) {
+      if (i >= 2) {
         return `2nd Inning,${inning.battingTeam}`;
       }
       return `1st Inning,${inning.battingTeam}`;
@@ -70,11 +77,27 @@ function CricketInnings() {
     return `${inning.battingTeam}'s Inning`;
   });
   const inningsChangeHandler = (option) => {
-    const index = inningsContainer.findIndex((inning) =>
-      option.includes(inning.battingTeam)
-    );
-    localStorage.setItem('curIndex', String(index));
-    setCurIndex(index);
+    let refinedIndex;
+    if (inningsContainer.length > 2) {
+      const reversedContainer = inningsContainer.slice().reverse();
+      const inningsObj = {
+        inningsContainer,
+        reversedContainer,
+      };
+      const index = inningsObj[
+        option.includes('1st Inning') ? 'inningsContainer' : 'reversedContainer'
+      ].findIndex((inning) => option.includes(inning.battingTeam));
+      refinedIndex = option.includes('1st Inning')
+        ? index
+        : inningsContainer.length - (index + 1);
+    }
+    if (inningsContainer.length <= 2) {
+      refinedIndex = inningsContainer.findIndex((inning) =>
+        option.includes(inning.battingTeam)
+      );
+    }
+    localStorage.setItem('curIndex', String(refinedIndex));
+    setCurIndex(refinedIndex);
   };
   const curInning = inningsContainer.at(curIndex);
 
@@ -189,7 +212,11 @@ function CricketInnings() {
       </li>
     );
   });
-  if (matchStatus === 'Not started') {
+  if (
+    matchStatus === 'Not started' ||
+    matchStatus === 'Abandoned' ||
+    matchStatus === 'Start delayed'
+  ) {
     return (
       <div className={classes.fallback}>
         <Info /> Innings will be shown once the match starts.
@@ -198,8 +225,8 @@ function CricketInnings() {
   }
   return (
     <>
-      {isError && <ErrorHandler message={isError} />}
-      {isLoading && !isError && (
+      {inningsError && <ErrorHandler message={inningsError} />}
+      {isLoading && !inningsError && (
         <div className="centered">
           <LoadingSpinner />
         </div>
@@ -214,11 +241,21 @@ function CricketInnings() {
           <article className={classes.header}>
             <span className={classes.batsmen}>Batsmen</span>
             <div className={classes['property-container']}>
-              <div className={classes.property}>R</div>
-              <div className={classes.property}>B</div>
-              <div className={classes.property}>4s</div>
-              <div className={classes.property}>6s</div>
-              <div className={classes['strike-rate']}>S/R</div>
+              <div data-full="Runs" className={classes.property}>
+                R
+              </div>
+              <div data-full="Balls" className={classes.property}>
+                B
+              </div>
+              <div data-full="Fours" className={classes.property}>
+                4s
+              </div>
+              <div data-full="Sixes" className={classes.property}>
+                6s
+              </div>
+              <div data-full="Strike rate" className={classes['strike-rate']}>
+                S/R
+              </div>
             </div>
           </article>
           <ul className={classes['player-list-container']}>{batsmenEl}</ul>
@@ -234,11 +271,21 @@ function CricketInnings() {
           <article className={classes.header}>
             <span>Bowler</span>
             <div className={classes['property-container']}>
-              <div className={classes.property}>O</div>
-              <div className={classes.property}>M</div>
-              <div className={classes.property}>R</div>
-              <div className={classes.property}>W</div>
-              <div className={classes['strike-rate']}>Econ.</div>
+              <div data-full="Overs" className={classes.property}>
+                O
+              </div>
+              <div data-full="Maiden" className={classes.property}>
+                M
+              </div>
+              <div data-full="Runs" className={classes.property}>
+                R
+              </div>
+              <div data-full="Wickets" className={classes.property}>
+                W
+              </div>
+              <div data-full="Economy" className={classes['strike-rate']}>
+                Econ.
+              </div>
             </div>
           </article>
           <ul className={classes['player-list-container']}>{bowlerEl}</ul>

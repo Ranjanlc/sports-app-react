@@ -63,7 +63,7 @@ const FootballTable = (props) => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && !tableError && (
+      {!isLoading && !tableError && tableContainer.length !== 0 && (
         <FootballStandings
           dirtyStandings={tableContainer}
           homeTeamId={homeTeamId}

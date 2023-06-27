@@ -10,7 +10,6 @@ import ErrorHandler from '../../components/error/ErrorHandler';
 import Calendar from '../../assets/matchDetail/calendar.svg';
 import Referee from '../../assets/matchDetail/referee.svg';
 import Stadium from '../../assets/matchDetail/stadium.svg';
-import { CRICKET_INFO } from '../../data/DUMMY_CRICKET';
 import Image from '../../components/ui/Image';
 function CricketMatchDetail() {
   const [matchInfo, setMatchInfo] = useState({ homeScore: {}, awayScore: {} });

@@ -133,7 +133,9 @@ const getMatchList = (
       };
       return (
         <div
-          className={classes['match-container']}
+          className={`${classes['match-container']} ${
+            matchStatus === 'Abandoned' ? classes.abandoned : ''
+          }`}
           key={matchId}
           onClick={matchClickHandler.bind(
             null,

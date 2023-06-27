@@ -107,14 +107,14 @@ const FootballStandings = (props) => {
             <span>#</span>
             <span className={classes['header-name']}>Team</span>
           </div>
-          <span>P</span>
-          <span>W</span>
-          <span>D</span>
-          <span>L</span>
-          <span>GF</span>
-          <span>GA</span>
-          <span>GD</span>
-          <span>Pts</span>
+          <span data-full="Played">P</span>
+          <span data-full="Wins">W</span>
+          <span data-full="Draws">D</span>
+          <span data-full="Losses">L</span>
+          <span data-full="Goal Forward">GF</span>
+          <span data-full="Goal Against">GA</span>
+          <span data-full="Goal Diff.">GD</span>
+          <span data-full="Points">Pts</span>
         </header>
         <hr />
         {standingList}

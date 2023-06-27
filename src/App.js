@@ -2,18 +2,18 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './layout/Layout';
 import FootballDetail from './pages/competition/FootballDetail';
 import CompetitionDetail from './pages/competition/CompetitionDetail';
-import MatchDetail from './pages/footballMatchDetail/matchDetail/MatchDetail';
-import FootballSummary from './pages/footballMatchDetail/footballSummary/FootballSummary';
-import FootballLineup from './pages/footballMatchDetail/footballLineup/FootballLineup';
-import FootballTable from './pages/footballMatchDetail/footballTable/FootballTable';
-import FootballStats from './pages/footballMatchDetail/footballStats/FootballStats';
+import MatchDetail from './pages/footballDetail/matchDetail/MatchDetail';
+import FootballSummary from './pages/footballDetail/footballSummary/FootballSummary';
+import FootballLineup from './pages/footballDetail/footballLineup/FootballLineup';
+import FootballTable from './pages/footballDetail/footballTable/FootballTable';
+import FootballStats from './pages/footballDetail/footballStats/FootballStats';
 import FootballScore from './pages/score/FootballScore';
 import CricketScore from './pages/score/CricketScore';
 import BasketballScore from './pages/score/BasketballScore';
 import LiveMatches from './pages/live/LiveMatches';
-import CricketMatchDetail from './pages/cricketMatchDetail/CricketMatchDetail';
-import CricketInnings from './pages/cricketMatchDetail/CricketInnings';
-import CricketTable from './pages/cricketMatchDetail/CricketTable';
+import CricketMatchDetail from './pages/cricketDetail/CricketMatchDetail';
+import CricketInnings from './pages/cricketDetail/CricketInnings';
+import CricketTable from './pages/cricketDetail/CricketTable';
 //TODO:Special class while game is playing.
 //NOT-IMP-TODO:If match is abandoned,do some styling
 // MAjOR___TODO:Make lineups responsive for various sizes

@@ -13,7 +13,7 @@ const MatchContext = createContext({
     statsError: null,
     summaryError: null,
     tableError: null,
-    inningsE: null,
+    inningsError: null,
   },
 
   setMatchDetailHandler: () => {},

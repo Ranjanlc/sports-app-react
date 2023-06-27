@@ -63,21 +63,26 @@ function CompetitionStandings({
         key={teamId}
       >
         <div className={classes['team-data__details']}>
-          <span className={classes.position}>{position}</span>
-          <span className={classes.name}>
+          <div className={classes.property}>{position}</div>
+          <div className={classes.name}>
             <Image src={teamImageUrl} alt="" />
             {name}
-          </span>
+          </div>
         </div>
-        <span>{played}</span>
-        <span>{wins}</span>
-        <span>{losses}</span>
-        {sportName === 'cricket' ? (
-          <span>{netRunRate}</span>
-        ) : (
-          <span>{percentage}</span>
-        )}
-        {points && <span>{points}</span>}
+        <div className={classes['property-container']}>
+          <div className={classes.property}>{played}</div>
+          <div className={classes.property}>{wins}</div>
+          <div className={classes.property}>{losses}</div>
+          {sportName === 'cricket' ? (
+            <div className={classes.nrr}>{netRunRate}</div>
+          ) : (
+            <div className={classes.nrr}>{percentage}</div>
+          )}
+          {/* Fixing a bug where property class wouldnt be applied on teams having 0 points */}
+          {(points === 0 || points) && (
+            <div className={classes.property}>{points}</div>
+          )}
+        </div>
       </article>
     );
   });
@@ -94,14 +99,34 @@ function CompetitionStandings({
       <Fragment>
         <header className={classes.header}>
           <div className={classes['team-details']}>
-            <span>#</span>
-            <span className={classes['header-name']}>Team</span>
+            <div className={classes.property}>#</div>
+            <div className={classes['header-name']}>Team</div>
           </div>
-          <span>P</span>
-          <span>W</span>
-          <span>L</span>
-          {sportName === 'cricket' ? <span>NRR</span> : <span>PCT</span>}
-          {pointExists && <span>Pts</span>}
+          <div className={classes['property-container']}>
+            <div data-full="Played" className={classes.property}>
+              P
+            </div>
+            <div data-full="Wins" className={classes.property}>
+              W
+            </div>
+            <div data-full="Losses" className={classes.property}>
+              L
+            </div>
+            {sportName === 'cricket' ? (
+              <div data-full="Run rate" className={classes.nrr}>
+                NRR
+              </div>
+            ) : (
+              <div data-full="Winning %" className={classes.nrr}>
+                PCT
+              </div>
+            )}
+            {pointExists && (
+              <div data-full="Points" className={classes.property}>
+                Pts
+              </div>
+            )}
+          </div>
         </header>
         <hr />
         {standingList}
