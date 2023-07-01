@@ -5,8 +5,6 @@
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  /* justify-content: center; */
-  /* align-items: center; */
 }
 .note {
   font-size: small;
@@ -18,11 +16,26 @@
 .match-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  /* margin-top: 0.5rem;
-    border-radius: 4px; */
+  padding: 5px 10px;
 }
-.lhs {
+.home,
+.away {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.score {
+  font-weight: bolder;
+  min-width: 30px;
+  justify-content: center;
+}
+.home {
+  margin-bottom: 15px;
+}
+
+.home div,
+.away div {
   display: flex;
   align-items: center;
 }
@@ -38,38 +51,21 @@
   text-align: center;
   transform: scale(1, 0.9);
   color: rgb(208, 208, 208);
-  margin-left: 0.5rem;
-  margin-right: 0.2rem;
 }
 .basketball-time {
-  min-width: 80px;
+  width: 80px;
   text-align: center;
   transform: scale(1, 0.9);
   color: rgb(208, 208, 208);
 }
-.score {
-  margin-right: 20px;
-  display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
-  flex-direction: column;
-  font-weight: bold;
-  min-width: 90px;
-  text-align: right;
-}
-.score .innings {
+.innings {
   font-weight: normal;
+  min-width: 80px;
+  text-align: center;
 }
-.score .total {
-  margin-left: 10px;
-}
-.score .first-score {
-  min-height: 30px;
-  margin-bottom: 2px;
-}
-.score .second-score {
-  min-height: 30px;
-  margin-top: 6px;
+.total {
+  min-width: 30px;
+  margin-left: 5px;
 }
 .title-container {
   display: flex;
@@ -100,24 +96,9 @@
   margin-left: 10px;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
 }
-.teams div {
-  display: flex;
-  align-items: center;
-  /* justify-content: center; */
-  margin-top: 0.2rem;
-  margin-bottom: 0.2rem;
-  min-height: 29px;
-}
-.rhs {
-  display: flex;
-  align-items: center;
-}
-.match-item .star {
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-}
+
 .loser {
   color: #808080;
   font-weight: 600;
@@ -135,27 +116,9 @@
   .match-container {
     font-size: smaller;
   }
-  .lhs {
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .lhs .time {
+  .time {
     margin: 0;
     /* margin-left: 2px; */
     min-width: 14%;
-  }
-  .lhs .teams {
-    margin: 0;
-    width: 80%;
-  }
-  .rhs .score {
-    text-align: right;
-    margin: 0;
-  }
-  .match-item .star {
-    margin: 0;
-    margin-left: 6px;
-    padding-right: 0;
   }
 }

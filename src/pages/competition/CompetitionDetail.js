@@ -1,5 +1,4 @@
 import classes from './CompetitionDetail.module.css';
-import StarJsx from '../../assets/scoreList/star-jsx';
 import { Fragment, useContext, useEffect, useReducer } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -331,7 +330,6 @@ const CompetitionDetail = (props) => {
             <span className={classes.competition}>{competitionName}</span>
             <span className={classes.country}>{venue}</span>
           </div>
-          <StarJsx />
         </div>
       </div>
       {(isError || matchError) && (

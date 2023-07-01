@@ -5,7 +5,6 @@ import football from '../assets/layout/layout-football.png';
 import cricket from '../assets/layout/cricket.png';
 import basketball from '../assets/layout/basketball.png';
 import { NavLink, useLocation } from 'react-router-dom';
-import Button from '../components/ui/Button';
 const Layout = (props) => {
   const { pathname } = useLocation();
   const sportClickHandler = (sport, e) => {
@@ -46,7 +45,6 @@ const Layout = (props) => {
             Basketball
           </NavLink>
         </div>
-        <Button className={classes.action}>Login</Button>
       </nav>
       <main>{props.children}</main>
     </Fragment>

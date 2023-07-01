@@ -114,7 +114,6 @@ const FootballDetail = (props) => {
                 <span className={classes.competition}>{competitionName}</span>
                 <span className={classes.country}>{venue}</span>
               </div>
-              <StarJsx />
             </div>
           </div>
           <nav className={classes.navigation}>

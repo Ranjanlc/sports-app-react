@@ -3,26 +3,27 @@
   align-items: center;
   margin: 1rem 0;
   /* max-width: 100px; */
-  width: 60%;
-  justify-content: space-between;
+  /* width: 60%; */
+  /* justify-content: space-between; */
   /* flex-direction: column; */
 }
 .title-container .arrow {
   font-size: 40px;
   margin-left: 40px;
   cursor: pointer;
-  
 }
 .title-container .name {
   display: flex;
-  width: 35%;
+  /* max-width: 35%; */
+  flex: 1 1 auto;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 .title-container img {
   width: 2.5rem;
   color: white;
   border-radius: 3px;
+  margin-right: 10px;
 }
 .title-container svg {
   margin-left: 15px;
@@ -31,7 +32,6 @@
 .title {
   display: flex;
   flex-direction: column;
-  margin-right: 1.5rem;
 }
 .competition {
   font-weight: 700;

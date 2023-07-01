@@ -1,4 +1,3 @@
-import StarJsx from '../../assets/scoreList/star-jsx';
 import dummyLogo from '../../assets/scoreList/dummy-logo.png';
 import cricketBat from '../../assets/scoreList/cricket-bat.png';
 import { competitionDateHandler } from '../../helpers/date-picker';
@@ -147,7 +146,6 @@ const getCompetitionMatches = (
         </div>
         <div className={classes.rhs}>
           {matchState === 'results' && displayScore}
-          <StarJsx />
         </div>
       </div>
     );
@@ -252,7 +250,6 @@ export const getFootballMatches = (
               </div>
             </div>
           )}
-          <StarJsx />
         </div>
       </div>
     );
