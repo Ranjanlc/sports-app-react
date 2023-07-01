@@ -68,6 +68,7 @@ export const convertDateForDisplay = (date, sport) => {
   return { displayTime, convertedDate };
 };
 export const competitionDateHandler = (date, mode) => {
+  console.log(date);
   const { displayTime, convertedDate } = convertDateForDisplay(date);
   // reverse because localeString gives in fEb 20 and we need 20 Feb
   const displayDate = convertedDate

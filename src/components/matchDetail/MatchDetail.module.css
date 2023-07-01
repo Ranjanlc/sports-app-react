@@ -33,11 +33,17 @@
   font-weight: 600;
   padding: 0.5rem 1rem;
 }
-.match {
-  /* width: 90%; */
+.match-score-container {
   background-color: rgba(8, 8, 5);
   margin: 0 1rem;
   border-radius: 5px;
+  /* padding: 0 2.4rem; */
+}
+.match {
+  /* width: 90%; */
+  /* background-color: rgba(8, 8, 5);
+  margin: 0 1rem;
+  border-radius: 5px; */
   min-height: 110px;
   /* margin-left: 2rem; */
   margin-top: 0.7rem;
@@ -50,10 +56,12 @@
   margin-top: 0.5rem;
   width: 3rem;
 }
-.match-lhs {
+.team {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100px;
+  text-align: center;
   /* justify-content: center; */
   /* align-content: center; */
   /* margin-left: 3rem; */
@@ -62,14 +70,36 @@
   font-size: 30px;
   font-weight: 700;
   display: flex;
-  width: 80px;
+  /* width: 80px; */
   justify-content: space-around;
 }
-.match-rhs {
+.basketball-score-container {
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  list-style: none;
+  padding: 0 10px;
+  margin: 0;
+}
+.basketball-score {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  /* margin-right: 3rem; */
+  height: 30px;
+  border-bottom: 1px solid #454545;
+}
+.lost {
+  color: #9f9e9e;
+}
+.period-score {
+  min-width: 22px;
+  font-weight: 500;
+  text-align: center;
+}
+.basketball-score-container .period-name {
+  margin: 0;
+  color: rgb(107, 192, 225);
+  font-weight: bold; /* Centers the second item */
 }
 .date .active {
   color: orangered;
@@ -83,6 +113,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0;
   /* align-content: space-around; */
   /* justify-content: space-between; */
 }
@@ -199,7 +230,6 @@ a.active {
 @media (max-width: 650px) {
   .container {
     display: block;
-    font-size: small;
   }
   .match-container {
     width: 100%;

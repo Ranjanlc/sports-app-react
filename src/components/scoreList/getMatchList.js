@@ -33,6 +33,7 @@ const getMatchList = (
     };
     if (sportName === 'cricket') compDetails.uniqueId = uniqueId;
     const eventsList = events.map((event) => {
+      console.log(event);
       const {
         matchId,
         matchStatus,
@@ -60,6 +61,9 @@ const getMatchList = (
       const awayUrl = awayImageUrl.includes(undefined)
         ? dummyLogo
         : awayImageUrl;
+      // Noticed that in case of AET, we dont get refinedWinnerTeam
+      const refinedWinnerTeam = winnerTeam || +homeScore > +awayScore ? 1 : 2;
+      console.log(refinedWinnerTeam);
       const { displayTime } =
         sportName === 'football'
           ? convertDateForDisplay(startTime, 'football')
@@ -81,7 +85,9 @@ const getMatchList = (
           <div className={classes.score}>
             <div
               className={`${classes['first-score']} ${
-                matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
+                matchStatus === 'Ended' && refinedWinnerTeam !== 1
+                  ? classes.loser
+                  : ''
               }`}
             >
               <span className={classes.innings}>{homeInnings}</span>
@@ -89,7 +95,9 @@ const getMatchList = (
             </div>
             <div
               className={`${classes['second-score']} ${
-                matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
+                matchStatus === 'Ended' && refinedWinnerTeam !== 2
+                  ? classes.loser
+                  : ''
               } `}
             >
               <span className={classes.innings}>{awayInnings}</span>
@@ -100,30 +108,40 @@ const getMatchList = (
           <div className={classes.score}>
             <div
               className={`${classes['first-score']} ${
-                matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
+                matchStatus === 'Ended' && refinedWinnerTeam !== 1
+                  ? classes.loser
+                  : ''
               }`}
             >
               {homeScore}
             </div>
             <div
               className={`${classes['second-score']} ${
-                matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
+                matchStatus === 'Ended' && refinedWinnerTeam !== 2
+                  ? classes.loser
+                  : ''
               } `}
             >
               {awayScore}
             </div>
           </div>
         ));
+      const calculateMatchStatus = () => {
+        if (sportName === 'cricket') {
+          return matchStatus === 'Ended' ? note : matchStatus;
+        }
+        return matchStatus;
+      };
       const matchDetail = {
         matchId,
-        matchStatus: matchStatus !== 'Ended' ? matchStatus : note,
+        matchStatus: calculateMatchStatus(),
         homeTeamName,
         awayTeamName,
         homeImageUrl,
         awayImageUrl,
         homeScore,
         awayScore,
-        winnerTeam,
+        winnerTeam: refinedWinnerTeam,
         displayTime,
         competitionName,
         competitionId,
@@ -131,10 +149,21 @@ const getMatchList = (
         homeTeamId,
         awayTeamId,
       };
+      console.log(matchStatus);
       return (
         <div
           className={`${classes['match-container']} ${
-            matchStatus === 'Abandoned' ? classes.abandoned : ''
+            // Three diff checks for three diff sports
+            matchStatus === 'Abandoned' ||
+            matchStatus === 'Canc.' ||
+            matchStatus === 'Canceled'
+              ? classes.abandoned
+              : ''
+          }
+          ${
+            matchStatus.includes("'") || matchStatus.includes('quarter')
+              ? classes.playing
+              : ''
           }`}
           key={matchId}
           onClick={matchClickHandler.bind(
@@ -168,7 +197,7 @@ const getMatchList = (
                 <div
                   className={
                     (matchStatus === 'FT' || matchStatus === 'Ended') &&
-                    winnerTeam !== 1
+                    refinedWinnerTeam !== 1
                       ? classes.loser
                       : ''
                   }
@@ -181,7 +210,7 @@ const getMatchList = (
                 </div>
                 <div
                   className={
-                    matchStatus === 'FT' && winnerTeam !== 2
+                    matchStatus === 'FT' && refinedWinnerTeam !== 2
                       ? classes.loser
                       : ''
                   }
@@ -204,20 +233,14 @@ const getMatchList = (
                   <div className={classes.score}>
                     <div
                       className={`${classes['first-score']} ${
-                        (matchStatus === 'FT' || matchStatus === 'Ended') &&
-                        winnerTeam !== 1
-                          ? classes.loser
-                          : ''
+                        refinedWinnerTeam !== 1 ? classes.loser : ''
                       }`}
                     >
                       {homeScore}
                     </div>
                     <div
                       className={`${classes['second-score']} ${
-                        (matchStatus === 'FT' || matchStatus === 'Ended') &&
-                        winnerTeam !== 2
-                          ? classes.loser
-                          : ''
+                        refinedWinnerTeam !== 2 ? classes.loser : ''
                       }`}
                     >
                       {awayScore}

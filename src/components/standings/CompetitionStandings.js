@@ -8,6 +8,7 @@ function CompetitionStandings({
   homeTeamId,
   awayTeamId,
 }) {
+  console.log(standings);
   const [curGroup, setCurGroup] = useState();
   const [groupContainer, setGroupContainer] = useState();
   useEffect(() => {

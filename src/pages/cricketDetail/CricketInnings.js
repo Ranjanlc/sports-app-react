@@ -3,6 +3,7 @@ import Dropdown from '../../components/dropdown/Dropdown';
 import classes from './CricketInnings.module.css';
 
 import cricketBat from '../../assets/scoreList/cricket-bat.png';
+import CricketBall from '../../assets/matchDetail/cricket-ball';
 import Image from '../../components/ui/Image';
 import MatchContext from '../../store/match-context';
 import useHttp from '../../hooks/use-http';
@@ -138,7 +139,7 @@ function CricketInnings() {
           'Retired Out'
         ) : (
           <>
-            {!bowler && !catcher && (
+            {type === 'Batting' && (
               <span>
                 Batting
                 {id === curInning.currentBatsmanId && (
@@ -146,10 +147,12 @@ function CricketInnings() {
                 )}
               </span>
             )}
-            {type === 'lbw' && 'lbw'}
+            {type === 'LBW' && 'lbw'}
             {caughtAndBowled && <span>c&b {bowler}</span>}
-            {bowler && !caughtAndBowled && <span>b {bowler}</span>}
             {catcher && !caughtAndBowled && <span>c {catcher}</span>}
+            {bowler && !caughtAndBowled && type !== 'Batting' && (
+              <span>b {bowler}</span>
+            )}
           </>
         )}
       </div>
@@ -163,7 +166,7 @@ function CricketInnings() {
             alt="Player"
             isPlayer={true}
           />
-          <div className={classes.player}>
+          <div>
             <div>{name}</div>
             {wicketTakerEl}
           </div>
@@ -199,6 +202,7 @@ function CricketInnings() {
           />
           <div className={classes.player}>
             <div>{name}</div>
+            {curInning.currentBowlerId === id && <CricketBall />}
           </div>
         </div>
 

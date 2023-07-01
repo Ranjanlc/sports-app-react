@@ -53,7 +53,7 @@ img {
   height: 50px;
   margin: 0 10px;
   color: rgb(255, 158, 3);
-  /* min-width: 40px; */
+  min-width: 40px;
 }
 .goal svg {
   width: 20px;
@@ -128,6 +128,9 @@ img {
     /* display: flex;
     align-items: center;
     justify-content: flex-end; */
+  }
+  .minute {
+    min-width: 0;
   }
   .player {
     min-width: 0;

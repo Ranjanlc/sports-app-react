@@ -76,10 +76,9 @@ export const MatchContextProvider = (props) => {
     matchDetail: JSON.parse(localStorage.getItem('matchDetail')) || {},
     table: [],
     lineup: { lineups: [], subs: [] },
-    stats: [],
+    stats: null,
     summary: { firstHalfIncidents: [], secondHalfIncidents: [] },
     innings: [],
-    basketballLineup: { home: [], away: [] },
   };
   const initialErrorState = {
     lineupError: null,

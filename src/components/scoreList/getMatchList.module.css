@@ -122,6 +122,10 @@
   color: #808080;
   font-weight: 600;
 }
+.playing {
+  border-left: 8px #3fade9 solid;
+  border-radius: 10px;
+}
 .abandoned {
   border-left: 8px red solid;
   border-radius: 10px;

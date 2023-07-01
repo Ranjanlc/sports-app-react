@@ -52,6 +52,9 @@
   color: white;
   min-width: 71px;
 }
+.loser {
+  color: #948e8e;
+}
 @media (max-width: 600px) {
   .chart-bar__label {
     font-size: small;

@@ -1,0 +1,93 @@
+.container {
+  width: 70%;
+  /* display: flex; */
+  margin: 0 auto;
+  height: 70vh;
+  padding: 0 14px;
+}
+.team-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* height: 50px; */
+}
+.home {
+  display: flex;
+  align-items: center;
+  color: #3fade9;
+  font-weight: 700;
+}
+.away {
+  display: flex;
+  font-weight: 700;
+  color: #fa9005;
+  align-items: center;
+}
+.general-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.6rem;
+}
+.stats-container {
+  display: flex;
+  width: 100%;
+  height: 30px;
+  padding: 10px 0;
+  align-items: center;
+  border-bottom: 1px #454545 solid;
+  justify-content: space-between;
+}
+/* .score {
+    text-align: left;
+} */
+.right-lead-score {
+  /* max-width: 85px; */
+  text-align: right;
+}
+.left-lead-score {
+  /* min-width: 85px; */
+  text-align: left;
+}
+.stat {
+  margin: 0 auto;
+  font-weight: bold;
+}
+.lead-stat {
+  min-width: 145px;
+  font-weight: bold;
+  text-align: center;
+}
+.greater {
+  background-color: #807c7c9a;
+  border-radius: 15px;
+  font-style: italic;
+  font-weight: 500;
+  width: fit-content;
+}
+.chart-container {
+  border-radius: 12px;
+  /* background-color: #f8dfff71; */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
+  height: fit-content;
+}
+@media (max-width: 600px) {
+  .container {
+    width: 100%;
+    padding: 0 5px;
+  }
+  .home,
+  .away {
+    display: flex;
+    flex-direction: column;
+    max-width: 100px;
+    text-align: center;
+    align-items: center;
+  }
+}

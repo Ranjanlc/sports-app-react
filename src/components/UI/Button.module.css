@@ -1,4 +1,4 @@
-button {
+.button {
   --color: #560bad;
   font-family: inherit;
   display: inline-block;

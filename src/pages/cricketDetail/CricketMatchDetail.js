@@ -35,12 +35,18 @@ function CricketMatchDetail() {
         getCricketMatchInfo(matchId:$matchId){
           venue
           homeScore {
-            overs wickets
+            overs wickets {
+              inning1 
+              inning2
+            }
             inning1Score inning2Score
           }
           awayScore {
             overs
-            wickets
+            wickets {
+              inning1 
+              inning2
+            }
             inning1Score
             inning2Score
           }
@@ -87,6 +93,7 @@ function CricketMatchDetail() {
   // Notice how i subtly putted space after and thats to avoid breaking up of name like 'Nandu'=> ['N','U']
   const [umpire1, umpire2] = umpires?.split('and ') ?? [];
   const getNormalScore = (won, inning1, wickets, overs) => {
+    const { inning1: wicketInning1 } = wickets;
     return (
       <span
         className={
@@ -95,12 +102,15 @@ function CricketMatchDetail() {
             : classes['score-container']
         }
       >
-        <span className={classes.score}>{`${inning1}/${wickets}`}</span>
+        <span className={classes.score}>{`${inning1}${
+          wicketInning1 ? `/${wicketInning1}` : ''
+        }`}</span>
         <span className={classes.over}>{overs}</span>
       </span>
     );
   };
-  const getTestScore = (won, inning1, inning2, overs) => {
+  const getTestScore = (won, inning1, inning2, wickets, overs) => {
+    const { inning1: wicketInning1, inning2: wicketInning2 } = wickets;
     return (
       <span
         className={
@@ -109,8 +119,14 @@ function CricketMatchDetail() {
             : classes['score-container']
         }
       >
-        <span className={classes.score}> {inning1}</span>
-        {inning2 && <span className={classes.score}>{inning2}</span>}
+        <span className={classes.score}>
+          {`${inning1}${wicketInning1 ? `/${wicketInning1}` : ''}`}
+        </span>
+        {inning2 && (
+          <span className={classes.score}>
+            {`${inning2}${wicketInning2 ? `/${wicketInning2}` : ''}`}
+          </span>
+        )}
         <span className={classes.over}>{overs}</span>
       </span>
     );
@@ -129,12 +145,14 @@ function CricketMatchDetail() {
       winnerTeam === 1,
       homeInning1,
       homeInning2,
+      homeWickets,
       homeOvers
     );
     awayScoreEl = getTestScore(
       winnerTeam === 2,
       awayInning1,
       awayInning2,
+      awayWickets,
       awayOvers
     );
   }

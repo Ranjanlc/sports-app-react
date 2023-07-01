@@ -36,7 +36,7 @@ const FootballStats = () => {
       matchId,
     },
   };
-  const toFetch = matchStatus !== 'NS' && statsContainer.length === 0;
+  const toFetch = matchStatus !== 'NS' && !statsContainer;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getFootballMatchStats',
@@ -48,41 +48,6 @@ const FootballStats = () => {
       setMatchDetailHandler(data, 'stats');
     }
   }, [data, setMatchDetailHandler]);
-  // if (isLoading !== loading) {
-  //   setIsLoading(loading);
-  // }
-  // if (error) {
-  //   setIsError(error);
-  // }
-  /*
-  const fetchStatsHandler = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(URL, {
-        method: 'POST',
-        body: JSON.stringify(graphqlQuery),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await res.json();
-      if (!res.ok || data.errors) {
-        throw new Error(data.errors.at(0).message);
-      }
-      const {
-        data: { getFootballMatchStats },
-      } = data;
-      setMatchDetailHandler(getFootballMatchStats, 'stats');
-      setIsLoading(false);
-    } catch (err) {
-      setIsError(err.message);
-    }
-  }, []);
-  useEffect(() => {
-    // || to ensure that it loads for first time and persists
-    matchStatus !== 'NS' && statsContainer.length === 0 && fetchStatsHandler();
-  }, []);
-  */
   if (matchStatus === 'NS') {
     return (
       <div className={classes.fallback}>
@@ -111,7 +76,7 @@ const FootballStats = () => {
             </div>
           </nav>
           <div className={classes.chart}>
-            {statsContainer.map((statContainer) => {
+            {statsContainer?.map((statContainer) => {
               const { stat, home, away } = statContainer;
               const capitalizedStat =
                 stat.slice(0, 1).toUpperCase() + stat.slice(1);
@@ -126,7 +91,7 @@ const FootballStats = () => {
                   label={capitalizedStat}
                 />
               );
-            })}
+            }) ?? ''}
           </div>
         </Fragment>
       )}

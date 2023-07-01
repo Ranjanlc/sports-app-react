@@ -54,3 +54,43 @@ export const matchClickHandler = (
   navigate(`/${sport}/match/${matchId}`);
   // redirect('/cricket');
 };
+export const checkGreaterStat = (home, away, type) => {
+  if (type === 'lead') {
+    if (home.includes(':')) {
+      const [min, homeSec] = home.split(':');
+      const [awayMin, awaySec] = away.split(':');
+      const homeTotalSec = parseInt(min) * 60 + parseInt(homeSec);
+      const awayTotalSec = parseInt(awayMin) * 60 + parseInt(awaySec);
+      console.log(homeTotalSec, awayTotalSec, min, awayMin);
+      console.log(homeTotalSec > awayTotalSec);
+      return {
+        homeGreater: homeTotalSec > awayTotalSec,
+        awayGreater: awayTotalSec > homeTotalSec,
+      };
+    }
+    return {
+      homeGreater: parseInt(home) > parseInt(away),
+      awayGreater: parseInt(away) > parseInt(home),
+    };
+  }
+  if (type === 'scoring') {
+    const homePct = home.split('(')[1];
+    const awayPct = away.split('(')[1];
+    return {
+      homeGreater: parseInt(homePct) > parseInt(awayPct),
+      awayGreater: parseInt(awayPct) > parseInt(homePct),
+    };
+  }
+};
+export const getFullPosition = (position) => {
+  const positionMap = new Map([
+    ['FC', 'Forward-Center'],
+    ['F', 'Forward'],
+    ['G', 'Guard'],
+    ['FG', 'Forward-Guard'],
+    ['CF', 'Center-Forward'],
+    ['GF', 'Guard-Forward'],
+    ['C', 'Center'],
+  ]);
+  return positionMap.get(position);
+};

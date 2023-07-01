@@ -61,7 +61,12 @@
   flex: 1 1 auto;
   align-items: center;
 }
-
+.player {
+  display: flex;
+}
+.player svg {
+  width: 25px;
+}
 .player-container img {
   border-radius: 50%;
   width: 35px;
@@ -115,6 +120,7 @@
   .property {
     width: 35px;
   }
+
   .player-container img {
     width: 20px;
     height: 20px;
