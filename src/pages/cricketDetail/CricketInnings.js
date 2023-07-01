@@ -52,7 +52,6 @@ function CricketInnings() {
       matchId,
     },
   };
-  console.log(inningsContainer);
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
     'getCricketMatchInnings',

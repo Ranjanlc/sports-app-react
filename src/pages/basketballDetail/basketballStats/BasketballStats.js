@@ -116,7 +116,6 @@ function BasketballStats() {
             {otherStats?.map((statsContainer, i) => {
               const { home, stat, away } = statsContainer;
               const totalMaximum = home + away;
-              // console.log(totalMaximum);
               if (totalMaximum === 0) return <Fragment key={stat}></Fragment>;
               return (
                 <ChartBar

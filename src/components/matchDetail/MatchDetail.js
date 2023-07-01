@@ -41,7 +41,6 @@ function MatchDetail({ query, endpoint }) {
     if (isFootball || !detailedHomeScore || !detailedAwayScore) return [];
     const homeScoreArr = Object.values(detailedHomeScore);
     const awayScoreArr = Object.values(detailedAwayScore);
-    console.log(homeScoreArr);
     // Filtered to remove empty periods
     return homeScoreArr.filter(Boolean).map((homeVal, i) => {
       const awayVal = awayScoreArr[i];

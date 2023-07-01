@@ -66,7 +66,6 @@ function BasketballLineup() {
     toFetch
   );
   useEffect(() => {
-    console.log(!data);
     if (data) {
       const { home, away } = data;
       const total = [...home, ...away];
@@ -116,7 +115,6 @@ function BasketballLineup() {
       </tr>
     );
   });
-  console.log(curLineup);
   return (
     <>
       {lineupError && <ErrorHandler message={lineupError} />}

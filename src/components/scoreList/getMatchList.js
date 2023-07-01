@@ -33,7 +33,6 @@ const getMatchList = (
     };
     if (sportName === 'cricket') compDetails.uniqueId = uniqueId;
     const eventsList = events.map((event) => {
-      console.log(event);
       const {
         matchId,
         matchStatus,
@@ -62,8 +61,16 @@ const getMatchList = (
         ? dummyLogo
         : awayImageUrl;
       // Noticed that in case of AET, we dont get refinedWinnerTeam
-      const refinedWinnerTeam = winnerTeam || +homeScore > +awayScore ? 1 : 2;
-      console.log(refinedWinnerTeam);
+      let refinedWinnerTeam = 0;
+      refinedWinnerTeam = winnerTeam ?? winnerTeam;
+      if (winnerTeam !== 0 && !winnerTeam) {
+        // IF basketball's api sends null, it didnt calculated that of AET but in others, it means undecided
+        if (sportName === 'basketball') {
+          refinedWinnerTeam = +homeScore > +awayScore ? 1 : 2;
+        } else {
+          refinedWinnerTeam = 0;
+        }
+      }
       const { displayTime } =
         sportName === 'football'
           ? convertDateForDisplay(startTime, 'football')
@@ -85,7 +92,7 @@ const getMatchList = (
           <div className={classes.score}>
             <div
               className={`${classes['first-score']} ${
-                matchStatus === 'Ended' && refinedWinnerTeam !== 1
+                matchStatus === 'Ended' && refinedWinnerTeam === 2
                   ? classes.loser
                   : ''
               }`}
@@ -95,7 +102,7 @@ const getMatchList = (
             </div>
             <div
               className={`${classes['second-score']} ${
-                matchStatus === 'Ended' && refinedWinnerTeam !== 2
+                matchStatus === 'Ended' && refinedWinnerTeam === 1
                   ? classes.loser
                   : ''
               } `}
@@ -149,7 +156,6 @@ const getMatchList = (
         homeTeamId,
         awayTeamId,
       };
-      console.log(matchStatus);
       return (
         <div
           className={`${classes['match-container']} ${
@@ -233,14 +239,14 @@ const getMatchList = (
                   <div className={classes.score}>
                     <div
                       className={`${classes['first-score']} ${
-                        refinedWinnerTeam !== 1 ? classes.loser : ''
+                        refinedWinnerTeam === 2 ? classes.loser : ''
                       }`}
                     >
                       {homeScore}
                     </div>
                     <div
                       className={`${classes['second-score']} ${
-                        refinedWinnerTeam !== 2 ? classes.loser : ''
+                        refinedWinnerTeam === 1 ? classes.loser : ''
                       }`}
                     >
                       {awayScore}

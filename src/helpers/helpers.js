@@ -1,5 +1,5 @@
-// export const URL = 'http://localhost:8080/graphql';
-export const URL = 'https://sports-app-xv27.onrender.com/graphql';
+export const URL = 'http://localhost:8080/graphql';
+// export const URL = 'https://sports-app-xv27.onrender.com/graphql';
 
 export const refineCricketScores = (homeScore, awayScore) => {
   const splittedHomeScore = homeScore !== 'Yet to bat' && homeScore?.split(' ');
@@ -61,8 +61,6 @@ export const checkGreaterStat = (home, away, type) => {
       const [awayMin, awaySec] = away.split(':');
       const homeTotalSec = parseInt(min) * 60 + parseInt(homeSec);
       const awayTotalSec = parseInt(awayMin) * 60 + parseInt(awaySec);
-      console.log(homeTotalSec, awayTotalSec, min, awayMin);
-      console.log(homeTotalSec > awayTotalSec);
       return {
         homeGreater: homeTotalSec > awayTotalSec,
         awayGreater: awayTotalSec > homeTotalSec,
