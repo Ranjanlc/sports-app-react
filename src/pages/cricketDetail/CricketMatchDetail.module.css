@@ -29,9 +29,10 @@
 .competition-title {
   display: block;
   text-align: center;
-  font-size: large;
-  font-weight: 600;
+  font-size: larger;
+  font-weight: 700;
   padding: 0.5rem 1rem;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .match-article {
   background-color: rgba(8, 8, 5);
@@ -113,6 +114,7 @@
   text-align: center;
 }
 .info {
+  font-family: 'Alakatra', 'cursive';
   padding: 0.6rem 0;
 }
 .info div {
@@ -145,6 +147,7 @@
   margin-right: 0.8rem;
   height: fit-content;
   border-radius: 15px;
+  font-family: 'Roboto', 'sans-serif';
 }
 .link-container {
   display: flex;
@@ -154,6 +157,7 @@
   border-radius: 20px;
   align-items: center;
   margin: 0 20px;
+  font-family: 'Lato', 'sans-serif';
 }
 .link-container a {
   text-decoration: none;

@@ -24,6 +24,7 @@
   flex: 1 1 auto;
   align-items: center;
   justify-content: center;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .title-container img {
   width: 2.5rem;
@@ -59,12 +60,14 @@
   justify-content: space-around;
   font-weight: 700;
   border-bottom: 1px solid rgba(85, 83, 83, 0.813);
+  font-family: 'Montserrat', 'sans-serif';
 }
 .standings {
   text-align: center;
   width: 50%;
   font-weight: 900;
   font-size: larger;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .container {
   display: flex;
@@ -87,12 +90,14 @@
   margin: 1.2rem 0.5rem;
   cursor: pointer;
   margin-top: 0;
+  font-family: 'Lato', 'sans-serif';
 }
 
 .matches-container {
   margin-top: 1rem;
   width: 50%;
   margin-left: 2rem;
+  font-family: 'Roboto', 'sans-serif';
 }
 .match-item {
   display: flex;
@@ -109,60 +114,6 @@
   width: 1.4rem;
   margin-right: 5px;
 }
-.lhs {
-  display: flex;
-  align-items: center;
-}
-.date-container {
-  min-width: 49px;
-  text-align: center;
-  color: rgb(208, 208, 208);
-  margin-left: 0.5rem;
-  margin-right: 0.2rem;
-  display: flex;
-  flex-direction: column;
-}
-.date-container .date {
-  margin-bottom: 10px;
-}
-.teams {
-  margin-left: 10px;
-  display: flex;
-  flex-direction: column;
-}
-.teams div {
-  display: flex;
-  align-items: center;
-  margin-top: 0.2rem;
-  margin-bottom: 0.2rem;
-  min-height: 29px;
-  min-width: 156px;
-}
-.rhs {
-  display: flex;
-}
-.rhs svg {
-  margin-right: 5px;
-  cursor: pointer;
-}
-.score {
-  margin-right: 20px;
-  display: flex;
-  flex-direction: column;
-  font-weight: bold;
-  min-width: 60px;
-  text-align: right;
-}
-.score .innings {
-  font-weight: normal;
-}
-.score .total {
-  margin-left: 10px;
-}
-.score .second-score {
-  margin-top: 13px;
-}
-
 .active {
   color: black;
   background-color: white;

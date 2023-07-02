@@ -31,7 +31,6 @@ function BasketballMatchDetail() {
     },
   };
   return <MatchDetail query={graphqlQuery} endpoint="getBasketballMatchInfo" />;
-  // return <div>I</div>
 }
 
 export default BasketballMatchDetail;

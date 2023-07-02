@@ -1,0 +1,60 @@
+.teams {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.home,
+.away {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.home div,
+.away div {
+  display: flex;
+  align-items: center;
+}
+.home {
+  margin-bottom: 15px;
+}
+.score {
+  justify-content: flex-end;
+  font-weight: bold;
+  min-width: 30px;
+}
+.score .innings {
+  font-weight: normal;
+  min-width: 80px;
+  text-align: center;
+}
+.score .total {
+  /* margin-left: 10px; */
+  min-width: 30px;
+  margin-left: 5px;
+}
+.loser {
+  color: #808080;
+  font-weight: 600;
+}
+@media (max-width: 900px) {
+  .score {
+    min-width: 0;
+  }
+  .teams {
+    margin-left: 2px;
+  }
+  .teams div {
+    min-width: 0;
+  }
+}
+@media (max-width: 400px) {
+  .teams .score {
+    flex-direction: column;
+    min-width: 70px;
+    align-items: flex-end;
+  }
+  .score .innings {
+    text-align: right;
+  }
+}

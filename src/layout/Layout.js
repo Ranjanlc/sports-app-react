@@ -21,7 +21,6 @@ const Layout = (props) => {
           {/* This all to set the link active when it is first loaded. */}
           <NavLink
             to="/football"
-            // ({ isActive }) =>[isActive ? classes.active : null].filter(Boolean).join(' ')
             className={({ isActive }) => (isActive ? classes.active : '')}
             onClick={sportClickHandler.bind(null, 'football')}
           >

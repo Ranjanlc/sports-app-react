@@ -93,12 +93,8 @@ const CompetitionDetail = (props) => {
           type: 'SET_NEXT_PAGE',
           value: resultContainer.hasNextPage,
         });
-        // setMatches(resultContainer.matches);
-        // setNextPage(resultContainer.hasNextPage);
-        // setPage(curResultPage);
       } else {
         dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
-        // setLoadMatches((prevState) => !prevState);
       }
     }
     if (matchState === 'fixtures') {
@@ -112,12 +108,8 @@ const CompetitionDetail = (props) => {
           type: 'SET_NEXT_PAGE',
           value: fixtureContainer.hasNextPage,
         });
-        // setMatches(fixtureContainer.matches);
-        // setNextPage(fixtureContainer.hasNextPage);
-        // setPage(curFixturePage);
       } else {
         dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
-        // setLoadMatches((prevState) => !prevState);
       }
     }
   }, [matchState, curFixturePage, curResultPage]);
@@ -194,7 +186,6 @@ const CompetitionDetail = (props) => {
         dispatchCompetition({ type: 'SET_STANDINGS', value: data.standingSet });
         dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
         dispatchCompetition({ type: 'SET_SEASON_ID', value: data.seasonId });
-        // setCurPage(0, 'fixtures');
         navigate(`${baseUrl}/results`, { replace: true });
         return;
       }
@@ -264,18 +255,14 @@ const CompetitionDetail = (props) => {
     // To replace fixtures/results with results/fixtures resp.
 
     if (state === 'fixtures' && urlState !== 'fixtures') {
-      // setPage(0);
       // Coz we have to pass the current page and when changing to fixtures,it becomes of results.
       setCurPage(page, 'results');
       dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'fixtures' });
-      // setMatchState('fixtures');
       navigate(`${baseUrl}/fixtures`, { replace: true });
     }
     if (state === 'results' && urlState !== 'results') {
-      // setPage(0);
       dispatchCompetition({ type: 'SET_MATCH_STATE', value: 'results' });
       setCurPage(page, 'fixtures');
-      // setMatchState('results');
       navigate(`${baseUrl}/results`, { replace: true });
     }
   };
@@ -293,29 +280,21 @@ const CompetitionDetail = (props) => {
     );
 
   const previousClickHandler = () => {
-    // dispatchCompetition({ type: 'SET_PAGE_CHANGE', value: !pageChange });
     dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
-    // setPageChange((prevVal) => !prevVal);
     if (urlState === 'results') {
       dispatchCompetition({ type: 'SET_PAGE', value: page + 1 });
-      // setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'fixtures' && page > 0) {
       dispatchCompetition({ type: 'SET_PAGE', value: page - 1 });
-      // setPage((previousPage) => --previousPage);
     }
   };
   const nextClickHandler = () => {
     dispatchCompetition({ type: 'SET_LOAD_MATCHES', value: !loadMatches });
-    // dispatchCompetition({ type: 'SET_PAGE_CHANGE', value: !pageChange });
-    // setPageChange((prevVal) => !prevVal);
     if (urlState === 'fixtures') {
       dispatchCompetition({ type: 'SET_PAGE', value: page + 1 });
-      // setPage((previousPage) => ++previousPage);
     }
     if (urlState === 'results' && page > 0) {
       dispatchCompetition({ type: 'SET_PAGE', value: page - 1 });
-      // setPage((previousPage) => --previousPage);
     }
   };
   return (

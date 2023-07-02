@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import MatchContext from '../../store/match-context';
 
 import MatchDetail from '../../components/matchDetail/MatchDetail';
-// import Stadium from '../../assets/stadium';
 const FootballMatchDetail = () => {
   const ctx = useContext(MatchContext);
   const {

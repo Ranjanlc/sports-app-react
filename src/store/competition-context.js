@@ -58,7 +58,6 @@ export const CompetitionContextProvider = (props) => {
     compContextState;
   const setCompetitionSetHandler = (compSet) => {
     dispatchCompContext({ type: 'SET_COMPETITION', value: compSet });
-    // setCompetitionContainer(compSet);
     localStorage.setItem('competitionSet', JSON.stringify(compSet));
   };
   const setMatchContainerHandler = useCallback((matchSet, state) => {

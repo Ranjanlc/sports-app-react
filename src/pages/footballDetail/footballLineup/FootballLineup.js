@@ -126,7 +126,6 @@ const FootballLineup = (props) => {
     });
     return lineupEl;
   };
-  // const subsArr =subs && Object.values(subs).flat();
   const getIndvSubEl = (subSet, away = false) => {
     const subEl = subSet.map((el) => {
       const { playerId, playerNumber, playerName } = el;
@@ -151,7 +150,6 @@ const FootballLineup = (props) => {
   const homeLineupSet = getLineupEl(homeLineupObj);
   const awayLineupSet = getLineupEl(awayLineupObj, true);
 
-  // Once the match starts,show subs
   const homeSubEl =
     lineups.length !== 0 &&
     matchStatus !== 'NS' &&

@@ -52,7 +52,6 @@ export const matchClickHandler = (
   const { matchId } = matchDetail;
   matchDetailHandler(matchDetail);
   navigate(`/${sport}/match/${matchId}`);
-  // redirect('/cricket');
 };
 export const checkGreaterStat = (home, away, type) => {
   if (type === 'lead') {

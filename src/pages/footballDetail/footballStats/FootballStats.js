@@ -8,8 +8,6 @@ import ErrorHandler from '../../../components/error/ErrorHandler';
 import useHttp from '../../../hooks/use-http';
 import Image from '../../../components/ui/Image';
 const FootballStats = () => {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isError, setIsError] = useState(null);
   const ctx = useContext(MatchContext);
   const {
     matchDetail: {

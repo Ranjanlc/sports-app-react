@@ -11,9 +11,7 @@ import useHttp from '../../../hooks/use-http';
 import Image from '../../../components/ui/Image';
 
 const FootballSummary = (props) => {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isError, setIsError] = useState(null);
-  // const [penaltyContainer, setPenaltyContainer] = useState(null);
+ 
   const ctx = useContext(MatchContext);
   const {
     matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },

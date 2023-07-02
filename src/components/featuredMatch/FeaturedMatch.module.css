@@ -1,9 +1,10 @@
 .featured-title {
   display: block;
   text-align: center;
-  font-size: large;
+  font-size: larger;
   font-weight: 600;
   padding: 0.5rem 1rem;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .featured-match {
   background-color: rgba(8, 8, 5);

@@ -17,33 +17,8 @@
   display: flex;
   align-items: center;
   padding: 5px 10px;
-}
-.home,
-.away {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-.score {
-  font-weight: bolder;
-  min-width: 30px;
-  justify-content: center;
-}
-.home {
-  margin-bottom: 15px;
-}
-
-.home div,
-.away div {
-  display: flex;
-  align-items: center;
-}
-.cricket-time {
-  min-width: 38px;
-  text-align: center;
-  color: rgb(208, 208, 208);
-  margin-left: 0.5rem;
+  padding-right: 20px;
+  font-family: 'Roboto', 'sans-serif';
 }
 .time {
   min-width: 38px;
@@ -88,13 +63,6 @@
 .country {
   font-weight: 400;
   font-size: small;
-}
-
-.teams {
-  margin-left: 10px;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
 }
 
 .loser {

@@ -4,6 +4,7 @@
   background-color: rgb(28, 38, 50);
   margin-top: 0.7rem;
   padding: 5px 10px;
+  padding-right: 20px;
   max-height: 100px;
   margin-left: 20px;
   border-radius: 7px;
@@ -37,49 +38,6 @@
   transform: scale(1, 0.9);
   color: rgb(208, 208, 208);
 }
-.teams {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-}
-.home,
-.away {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-.home div,
-.away div {
-  display: flex;
-  align-items: center;
-}
-.home {
-  margin-bottom: 15px;
-}
-.teams svg {
-  margin-right: 5px;
-  cursor: pointer;
-}
-.score {
-  justify-content: flex-end;
-  /* gap: 2px; */
-  font-weight: bold;
-  min-width: 30px;
-  text-align: right;
-}
-.score .innings {
-  font-weight: normal;
-  min-width: 80px;
-}
-.score .total {
-  /* margin-left: 10px; */
-  min-width: 30px;
-  margin-left: 5px;
-}
-.score .second-score {
-  margin-top: 13px;
-}
 .active {
   color: black;
   background-color: white;
@@ -101,25 +59,8 @@
   .match-item {
     width: 98%;
     margin: 0;
-    /* padding: 2.5rem 0; */
     margin-bottom: 5px;
     font-size: small;
     max-height: 100px;
-  }
-  .score {
-    min-width: 0;
-  }
-  .teams {
-    margin-left: 2px;
-  }
-  .teams div {
-    min-width: 0;
-  }
-}
-@media (max-width: 400px) {
-  .teams .score {
-    flex-direction: column;
-    min-width: 70px;
-    align-items: flex-end;
   }
 }

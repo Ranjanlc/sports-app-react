@@ -26,6 +26,7 @@
   align-items: center;
   flex: 1 1 auto;
   justify-content: center;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .title-container img {
   width: 2.5rem;
@@ -62,12 +63,14 @@
   justify-content: space-around;
   font-weight: 700;
   border-bottom: 1px solid rgba(85, 83, 83, 0.813);
+  font-family: 'Montserrat', 'sans-serif';
 }
 .standings {
   text-align: center;
   width: 50%;
   font-weight: 900;
-  font-size: larger;
+  font-size: large;
+  font-family: 'Montserrat', 'sans-serif';
 }
 .container {
   display: flex;
@@ -88,6 +91,7 @@
   border: 2px solid #fff;
   border-radius: 15px;
   margin: 1.2rem 0.5rem;
+  font-family: 'Alkatra', 'cursive';
   cursor: pointer;
   margin-top: 0;
 }
@@ -95,6 +99,7 @@
   display: flex;
   width: 92%;
   justify-content: space-between;
+
   margin-left: 20px;
   margin-bottom: 1rem;
 }
@@ -109,6 +114,7 @@
   margin-top: 1rem;
   width: 50%;
   margin-left: 2rem;
+  font-family: 'Roboto', 'sans-serif';
 }
 .standings-container {
   width: 50%;

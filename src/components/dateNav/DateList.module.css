@@ -5,6 +5,8 @@
   border: 0.5px solid rgba(255, 255, 255, 0.42);
   margin: 0;
   width: 100%;
+  font-family: 'Lato', 'sans-serif';
+  font-weight: 600;
 }
 .date a {
   text-decoration: none;

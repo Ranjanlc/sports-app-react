@@ -20,13 +20,11 @@ const FootballIncident = (props) => {
     minuteExtended,
   } = props.incidentSet;
   const ctx = useContext(MatchContext);
-  // const playerName=dirtyPlayerName.split(' ').length>3?dirtyPlayerName
   const {
     matchDetail: { homeImageUrl, awayImageUrl },
   } = ctx;
   const classifyGoal = (incident) => {
     if (incident === 'goal') {
-      // return <FootballIcon />;
       return <Image src={football} alt="football" />;
     }
     if (incident === 'ownGoal') {

@@ -71,8 +71,7 @@ function BasketballLineup() {
       const total = [...home, ...away];
       setMatchDetailHandler({ home, away, total }, 'lineup');
     }
-    // !data &&
-    //   setMatchDetailError('Sorry,No player data for this match', 'lineup');
+
     isError && setMatchDetailError(isError, 'lineup');
   }, [setMatchDetailError, setMatchDetailHandler, data, isError]);
 

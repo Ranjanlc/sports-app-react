@@ -1,11 +1,10 @@
 import { Fragment } from 'react';
 import { convertDateForDisplay } from '../../helpers/date-picker';
 import dummyLogo from '../../assets/scoreList/dummy-logo.png';
-import cricketBat from '../../assets/scoreList/cricket-bat.png';
-import { refineCricketScores } from '../../helpers/helpers';
 import classes from './getMatchList.module.css';
 import { matchClickHandler } from '../../helpers/helpers';
 import Image from '../ui/Image';
+import Team from '../team/Team';
 
 const getMatchList = (
   matches,
@@ -31,41 +30,6 @@ const getMatchList = (
       competitionId,
     };
     if (sportName === 'cricket') compDetails.uniqueId = uniqueId;
-
-    const getScoreEl = (homeScore, awayScore) => {
-      if (sportName !== 'cricket')
-        return {
-          homeScoreEl: homeScore,
-          awayScoreEl: awayScore,
-        };
-      const {
-        cricketFormat,
-        homeInnings,
-        awayInnings,
-        totalAwayScore,
-        totalHomeScore,
-      } = refineCricketScores(homeScore, awayScore);
-      if (cricketFormat === 'one-day') {
-        return { homeScoreEl: homeScore, awayScoreEl: awayScore };
-      }
-      if (cricketFormat === 'test') {
-        return {
-          homeScoreEl: (
-            <>
-              <span className={classes.innings}>{homeInnings}</span>
-              <span className={classes.total}>{totalHomeScore}</span>
-            </>
-          ),
-          awayScoreEl: (
-            <>
-              <span className={classes.innings}>{awayInnings}</span>
-              <span className={classes.total}>{totalAwayScore}</span>
-            </>
-          ),
-        };
-      }
-    };
-
     const eventsList = events.map((event) => {
       const {
         matchId,
@@ -73,7 +37,7 @@ const getMatchList = (
         startTime,
         awayScore,
         homeScore,
-        winnerTeam,
+        winnerTeam: dirtyWinnerTeam,
         note,
         homeTeam: {
           imageUrl: homeImageUrl,
@@ -95,22 +59,21 @@ const getMatchList = (
         ? dummyLogo
         : awayImageUrl;
       // Noticed that in case of AET, we dont get refinedWinnerTeam
-      let refinedWinnerTeam = 0;
-      refinedWinnerTeam = winnerTeam;
-      if (winnerTeam !== 0 && !winnerTeam) {
+      console.log(dirtyWinnerTeam);
+      let winnerTeam = dirtyWinnerTeam;
+      if (
+        dirtyWinnerTeam !== 0 &&
+        !dirtyWinnerTeam &&
+        sportName === 'basketball'
+      ) {
         // IF basketball's api sends null, it didnt calculated that of AET but in others, it means undecided
-        if (sportName === 'basketball') {
-          refinedWinnerTeam = +homeScore > +awayScore ? 1 : 2;
-        } else {
-          refinedWinnerTeam = 0;
-        }
+        winnerTeam = +homeScore > +awayScore ? 1 : 2;
       }
+      console.log(winnerTeam);
       const { displayTime } =
         sportName === 'football'
           ? convertDateForDisplay(startTime, 'football')
           : convertDateForDisplay(startTime);
-      const { homeScoreEl, awayScoreEl } = getScoreEl(homeScore, awayScore);
-
       const calculateMatchStatus = () => {
         if (sportName === 'cricket') {
           return matchStatus === 'Ended' ? note : matchStatus;
@@ -126,7 +89,7 @@ const getMatchList = (
         awayImageUrl,
         homeScore,
         awayScore,
-        winnerTeam: refinedWinnerTeam,
+        winnerTeam,
         displayTime,
         competitionName,
         competitionId,
@@ -134,6 +97,8 @@ const getMatchList = (
         homeTeamId,
         awayTeamId,
       };
+      const home = { homeTeamName, homeUrl, homeScore, homeIsBatting };
+      const away = { awayTeamName, awayUrl, awayScore, awayIsBatting };
       return (
         <div
           className={`${classes['match-container']} ${
@@ -176,57 +141,13 @@ const getMatchList = (
                   : matchStatus}
               </span>
             )}
-            <div className={classes.teams}>
-              <div className={classes.home}>
-                <div
-                  className={
-                    (matchStatus === 'FT' || matchStatus === 'Ended') &&
-                    refinedWinnerTeam === 2
-                      ? classes.loser
-                      : ''
-                  }
-                >
-                  <Image src={`${homeUrl}`} alt="Home" />
-                  <span>{homeTeamName}</span>
-                  {homeIsBatting && matchStatus !== 'Ended' && (
-                    <Image src={cricketBat} className={classes.bat} alt="" />
-                  )}
-                </div>
-                {homeScore && (
-                  <div
-                    className={`${classes.score} ${
-                      refinedWinnerTeam === 2 ? classes.loser : ''
-                    }`}
-                  >
-                    {homeScoreEl}
-                  </div>
-                )}
-              </div>
-              <div className={classes.away}>
-                <div
-                  className={
-                    matchStatus === 'FT' && refinedWinnerTeam === 1
-                      ? classes.loser
-                      : ''
-                  }
-                >
-                  <Image src={`${awayUrl}`} alt="Away" />
-                  <span> {awayTeamName}</span>
-                  {awayIsBatting && matchStatus !== 'Ended' && (
-                    <Image src={cricketBat} className={classes.bat} alt="" />
-                  )}
-                </div>
-                {awayScore && (
-                  <div
-                    className={`${classes.score} ${
-                      refinedWinnerTeam === 1 ? classes.loser : ''
-                    }`}
-                  >
-                    {awayScoreEl}
-                  </div>
-                )}
-              </div>
-            </div>
+            <Team
+              home={home}
+              away={away}
+              matchStatus={matchStatus}
+              sportName={sportName}
+              winnerTeam={winnerTeam}
+            />
           </div>
           {note && <div className={classes.note}>{note}</div>}
         </div>
