@@ -1,52 +1,3 @@
-.date {
-  display: flex;
-  list-style: none;
-  justify-content: space-around;
-  border: 0.5px solid rgba(255, 255, 255, 0.42);
-  margin: 0;
-  width: 100%;
-  /* width: 900px; */
-  /* max-height: 27px;
-  min-height: 26px; */
-}
-.date a {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-
-  /* min-height: 27px;
-  max-height: 27px; */
-  /* margin-bottom: 0; */
-}
-a span {
-  margin-right: 4px;
-}
-.date-picker {
-  width: 125px;
-  cursor: pointer;
-  text-align: center;
-  /* margin-right: 50px; */
-}
-ul .date-container {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-}
-
-/* .date-picker {
-  background-color: rgb(28, 225, 225);
-  color: white;
-  font-weight: 900;
-}
-.date-picker:focus {
-  outline: none;
-} */
-.icon {
-  width: 3rem;
-  cursor: pointer;
-}
 .container {
   display: flex;
   justify-content: space-around;
@@ -58,17 +9,13 @@ ul .date-container {
 }
 .match-list {
   width: 50%;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-  /* background-color: black; */
 }
 .fallback {
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 700;
-  /* width: 90%; */
+
   border-radius: 30px;
   margin: 2rem 2rem;
   padding: 2rem;
@@ -82,7 +29,6 @@ ul .date-container {
   width: 2.5rem;
   border-radius: 1px;
   padding-right: 0.69rem;
-  /* padding-top: 1rem; */
 }
 .featured {
   width: 35%;
@@ -91,36 +37,8 @@ ul .date-container {
   height: 13rem;
   border-radius: 15px;
 }
-.date .active {
-  color: orangered;
-}
 
 @media (max-width: 680px) {
-  .date {
-    align-items: center;
-    font-size: smaller;
-    justify-content: space-between;
-    padding: 0;
-  }
-  .date a {
-    font-size: smaller;
-    margin: 0 0.2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  ul .date-container {
-    width: 60%;
-  }
-  .date-picker {
-    padding: 0;
-    margin: 0;
-    width: 70px;
-  }
-  .icon {
-    width: 1.5rem;
-    height: 1rem;
-  }
   .featured {
     display: none;
   }

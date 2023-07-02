@@ -6,6 +6,35 @@ import { matchClickHandler, refineCricketScores } from '../../helpers/helpers';
 import classes from './getCompMatches.module.css';
 import Image from '../ui/Image';
 
+const getScoreEl = (sportName, homeScore, awayScore) => {
+  if (sportName !== 'cricket')
+    return { homeScoreEl: homeScore, awayScoreEl: awayScore };
+  const {
+    cricketFormat,
+    homeInnings,
+    awayInnings,
+    totalAwayScore,
+    totalHomeScore,
+  } = refineCricketScores(homeScore, awayScore); //object coz undefined would produce an error.
+  if (cricketFormat === 'one-day') {
+    return { homeScoreEl: homeScore, awayScoreEl: awayScore };
+  }
+  return {
+    homeScoreEl: (
+      <>
+        <span className={classes.innings}>{homeInnings}</span>
+        <span className={classes.total}>{totalHomeScore}</span>
+      </>
+    ),
+    awayScoreEl: (
+      <>
+        <span className={classes.innings}>{awayInnings}</span>
+        <span className={classes.total}>{totalAwayScore}</span>
+      </>
+    ),
+  };
+};
+
 const getCompetitionMatches = (
   matches,
   sportName,
@@ -44,45 +73,11 @@ const getCompetitionMatches = (
       ? dummyLogo
       : awayImageUrl;
     const { displayTime, displayDate } = competitionDateHandler(startTime);
-    const {
-      cricketFormat,
-      homeInnings,
-      awayInnings,
-      totalAwayScore,
-      totalHomeScore,
-    } =
-      sportName === 'cricket' ? refineCricketScores(homeScore, awayScore) : {}; //object coz undefined would produce an error.
-    const displayScore =
-      sportName === 'cricket' && cricketFormat === 'test' ? (
-        <div className={classes.score}>
-          <div className={classes['first-score']}>
-            <span className={classes.innings}>{homeInnings}</span>
-            <span className={classes.total}>{totalHomeScore}</span>
-          </div>
-          <div className={classes['second-score']}>
-            <span className={classes.innings}>{awayInnings}</span>
-            <span className={classes.total}>{totalAwayScore}</span>
-          </div>
-        </div>
-      ) : (
-        // Will reach here either it is one-day-cricket or basketball
-        <div className={classes.score}>
-          <div
-            className={`${classes['first-score']} ${
-              matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
-            }`}
-          >
-            {matchStatus !== 'Abandoned' && homeScore}
-          </div>
-          <div
-            className={`${classes['second-score']} ${
-              matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
-            } `}
-          >
-            {matchStatus !== 'Abandoned' && awayScore}
-          </div>
-        </div>
-      );
+    const { homeScoreEl, awayScoreEl } = getScoreEl(
+      sportName,
+      homeScore,
+      awayScore
+    );
     const matchDetail = {
       matchId,
       matchStatus,
@@ -101,7 +96,16 @@ const getCompetitionMatches = (
     };
     return (
       <div
-        className={classes['match-item']}
+        className={`${classes['match-item']} ${
+          matchStatus === 'Abandoned' || matchStatus === 'Canceled'
+            ? classes.abandoned
+            : ''
+        }
+        ${
+          matchStatus.includes("'") || matchStatus.includes('quarter')
+            ? classes.playing
+            : ''
+        }`}
         key={matchId}
         onClick={matchClickHandler.bind(
           null,
@@ -112,14 +116,21 @@ const getCompetitionMatches = (
           sportName
         )}
       >
-        <div className={classes.lhs}>
-          <div className={classes['date-container']}>
-            <div className={classes.date}>{displayDate}</div>
-            <div className={classes.time}>
-              {matchState === 'fixtures' ? displayTime : matchStatus}
-            </div>
+        <div className={classes['date-container']}>
+          <div className={classes.date}>{displayDate}</div>
+          <div className={classes.time}>
+            {matchState === 'fixtures' ? displayTime : matchStatus}
           </div>
-          <div className={classes.teams}>
+        </div>
+        <div className={classes.teams}>
+          <div
+            className={`${classes.home} ${
+              (matchStatus === 'Ended' || matchStatus === 'AET') &&
+              winnerTeam === 2
+                ? classes.loser
+                : ''
+            }`}
+          >
             <div
               className={
                 matchStatus === 'Ended' && winnerTeam !== 1 ? classes.loser : ''
@@ -131,21 +142,29 @@ const getCompetitionMatches = (
                 <Image src={cricketBat} className={classes.bat} alt="" />
               )}
             </div>
-            <div
-              className={
-                matchStatus === 'Ended' && winnerTeam !== 2 ? classes.loser : ''
-              }
-            >
+            {matchState === 'results' && matchStatus !== 'Abandoned' && (
+              <div className={classes.score}>{homeScoreEl}</div>
+            )}
+          </div>
+          <div
+            className={`${classes.away} ${
+              (matchStatus === 'Ended' || matchStatus === 'AET') &&
+              winnerTeam === 1
+                ? classes.loser
+                : ''
+            }`}
+          >
+            <div>
               <Image src={awayUrl} alt="Away" />
               {awayTeamName}
               {awayIsBatting && matchStatus !== 'Ended' && (
                 <Image src={cricketBat} className={classes.bat} alt="" />
               )}
             </div>
+            {matchState === 'results' && matchStatus !== 'Abandoned' && (
+              <div className={classes.score}>{awayScoreEl}</div>
+            )}
           </div>
-        </div>
-        <div className={classes.rhs}>
-          {matchState === 'results' && displayScore}
         </div>
       </div>
     );
@@ -176,6 +195,11 @@ export const getFootballMatches = (
     const homeUrl = homeImageUrl.includes(undefined) ? dummyLogo : homeImageUrl;
     const awayUrl = awayImageUrl.includes(undefined) ? dummyLogo : awayImageUrl;
     const { displayTime, displayDate } = competitionDateHandler(startTime);
+    const { homeScoreEl, awayScoreEl } = getScoreEl(
+      'football',
+      homeScore,
+      awayScore
+    );
     const matchDetail = {
       matchId,
       matchStatus,
@@ -205,51 +229,45 @@ export const getFootballMatches = (
           'football'
         )}
       >
-        <div className={classes.lhs}>
-          <div className={classes['date-container']}>
-            <div className={classes.date}>{displayDate}</div>
-            <div className={classes.time}>
-              {matchState === 'fixtures' ? displayTime : matchStatus}
-            </div>
+        <div className={classes['date-container']}>
+          <div className={classes.date}>{displayDate}</div>
+          <div className={classes.time}>
+            {matchState === 'fixtures' ? displayTime : matchStatus}
           </div>
-          <div className={classes.teams}>
-            <div
-              className={
-                matchStatus === 'FT' && winnerTeam !== 1 ? classes.loser : ''
-              }
-            >
+        </div>
+        <div className={classes.teams}>
+          <div
+            className={`${classes.home} ${
+              (matchStatus === 'FT' || matchStatus === 'AET') &&
+              winnerTeam === 2
+                ? classes.loser
+                : ''
+            }`}
+          >
+            <div>
               <Image src={homeUrl} alt="Home" />
               {homeTeamName}
             </div>
-            <div
-              className={
-                matchStatus === 'FT' && winnerTeam !== 2 ? classes.loser : ''
-              }
-            >
+            {matchState === 'results' && (
+              <div className={classes.score}>{homeScoreEl}</div>
+            )}
+          </div>
+          <div
+            className={`${classes.away} ${
+              (matchStatus === 'FT' || matchStatus === 'AET') &&
+              winnerTeam === 1
+                ? classes.loser
+                : ''
+            }`}
+          >
+            <div>
               <Image src={awayUrl} alt="Away" />
               {awayTeamName}
             </div>
+            {matchState === 'results' && (
+              <div className={classes.score}>{awayScoreEl}</div>
+            )}
           </div>
-        </div>
-        <div className={classes.rhs}>
-          {matchState === 'results' && (
-            <div className={classes.score}>
-              <div
-                className={`${classes['first-score']} ${
-                  matchStatus === 'FT' && winnerTeam !== 1 ? classes.loser : ''
-                }`}
-              >
-                {homeScore}
-              </div>
-              <div
-                className={`${classes['second-score']} ${
-                  matchStatus === 'FT' && winnerTeam !== 2 ? classes.loser : ''
-                } `}
-              >
-                {awayScore}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );

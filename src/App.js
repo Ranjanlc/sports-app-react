@@ -18,23 +18,14 @@ import BasketballMatchDetail from './pages/basketballDetail/BasketballMatchDetai
 import BasketballLineup from './pages/basketballDetail/basketballLineup/BasketballLineup';
 import BasketballStats from './pages/basketballDetail/basketballStats/BasketballStats';
 import BasketballTable from './pages/basketballDetail/basketballTable/BasketballTable';
-//TODO:Special class while game is playing.
-//NOT-IMP-TODO:If match is abandoned,do some styling
-// MAjOR___TODO:Make lineups responsive for various sizes
-// QLI_TODO:Add a send report button while showing error and send the report to database with the path where the error happened.
-// Major-TODO:Make competitionDetail page overflowing only in matches container. And make standings a table container
-// MAJOR_TODO:Add features like showing info on hover using position relative and absolute on cricket innings and many other pages.
-// LOVE-TO-Have: Sorting button in each stats of basketball lineups(th tag doesnt allow button element)
+
+// LOVE-TO-HAVE: Sorting button in each stats of basketball lineups(th tag doesnt allow button element)
 //LOVE-TO-HAVE: Shirt number on a shirt svg
 function App() {
   return (
     <Layout>
       <Routes>
-        {/* <Route path="/" element={<Navigate to={'cricket'} replace />} /> */}
         <Route path="/" element={<Navigate to={'football'} replace />} />
-        {/* {['/:sportName', '/:sportName/:dateId'].map((path, id) => (
-          <Route path={path} element={<ScoreList />} key={id} />
-        ))} */}
         <Route path="/:sportName/live" element={<LiveMatches />} />
         <Route path="/football/:dateId?" element={<FootballScore />}></Route>
         <Route path="/cricket/:dateId?" element={<CricketScore />}></Route>

@@ -2,19 +2,25 @@
   display: flex;
   align-items: center;
   margin: 1rem 0;
-  /* max-width: 100px; */
-  /* width: 60%; */
-  /* justify-content: space-between; */
-  /* flex-direction: column; */
 }
 .title-container .arrow {
-  font-size: 40px;
-  margin-left: 40px;
+  font-size: 20px;
+  padding: 0 10px;
+  padding-bottom: 5px;
+  margin-left: 30px;
+  margin-top: 7px;
   cursor: pointer;
+  display: inline-block;
+  transform: scale(1.5);
+  border: 1px solid rgb(82, 74, 74);
+  border-radius: 20%;
+  background-color: #4e4949a0;
+}
+.arrow:hover {
+  background-color: black;
 }
 .title-container .name {
   display: flex;
-  /* max-width: 35%; */
   flex: 1 1 auto;
   align-items: center;
   justify-content: center;
@@ -45,7 +51,6 @@
   width: 100%;
   display: flex;
   margin-top: 2rem;
-  /* justify-content: space-between; */
 }
 .navigation--matches {
   width: 50%;
@@ -54,7 +59,6 @@
   justify-content: space-around;
   font-weight: 700;
   border-bottom: 1px solid rgba(85, 83, 83, 0.813);
-  /* font-size: medium; */
 }
 .standings {
   text-align: center;
@@ -64,7 +68,6 @@
 }
 .container {
   display: flex;
-  /* justify-content: space-between; */
 }
 .state-container {
   display: flex;
@@ -89,7 +92,6 @@
 .matches-container {
   margin-top: 1rem;
   width: 50%;
-  /* background-color: black; */
   margin-left: 2rem;
 }
 .match-item {
@@ -113,7 +115,6 @@
 }
 .date-container {
   min-width: 49px;
-  /* max-width: 49px; */
   text-align: center;
   color: rgb(208, 208, 208);
   margin-left: 0.5rem;
@@ -132,7 +133,6 @@
 .teams div {
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
   min-height: 29px;
@@ -169,7 +169,8 @@
 }
 .standing-container {
   width: 50%;
-  margin-right: 20px;
+  margin-left: 20px;
+  margin-right: 10px;
 }
 @media (max-width: 900px) {
   .container {
@@ -178,7 +179,6 @@
   .matches-container {
     width: 100%;
     margin-left: 0;
-    /* margin: 1rem 0.5rem; */
   }
   .standing-container {
     display: none;

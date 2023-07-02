@@ -28,7 +28,6 @@
 .card svg {
   width: 20px;
   margin: 0 10px;
-  /* height: 10%; */
 }
 .minute {
   display: flex;
@@ -56,7 +55,6 @@
   font-weight: 700;
   font-style: italic;
   font-size: medium;
-  /* margin: 0 5px; */
 }
 .penalty-card {
   display: flex;
@@ -71,11 +69,9 @@
   height: 70px;
   padding-left: 0;
   display: flex;
-  /* flex-wrap: wrap; */
   align-items: center;
   flex-direction: column;
   font-style: italic;
-  /* justify-content: center; */
 }
 .decider {
   font-size: 1.2rem;
@@ -95,11 +91,8 @@
   align-items: center;
   font-weight: bold;
   min-width: 106px;
-  /* margin-left: 20px; */
 }
-/* .player {
-  min-width: 106px;
-} */
+
 .score {
   color: rgba(222, 219, 219, 0.74);
 }
@@ -119,9 +112,7 @@
   width: 30px;
   height: 30px;
 }
-/* .away-player {
-  margin-left: 50px;
-} */
+
 @media (max-width: 600px) {
   .container {
     padding: 0;

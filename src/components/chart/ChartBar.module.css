@@ -16,12 +16,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  /* justify-content: flex-end;
-  align-items: flex-end;
-  align-content: flex-end; */
-  /* width: 200px;
-    height: 20px; */
-  /* background-color: #f0f0f0; */
 }
 .chart-bar__inner.home {
   flex-direction: row;
@@ -41,7 +35,6 @@
   font-weight: bold;
   margin: 0 2px;
   font-style: italic;
-  /* margin-right: auto; */
 }
 
 .chart-bar__label {

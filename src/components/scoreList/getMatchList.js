@@ -227,25 +227,6 @@ const getMatchList = (
                 )}
               </div>
             </div>
-
-            {/* {!(
-                matchStatus === 'NS' ||
-                matchStatus === 'Not started' ||
-                matchStatus === 'Postponed'
-              ) &&
-                sportName !== 'cricket' && (
-                  <div className={classes.score}>
-                    
-                    
-                  </div>
-                )} */}
-            {/* {sportName === 'cricket' &&
-                !(
-                  matchStatus === 'Not Started' ||
-                  matchStatus === 'Interrupted' ||
-                  matchStatus === 'Abandoned'
-                ) &&
-                cricketScore} */}
           </div>
           {note && <div className={classes.note}>{note}</div>}
         </div>

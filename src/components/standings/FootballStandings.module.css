@@ -4,8 +4,7 @@
   margin-top: 10px;
   margin-right: 10px;
   padding-top: 1px;
-  /* padding-right: 30px; */
-  /* margin-left: 10px; */
+
   border-radius: 15px;
   height: -moz-fit-content; /* Firefox */
   height: -webkit-fit-content; /* Safari and Chrome */
@@ -23,7 +22,6 @@
 .header .team-details {
   display: flex;
   justify-content: space-around;
-  /* width: 30%; */
 }
 .header span {
   width: 22px;
@@ -33,7 +31,6 @@
   width: 32px;
   text-align: center;
   position: relative;
-  /* overflow-x: hidden; */
 }
 .header span:hover::after {
   content: attr(data-full);
@@ -43,7 +40,6 @@
   display: none;
   padding: 5px;
   color: rgb(178, 178, 154);
-  /* border: 1px solid #ccc; */
 }
 
 .header span:hover::after {
@@ -67,7 +63,6 @@ hr {
 }
 .table .team-data__details {
   display: flex;
-  /* width: 30%; */
   justify-content: space-around;
   align-items: center;
 }

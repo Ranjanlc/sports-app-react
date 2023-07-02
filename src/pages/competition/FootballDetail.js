@@ -1,5 +1,4 @@
 import classes from './FootballDetail.module.css';
-import StarJsx from '../../assets/scoreList/star-jsx';
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -124,7 +123,6 @@ const FootballDetail = (props) => {
           </nav>
           <div className={classes['container']}>
             <div className={classes['matches-container']}>
-              {/* <hr /> */}
               <div className={classes['state-container']}>
                 {matches?.fixtures.length !== 0 && (
                   <div

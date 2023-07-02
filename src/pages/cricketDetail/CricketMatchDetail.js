@@ -253,7 +253,6 @@ function CricketMatchDetail() {
               Table
             </NavLink>
           </header>
-          {/* <hr /> */}
           <article className={classes['details']}>
             <Outlet />
           </article>

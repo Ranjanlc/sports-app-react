@@ -5,9 +5,6 @@
   border: 0.5px solid rgba(255, 255, 255, 0.42);
   margin: 0;
   width: 100%;
-  /* width: 900px; */
-  /* max-height: 27px;
-    min-height: 26px; */
 }
 .date a {
   text-decoration: none;
@@ -15,10 +12,6 @@
   cursor: pointer;
   font-weight: 600;
   display: flex;
-
-  /* min-height: 27px;
-    max-height: 27px; */
-  /* margin-bottom: 0; */
 }
 a span {
   margin-right: 4px;
@@ -27,7 +20,6 @@ a span {
   width: 125px;
   cursor: pointer;
   text-align: center;
-  /* margin-right: 50px; */
 }
 ul .date-container {
   width: 50%;

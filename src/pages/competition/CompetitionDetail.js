@@ -345,7 +345,6 @@ const CompetitionDetail = (props) => {
           </nav>
           <div className={classes['container']}>
             <div className={classes['matches-container']}>
-              {/* <hr /> */}
               <div className={classes['state-container']}>
                 {/* If theres no fixture we dont give user a button to toggle there actually. */}
                 {!noFixture && (

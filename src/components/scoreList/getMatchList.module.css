@@ -42,7 +42,6 @@
 .cricket-time {
   min-width: 38px;
   text-align: center;
-  /* transform: scale(1, 0.9); */
   color: rgb(208, 208, 208);
   margin-left: 0.5rem;
 }
@@ -71,7 +70,6 @@
   display: flex;
   align-items: center;
   margin-top: 1rem;
-  /* flex-direction: column; */
 }
 .title {
   display: flex;
@@ -118,7 +116,6 @@
   }
   .time {
     margin: 0;
-    /* margin-left: 2px; */
     min-width: 14%;
   }
 }

@@ -1,6 +1,5 @@
 .container {
   width: 70%;
-  /* display: flex; */
   margin: 0 auto;
   height: 70vh;
   padding: 0 14px;
@@ -9,7 +8,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* height: 50px; */
 }
 .home {
   display: flex;
@@ -40,15 +38,11 @@
   border-bottom: 1px #454545 solid;
   justify-content: space-between;
 }
-/* .score {
-    text-align: left;
-} */
+
 .right-lead-score {
-  /* max-width: 85px; */
   text-align: right;
 }
 .left-lead-score {
-  /* min-width: 85px; */
   text-align: left;
 }
 .stat {
@@ -69,7 +63,6 @@
 }
 .chart-container {
   border-radius: 12px;
-  /* background-color: #f8dfff71; */
   text-align: center;
   display: flex;
   flex-direction: column;

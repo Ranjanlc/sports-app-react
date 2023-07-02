@@ -17,7 +17,6 @@
   border: 2px solid white;
   padding: 0.15rem 1rem 0.35rem;
   cursor: pointer;
-  /* background-color: black; */
 }
 
 .active {
@@ -29,7 +28,6 @@
   border-radius: 15px;
 }
 .player {
-  /* width: 20%; */
   display: flex;
   font-weight: 500;
   align-items: center;
@@ -78,7 +76,6 @@
   display: none;
   padding: 5px;
   color: rgb(178, 178, 154);
-  /* border: 1px solid #ccc; */
 }
 
 .position:hover::after {

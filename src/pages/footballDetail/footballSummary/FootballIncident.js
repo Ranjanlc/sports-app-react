@@ -103,7 +103,6 @@ const FootballIncident = (props) => {
         <span className={classes.center}>
           {score[0]}-{score[1]}
         </span>
-        {/* <div className={classes.away}></div> */}
       </div>
     );
   }

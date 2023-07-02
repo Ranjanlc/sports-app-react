@@ -16,8 +16,6 @@ import { competitionDateHandler } from '../../helpers/date-picker';
 function MatchDetail({ query, endpoint }) {
   const [matchInfo, setMatchInfo] = useState({});
   const navigate = useNavigate();
-  // const { awayScore: detailedAwayScore, homeScore: detailedHomeScore } =
-  //   DUMMY_INFO;
   const ctx = useContext(MatchContext);
   const {
     matchDetail: {
@@ -101,7 +99,7 @@ function MatchDetail({ query, endpoint }) {
             <LoadingSpinner />
           </div>
         )}
-        {!isLoading && !isError && (
+        {!isLoading && !isError && Object.keys(matchInfo).length !== 0 && (
           <section className={classes['match-container']}>
             <span className={classes['competition-title']}>
               {competitionName}
@@ -164,17 +162,17 @@ function MatchDetail({ query, endpoint }) {
                   <Image src={Calendar} alt="dcsa" />
                   {refinedStartDate}
                 </span>
-                {venue && (
-                  <span>
-                    <Image src={Stadium} alt="stadium" /> {venue}
-                  </span>
-                )}
-              </div>
-              <div>
                 {spectators && (
                   <span>
                     <People />
                     {spectators}
+                  </span>
+                )}
+              </div>
+              <div>
+                {venue && (
+                  <span>
+                    <Image src={Stadium} alt="stadium" /> {venue}
                   </span>
                 )}
                 {refName && (
@@ -230,7 +228,6 @@ function MatchDetail({ query, endpoint }) {
               Table
             </NavLink>
           </header>
-          {/* <hr /> */}
           <article className={classes['details']}>
             <Outlet />
           </article>
