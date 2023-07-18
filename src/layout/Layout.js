@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import classes from './Layout.module.css';
-import logo from '../assets/layout/cricket.png';
+import logo from '../assets/layout/logo.png';
 import football from '../assets/layout/layout-football.png';
 import cricket from '../assets/layout/cricket.png';
 import basketball from '../assets/layout/basketball.png';
@@ -17,8 +17,7 @@ const Layout = (props) => {
     <Fragment>
       <nav className={classes.navigation}>
         <div className={classes.list}>
-          {/* <img src={logo} className={classes.logo} alt="logo" /> */}
-          <span>IT's my site</span>
+          <img src={logo} className={classes.logo} alt="logo" />
           {/* This all to set the link active when it is first loaded. */}
           <NavLink
             to="/football"
