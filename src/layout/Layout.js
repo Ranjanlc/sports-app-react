@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import classes from './Layout.module.css';
-import logo from '../assets/layout/logo.png';
+import logo from '../assets/layout/cricket.png';
 import football from '../assets/layout/layout-football.png';
 import cricket from '../assets/layout/cricket.png';
 import basketball from '../assets/layout/basketball.png';

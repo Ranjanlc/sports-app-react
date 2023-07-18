@@ -18,7 +18,8 @@ import BasketballMatchDetail from './pages/basketballDetail/BasketballMatchDetai
 import BasketballLineup from './pages/basketballDetail/basketballLineup/BasketballLineup';
 import BasketballStats from './pages/basketballDetail/basketballStats/BasketballStats';
 import BasketballTable from './pages/basketballDetail/basketballTable/BasketballTable';
-
+// FIXME: FIx non-working of competition detail page when we navigate to result page while fixture page is loading.
+// FIXME: Show /0 when there is no wicket in cricket match Detail and also use toFixed to round up overs ,issue mostly in live matches
 // LOVE-TO-HAVE: Sorting button in each stats of basketball lineups(th tag doesnt allow button element)
 //LOVE-TO-HAVE: Shirt number on a shirt svg
 function App() {
