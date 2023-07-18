@@ -17,7 +17,8 @@ const Layout = (props) => {
     <Fragment>
       <nav className={classes.navigation}>
         <div className={classes.list}>
-          <img src={logo} className={classes.logo} alt="logo" />
+          {/* <img src={logo} className={classes.logo} alt="logo" /> */}
+          <span>IT's my site</span>
           {/* This all to set the link active when it is first loaded. */}
           <NavLink
             to="/football"
