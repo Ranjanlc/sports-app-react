@@ -1,9 +1,9 @@
-import { useContext, useEffect } from 'react';
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import CompetitionStandings from '../../../components/standings/CompetitionStandings';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import useHttp from '../../../hooks/use-http';
-import MatchContext from '../../../store/match-context';
+import { useContext, useEffect } from "react";
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import CompetitionStandings from "../../../components/standings/CompetitionStandings";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import useHttp from "../../../hooks/use-http";
+import MatchContext from "../../../store/match-context";
 
 function BasketballTable() {
   const {
@@ -35,12 +35,12 @@ function BasketballTable() {
   };
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getBasketballMatchTable',
+    "getBasketballMatchTable",
     !tableContainer.length && !tableError
   );
   useEffect(() => {
-    data && setMatchDetailHandler(data, 'table');
-    isError && setMatchDetailError(isError, 'table');
+    data && setMatchDetailHandler(data, "table");
+    isError && setMatchDetailError(isError, "table");
   }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
   return (
     <>

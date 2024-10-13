@@ -1,9 +1,9 @@
-import { useContext, useEffect } from 'react';
-import CompetitionStandings from '../../components/standings/CompetitionStandings';
-import MatchContext from '../../store/match-context';
-import useHttp from '../../hooks/use-http';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import ErrorHandler from '../../components/error/ErrorHandler';
+import { useContext, useEffect } from "react";
+import CompetitionStandings from "../../components/standings/CompetitionStandings";
+import MatchContext from "../../store/match-context";
+import useHttp from "../../hooks/use-http";
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
+import ErrorHandler from "../../components/error/ErrorHandler";
 
 function CricketTable() {
   const {
@@ -36,12 +36,12 @@ function CricketTable() {
   };
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getCricketMatchTable',
+    "getCricketMatchTable",
     !tableContainer.length && !tableError
   );
   useEffect(() => {
-    data && setMatchDetailHandler(data, 'table');
-    isError && setMatchDetailError(isError, 'table');
+    data && setMatchDetailHandler(data, "table");
+    isError && setMatchDetailError(isError, "table");
   }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
   return (
     <>

@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
-import { convertDateForDisplay } from '../../helpers/date-picker';
-import dummyLogo from '../../assets/scoreList/dummy-logo.png';
-import classes from './getMatchList.module.css';
-import { matchClickHandler } from '../../helpers/helpers';
-import Image from '../ui/Image';
-import Team from '../team/Team';
+import { Fragment } from "react";
+import { convertDateForDisplay } from "../../helpers/date-picker";
+import dummyLogo from "../../assets/scoreList/dummy-logo.png";
+import classes from "./getMatchList.module.css";
+import { matchClickHandler } from "../../helpers/helpers";
+import Image from "../UI/Image";
+import Team from "../team/Team";
 
 const getMatchList = (
   matches,
@@ -29,7 +29,7 @@ const getMatchList = (
       venue,
       competitionId,
     };
-    if (sportName === 'cricket') compDetails.uniqueId = uniqueId;
+    if (sportName === "cricket") compDetails.uniqueId = uniqueId;
     const eventsList = events.map((event) => {
       const {
         matchId,
@@ -64,19 +64,19 @@ const getMatchList = (
       if (
         dirtyWinnerTeam !== 0 &&
         !dirtyWinnerTeam &&
-        sportName === 'basketball'
+        sportName === "basketball"
       ) {
         // IF basketball's api sends null, it didnt calculated that of AET but in others, it means undecided
         winnerTeam = +homeScore > +awayScore ? 1 : 2;
       }
       console.log(winnerTeam);
       const { displayTime } =
-        sportName === 'football'
-          ? convertDateForDisplay(startTime, 'football')
+        sportName === "football"
+          ? convertDateForDisplay(startTime, "football")
           : convertDateForDisplay(startTime);
       const calculateMatchStatus = () => {
-        if (sportName === 'cricket') {
-          return matchStatus === 'Ended' ? note : matchStatus;
+        if (sportName === "cricket") {
+          return matchStatus === "Ended" ? note : matchStatus;
         }
         return matchStatus;
       };
@@ -101,18 +101,18 @@ const getMatchList = (
       const away = { awayTeamName, awayUrl, awayScore, awayIsBatting };
       return (
         <div
-          className={`${classes['match-container']} ${
+          className={`${classes["match-container"]} ${
             // Three diff checks for three diff sports
-            matchStatus === 'Abandoned' ||
-            matchStatus === 'Canc.' ||
-            matchStatus === 'Canceled'
+            matchStatus === "Abandoned" ||
+            matchStatus === "Canc." ||
+            matchStatus === "Canceled"
               ? classes.abandoned
-              : ''
+              : ""
           }
           ${
-            matchStatus.includes("'") || matchStatus.includes('quarter')
+            matchStatus.includes("'") || matchStatus.includes("quarter")
               ? classes.playing
-              : ''
+              : ""
           }`}
           key={matchId}
           onClick={matchClickHandler.bind(
@@ -124,19 +124,19 @@ const getMatchList = (
             sportName
           )}
         >
-          <div className={classes['match-item']}>
-            {sportName === 'cricket' && (
-              <span className={classes['time']}>{displayTime}</span>
+          <div className={classes["match-item"]}>
+            {sportName === "cricket" && (
+              <span className={classes["time"]}>{displayTime}</span>
             )}
-            {sportName !== 'cricket' && (
+            {sportName !== "cricket" && (
               <span
                 className={`${classes.time} ${
-                  sportName === 'basketball'
-                    ? classes['basketball-time']
+                  sportName === "basketball"
+                    ? classes["basketball-time"]
                     : classes.time
                 }`}
               >
-                {matchStatus === 'NS' || matchStatus === 'Not started'
+                {matchStatus === "NS" || matchStatus === "Not started"
                   ? displayTime
                   : matchStatus}
               </span>
@@ -160,7 +160,7 @@ const getMatchList = (
           Math.ceil(Math.random() * 100) + Math.floor(Math.random() * 100)
         }`}
       >
-        <div className={classes['title-container']}>
+        <div className={classes["title-container"]}>
           <Image src={`${competitionImage}`} alt="Flag" />
           <div className={classes.title}>
             <span

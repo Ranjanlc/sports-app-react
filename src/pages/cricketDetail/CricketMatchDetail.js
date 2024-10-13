@@ -1,16 +1,16 @@
-import { Fragment, useContext, useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import MatchContext from '../../store/match-context';
-import useHttp from '../../hooks/use-http';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { competitionDateHandler } from '../../helpers/date-picker';
+import { Fragment, useContext, useEffect, useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import MatchContext from "../../store/match-context";
+import useHttp from "../../hooks/use-http";
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
+import { competitionDateHandler } from "../../helpers/date-picker";
 
-import classes from './CricketMatchDetail.module.css';
-import ErrorHandler from '../../components/error/ErrorHandler';
-import Calendar from '../../assets/matchDetail/calendar.svg';
-import Referee from '../../assets/matchDetail/referee.svg';
-import Stadium from '../../assets/matchDetail/stadium.svg';
-import Image from '../../components/ui/Image';
+import classes from "./CricketMatchDetail.module.css";
+import ErrorHandler from "../../components/error/ErrorHandler";
+import Calendar from "../../assets/matchDetail/calendar.svg";
+import Referee from "../../assets/matchDetail/referee.svg";
+import Stadium from "../../assets/matchDetail/stadium.svg";
+import Image from "../../components/UI/Image";
 function CricketMatchDetail() {
   const [matchInfo, setMatchInfo] = useState({ homeScore: {}, awayScore: {} });
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function CricketMatchDetail() {
     },
   } = useContext(MatchContext);
   // Coz we are receiving note and if we receive note that means it has prolly ended.
-  const matchEnded = matchStatus.split(' ').length > 4;
+  const matchEnded = matchStatus.split(" ").length > 4;
   const graphqlQuery = {
     query: `
       query FetchMatchInfo($matchId:ID!){
@@ -61,7 +61,7 @@ function CricketMatchDetail() {
   };
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getCricketMatchInfo',
+    "getCricketMatchInfo",
     true
   );
   useEffect(() => {
@@ -91,19 +91,19 @@ function CricketMatchDetail() {
   } = matchInfo;
   let awayScoreEl, homeScoreEl;
   // Notice how i subtly putted space after and thats to avoid breaking up of name like 'Nandu'=> ['N','U']
-  const [umpire1, umpire2] = umpires?.split('and ') ?? [];
+  const [umpire1, umpire2] = umpires?.split("and ") ?? [];
   const getNormalScore = (won, inning1, wickets, overs) => {
     const { inning1: wicketInning1 } = wickets;
     return (
       <span
         className={
           matchEnded && !won
-            ? `${classes.loser} ${classes['score-container']}`
-            : classes['score-container']
+            ? `${classes.loser} ${classes["score-container"]}`
+            : classes["score-container"]
         }
       >
         <span className={classes.score}>{`${inning1}${
-          wicketInning1 ? `/${wicketInning1}` : ''
+          wicketInning1 ? `/${wicketInning1}` : ""
         }`}</span>
         <span className={classes.over}>{overs}</span>
       </span>
@@ -115,16 +115,16 @@ function CricketMatchDetail() {
       <span
         className={
           matchEnded && !won
-            ? `${classes.loser} ${classes['score-container']}`
-            : classes['score-container']
+            ? `${classes.loser} ${classes["score-container"]}`
+            : classes["score-container"]
         }
       >
         <span className={classes.score}>
-          {`${inning1}${wicketInning1 ? `/${wicketInning1}` : ''}`}
+          {`${inning1}${wicketInning1 ? `/${wicketInning1}` : ""}`}
         </span>
         {inning2 && (
           <span className={classes.score}>
-            {`${inning2}${wicketInning2 ? `/${wicketInning2}` : ''}`}
+            {`${inning2}${wicketInning2 ? `/${wicketInning2}` : ""}`}
           </span>
         )}
         <span className={classes.over}>{overs}</span>
@@ -134,10 +134,10 @@ function CricketMatchDetail() {
   if (!homeInning2 && !awayInning2) {
     homeScoreEl = homeInning1
       ? getNormalScore(winnerTeam === 1, homeInning1, homeWickets, homeOvers)
-      : '';
+      : "";
     awayScoreEl = awayInning1
       ? getNormalScore(winnerTeam === 2, awayInning1, awayWickets, awayOvers)
-      : '';
+      : "";
   }
   if (homeInning2 || awayInning2) {
     // Test
@@ -171,24 +171,24 @@ function CricketMatchDetail() {
           </div>
         )}
         {!isLoading && matchInfo.startDate && (
-          <section className={classes['match-container']}>
-            <span className={classes['competition-title']}>
+          <section className={classes["match-container"]}>
+            <span className={classes["competition-title"]}>
               {competitionName}
             </span>
-            <article className={classes['match-article']}>
-              <div className={classes['match']}>
-                <div className={classes['match-lhs']}>
+            <article className={classes["match-article"]}>
+              <div className={classes["match"]}>
+                <div className={classes["match-lhs"]}>
                   <span>{homeTeamName}</span>
                   <Image src={homeImageUrl} alt="dasd" />
                 </div>
-                <main className={classes['score-container']}>
-                  <div className={classes['match-score']}>
-                    {matchStatus === 'NS' ? (
+                <main className={classes["score-container"]}>
+                  <div className={classes["match-score"]}>
+                    {matchStatus === "NS" ? (
                       <Fragment>{displayTime}</Fragment>
                     ) : (
                       <Fragment>
                         {homeScoreEl}
-                        <span className={matchEnded ? classes.loser : ''}>
+                        <span className={matchEnded ? classes.loser : ""}>
                           -
                         </span>
                         {awayScoreEl}
@@ -197,7 +197,7 @@ function CricketMatchDetail() {
                   </div>
                 </main>
 
-                <div className={classes['match-rhs']}>
+                <div className={classes["match-rhs"]}>
                   <span>{awayTeamName}</span>
                   <Image src={awayImageUrl} alt="" />
                 </div>
@@ -236,24 +236,24 @@ function CricketMatchDetail() {
             </main>
           </section>
         )}
-        <section className={classes['details-container']}>
-          <header className={classes['link-container']}>
+        <section className={classes["details-container"]}>
+          <header className={classes["link-container"]}>
             <NavLink
               to="innings"
               replace
-              className={({ isActive }) => (isActive ? classes.active : '')}
+              className={({ isActive }) => (isActive ? classes.active : "")}
             >
               Innings
             </NavLink>
             <NavLink
               to="table"
               replace
-              className={({ isActive }) => (isActive ? classes.active : '')}
+              className={({ isActive }) => (isActive ? classes.active : "")}
             >
               Table
             </NavLink>
           </header>
-          <article className={classes['details']}>
+          <article className={classes["details"]}>
             <Outlet />
           </article>
         </section>

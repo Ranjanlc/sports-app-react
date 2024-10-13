@@ -1,14 +1,14 @@
-import { useSearchParams } from 'react-router-dom';
-import MatchContext from '../../../store/match-context';
-import useHttp from '../../../hooks/use-http';
+import { useSearchParams } from "react-router-dom";
+import MatchContext from "../../../store/match-context";
+import useHttp from "../../../hooks/use-http";
 
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 
-import classes from './BasksetballLineup.module.css';
-import Image from '../../../components/ui/Image';
-import { getFullPosition } from '../../../helpers/helpers';
-import { useContext, useEffect } from 'react';
+import classes from "./BasksetballLineup.module.css";
+import Image from "../../../components/UI/Image";
+import { getFullPosition } from "../../../helpers/helpers";
+import { useContext, useEffect } from "react";
 
 function BasketballLineup() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +20,7 @@ function BasketballLineup() {
     setMatchDetailError,
     matchDetailError: { lineupError },
   } = useContext(MatchContext);
-  const query = searchParams.get('team') || 'home';
+  const query = searchParams.get("team") || "home";
   const graphqlQuery = {
     query: `
   query FetchBasketballLineup($matchId:ID!){
@@ -57,22 +57,22 @@ function BasketballLineup() {
     },
   };
   const toFetch =
-    !(matchStatus === 'Not started' || matchStatus === 'Canceled') &&
+    !(matchStatus === "Not started" || matchStatus === "Canceled") &&
     !lineupError &&
     !lineupContainer.home;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getBasketballMatchLineups',
+    "getBasketballMatchLineups",
     toFetch
   );
   useEffect(() => {
     if (data) {
       const { home, away } = data;
       const total = [...home, ...away];
-      setMatchDetailHandler({ home, away, total }, 'lineup');
+      setMatchDetailHandler({ home, away, total }, "lineup");
     }
 
-    isError && setMatchDetailError(isError, 'lineup');
+    isError && setMatchDetailError(isError, "lineup");
   }, [setMatchDetailError, setMatchDetailHandler, data, isError]);
 
   const curLineup = lineupContainer[query]?.sort(
@@ -91,7 +91,7 @@ function BasketballLineup() {
     return (
       <tr key={id}>
         <td className={classes.player}>
-          <div className={classes['player-name']}>
+          <div className={classes["player-name"]}>
             <Image
               src={`https://api.sofascore.app/api/v1/player/${id}/image`}
               alt="Player"
@@ -126,31 +126,31 @@ function BasketballLineup() {
         <section className={classes.container}>
           <nav className={classes.nav}>
             <div
-              className={query === 'home' ? classes.active : ''}
+              className={query === "home" ? classes.active : ""}
               onClick={() => {
-                setSearchParams('?team=home', { replace: true });
+                setSearchParams("?team=home", { replace: true });
               }}
             >
               Home
             </div>
             <div
-              className={query === 'away' ? classes.active : ''}
+              className={query === "away" ? classes.active : ""}
               onClick={() => {
-                setSearchParams('?team=away', { replace: true });
+                setSearchParams("?team=away", { replace: true });
               }}
             >
               Away
             </div>
             <div
-              className={query === 'total' ? classes.active : ''}
+              className={query === "total" ? classes.active : ""}
               onClick={() => {
-                setSearchParams('?team=total', { replace: true });
+                setSearchParams("?team=total", { replace: true });
               }}
             >
               Total
             </div>
           </nav>
-          <table className={classes['player-container']} border={1}>
+          <table className={classes["player-container"]} border={1}>
             <thead>
               <tr>
                 <th className={`${classes.player} ${classes.head}`}>Player</th>

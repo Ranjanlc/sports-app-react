@@ -1,12 +1,12 @@
-import { Fragment, useContext, useEffect } from 'react';
-import classes from './BasketballStats.module.css';
-import MatchContext from '../../../store/match-context';
-import Image from '../../../components/ui/Image';
-import ChartBar from '../../../components/chart/ChartBar';
-import { checkGreaterStat } from '../../../helpers/helpers';
-import useHttp from '../../../hooks/use-http';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import ErrorHandler from '../../../components/error/ErrorHandler';
+import { Fragment, useContext, useEffect } from "react";
+import classes from "./BasketballStats.module.css";
+import MatchContext from "../../../store/match-context";
+import Image from "../../../components/UI/Image";
+import ChartBar from "../../../components/chart/ChartBar";
+import { checkGreaterStat } from "../../../helpers/helpers";
+import useHttp from "../../../hooks/use-http";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import ErrorHandler from "../../../components/error/ErrorHandler";
 function BasketballStats() {
   const {
     matchDetail: {
@@ -50,17 +50,17 @@ function BasketballStats() {
     },
   };
   const toFetch =
-    !(matchStatus === 'Not started' || matchStatus === 'Canceled') &&
+    !(matchStatus === "Not started" || matchStatus === "Canceled") &&
     !statsError &&
     !statsContainer;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getBasketballMatchStats',
+    "getBasketballMatchStats",
     toFetch
   );
   useEffect(() => {
-    data && setMatchDetailHandler(data, 'stats');
-    isError && setMatchDetailError(isError, 'stats');
+    data && setMatchDetailHandler(data, "stats");
+    isError && setMatchDetailError(isError, "stats");
   }, [data, setMatchDetailError, setMatchDetailHandler, isError]);
   return (
     <>
@@ -72,7 +72,7 @@ function BasketballStats() {
       )}
       {!isLoading && !statsError && statsContainer && (
         <main className={classes.container}>
-          <header className={classes['team-container']}>
+          <header className={classes["team-container"]}>
             <div className={classes.home}>
               <Image src={homeImageUrl} alt="hehe" />
               <span>{homeTeamName}</span>
@@ -82,19 +82,19 @@ function BasketballStats() {
               <span>{awayTeamName}</span>
             </div>
           </header>
-          <article className={classes['general-container']}>
+          <article className={classes["general-container"]}>
             {scoringStats?.map((statsContainer, i) => {
               const { home, away, stat } = statsContainer;
               const { homeGreater, awayGreater } = checkGreaterStat(
                 home,
                 away,
-                'scoring'
+                "scoring"
               );
               return (
-                <div className={classes['stats-container']} key={i}>
+                <div className={classes["stats-container"]} key={i}>
                   <span
                     className={`${classes.score} ${
-                      homeGreater ? classes.greater : ''
+                      homeGreater ? classes.greater : ""
                     }`}
                   >
                     {home}
@@ -102,17 +102,17 @@ function BasketballStats() {
                   <span className={classes.stat}>{stat}</span>
                   <span
                     className={`${classes.score} ${
-                      awayGreater ? classes.greater : ''
+                      awayGreater ? classes.greater : ""
                     }`}
                   >
                     {away}
                   </span>
                 </div>
               );
-            }) ?? ''}
-            <div className={classes['stats-container']}></div>
+            }) ?? ""}
+            <div className={classes["stats-container"]}></div>
           </article>
-          <article className={classes['chart-container']}>
+          <article className={classes["chart-container"]}>
             {otherStats?.map((statsContainer, i) => {
               const { home, stat, away } = statsContainer;
               const totalMaximum = home + away;
@@ -126,37 +126,37 @@ function BasketballStats() {
                   label={stat}
                 />
               );
-            }) ?? ''}
+            }) ?? ""}
           </article>
-          <article className={classes['general-container']}>
-            <div className={classes['stats-container']}></div>
+          <article className={classes["general-container"]}>
+            <div className={classes["stats-container"]}></div>
             {leadStats?.map((statsContainer, i) => {
               const { home, away, stat } = statsContainer;
               const { homeGreater, awayGreater } = checkGreaterStat(
                 home,
                 away,
-                'lead'
+                "lead"
               );
               return (
-                <div className={classes['stats-container']} key={i}>
+                <div className={classes["stats-container"]} key={i}>
                   <span
-                    className={`${classes['left-lead-score']} ${
-                      homeGreater ? classes.greater : ''
+                    className={`${classes["left-lead-score"]} ${
+                      homeGreater ? classes.greater : ""
                     }`}
                   >
                     {home}
                   </span>
-                  <span className={classes['lead-stat']}>{stat}</span>
+                  <span className={classes["lead-stat"]}>{stat}</span>
                   <span
-                    className={`${classes['right-lead-score']} ${
-                      awayGreater ? classes.greater : ''
+                    className={`${classes["right-lead-score"]} ${
+                      awayGreater ? classes.greater : ""
                     }`}
                   >
                     {away}
                   </span>
                 </div>
               );
-            }) ?? ''}
+            }) ?? ""}
           </article>
         </main>
       )}

@@ -1,33 +1,33 @@
-import { Fragment, useContext, useEffect, useReducer } from 'react';
-import { apiDateConverter, getTimeZoneOffSet } from '../../helpers/date-picker';
-import 'react-datepicker/dist/react-datepicker.css';
-import classes from './ScoreList.module.css';
-import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from '../ui/LoadingSpinner';
-import FeaturedMatch from '../featuredMatch/FeaturedMatch';
-import { convertSlugToDisplay, slugMaker } from '../../helpers/helpers';
-import Info from '../../assets/scoreList/info';
-import MatchContext from '../../store/match-context';
-import getMatchList from './getMatchList';
-import CompetitionContext from '../../store/competition-context';
-import ErrorHandler from '../error/ErrorHandler';
-import DateList from '../dateNav/DateList';
-import useHttp from '../../hooks/use-http';
+import { Fragment, useContext, useEffect, useReducer } from "react";
+import { apiDateConverter, getTimeZoneOffSet } from "../../helpers/date-picker";
+import "react-datepicker/dist/react-datepicker.css";
+import classes from "./ScoreList.module.css";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import FeaturedMatch from "../featuredMatch/FeaturedMatch";
+import { convertSlugToDisplay, slugMaker } from "../../helpers/helpers";
+import Info from "../../assets/scoreList/info";
+import MatchContext from "../../store/match-context";
+import getMatchList from "./getMatchList";
+import CompetitionContext from "../../store/competition-context";
+import ErrorHandler from "../error/ErrorHandler";
+import DateList from "../dateNav/DateList";
+import useHttp from "../../hooks/use-http";
 
 const scoreReducer = (state, { type, value }) => {
-  if (type === 'SET_DATE') {
+  if (type === "SET_DATE") {
     return { ...state, date: value };
   }
-  if (type === 'SET_MATCHES') {
+  if (type === "SET_MATCHES") {
     return { ...state, matches: value };
   }
-  if (type === 'SET_FEATURED_MATCH') {
+  if (type === "SET_FEATURED_MATCH") {
     return { ...state, featuredMatch: value };
   }
-  if (type === 'SET_LOADING') {
+  if (type === "SET_LOADING") {
     return { ...state, isLoading: value };
   }
-  if (type === 'SET_ERROR') {
+  if (type === "SET_ERROR") {
     return { ...state, isError: value };
   }
 };
@@ -88,7 +88,7 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
     }
      `,
     variables: {
-      isCricket: sportName === 'cricket',
+      isCricket: sportName === "cricket",
       sportName,
       isLive: isLive ? true : false,
       date,
@@ -97,7 +97,7 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
   };
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getMatchesList',
+    "getMatchesList",
     true,
     date
   );
@@ -105,10 +105,10 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
     if (data) {
       // setFetchD(false);
       const { matches, featuredMatch } = data;
-      dispatchScore({ type: 'SET_MATCHES', value: matches });
+      dispatchScore({ type: "SET_MATCHES", value: matches });
       // IN case we load live matches
       featuredMatch &&
-        dispatchScore({ type: 'SET_FEATURED_MATCH', value: featuredMatch });
+        dispatchScore({ type: "SET_FEATURED_MATCH", value: featuredMatch });
     }
   }, [data]);
 
@@ -120,10 +120,10 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
     clearCompetitionSet();
     setCompetitionHandler(compDetails);
     // replaced coz it is seen that some have names like prem-22/23 which would result in routes not to be found.
-    navigate(`/${sportName}/${compSlug.replaceAll('/', '-')}/fixtures`);
+    navigate(`/${sportName}/${compSlug.replaceAll("/", "-")}/fixtures`);
   };
   const setDateHandler = (dateValue) => {
-    dispatchScore({ type: 'SET_DATE', value: dateValue });
+    dispatchScore({ type: "SET_DATE", value: dateValue });
   };
 
   const competitionSet =
@@ -149,9 +149,9 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
           <Info /> There are no live matches as of now.
         </div>
       )}
-      <main className={isLive ? classes['live-container'] : classes.container}>
+      <main className={isLive ? classes["live-container"] : classes.container}>
         {isError && <ErrorHandler message={isError} />}
-        <div className={classes['match-list']}>
+        <div className={classes["match-list"]}>
           {isLoading && !isError && (
             <div className="centered">
               <LoadingSpinner />

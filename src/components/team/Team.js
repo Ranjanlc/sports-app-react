@@ -1,11 +1,11 @@
-import classes from './Team.module.css';
+import classes from "./Team.module.css";
 
-import cricketBat from '../../assets/scoreList/cricket-bat.png';
-import Image from '../ui/Image';
-import { refineCricketScores } from '../../helpers/helpers';
+import cricketBat from "../../assets/scoreList/cricket-bat.png";
+import Image from "../UI/Image";
+import { refineCricketScores } from "../../helpers/helpers";
 
 const getScoreEl = (sportName, homeScore, awayScore) => {
-  if (sportName !== 'cricket')
+  if (sportName !== "cricket")
     return { homeScoreEl: homeScore, awayScoreEl: awayScore };
   const {
     cricketFormat,
@@ -14,7 +14,7 @@ const getScoreEl = (sportName, homeScore, awayScore) => {
     totalAwayScore,
     totalHomeScore,
   } = refineCricketScores(homeScore, awayScore); //object coz undefined would produce an error.
-  if (cricketFormat === 'one-day') {
+  if (cricketFormat === "one-day") {
     return { homeScoreEl: homeScore, awayScoreEl: awayScore };
   }
   return {
@@ -39,7 +39,7 @@ function Team({
   winnerTeam,
   home,
   away,
-  matchState = 'results',
+  matchState = "results",
 }) {
   const { homeTeamName, homeUrl, homeIsBatting, homeScore } = home;
   const { awayTeamName, awayUrl, awayIsBatting, awayScore } = away;
@@ -50,38 +50,38 @@ function Team({
   );
   console.log(winnerTeam);
   const matchFinished =
-    matchStatus === 'Ended' || matchStatus === 'AET' || matchStatus === 'FT';
+    matchStatus === "Ended" || matchStatus === "AET" || matchStatus === "FT";
   return (
     <div className={classes.teams}>
       <div
         className={`${classes.home} ${
-          matchFinished && winnerTeam === 2 ? classes.loser : ''
+          matchFinished && winnerTeam === 2 ? classes.loser : ""
         }`}
       >
         <div>
           <Image src={homeUrl} alt="Home" />
           {homeTeamName}
-          {homeIsBatting && matchStatus !== 'Ended' && (
+          {homeIsBatting && matchStatus !== "Ended" && (
             <Image src={cricketBat} className={classes.bat} alt="" />
           )}
         </div>
-        {matchState === 'results' && matchStatus !== 'Abandoned' && (
+        {matchState === "results" && matchStatus !== "Abandoned" && (
           <div className={classes.score}>{homeScoreEl}</div>
         )}
       </div>
       <div
         className={`${classes.away} ${
-          matchFinished && winnerTeam === 1 ? classes.loser : ''
+          matchFinished && winnerTeam === 1 ? classes.loser : ""
         }`}
       >
         <div>
           <Image src={awayUrl} alt="Away" />
           {awayTeamName}
-          {awayIsBatting && matchStatus !== 'Ended' && (
+          {awayIsBatting && matchStatus !== "Ended" && (
             <Image src={cricketBat} alt="" />
           )}
         </div>
-        {matchState === 'results' && matchStatus !== 'Abandoned' && (
+        {matchState === "results" && matchStatus !== "Abandoned" && (
           <div className={classes.score}>{awayScoreEl}</div>
         )}
       </div>

@@ -1,14 +1,14 @@
-import classes from './FootballLineup.module.css';
-import PlayerCircle from '../../../components/ui/PlayerCircle';
-import { Fragment, useContext, useEffect } from 'react';
-import MatchContext from '../../../store/match-context';
-import SubOut from '../../../assets/matchDetail/sub-out';
-import SubIn from '../../../assets/matchDetail/sub-in';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import Info from '../../../assets/scoreList/info';
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import useHttp from '../../../hooks/use-http';
-import Image from '../../../components/ui/Image';
+import classes from "./FootballLineup.module.css";
+import PlayerCircle from "../../../components/UI/PlayerCircle";
+import { Fragment, useContext, useEffect } from "react";
+import MatchContext from "../../../store/match-context";
+import SubOut from "../../../assets/matchDetail/sub-out";
+import SubIn from "../../../assets/matchDetail/sub-in";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import Info from "../../../assets/scoreList/info";
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import useHttp from "../../../hooks/use-http";
+import Image from "../../../components/UI/Image";
 const FootballLineup = (props) => {
   const {
     matchDetail: {
@@ -58,28 +58,28 @@ const FootballLineup = (props) => {
   const toFetch = lineups.length === 0;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getFootballMatchLineup',
+    "getFootballMatchLineup",
     toFetch
   );
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
-    data && setMatchDetailHandler(data, 'lineup');
+    data && setMatchDetailHandler(data, "lineup");
     isError &&
       setMatchDetailError(
-        'Lineups will appear once the match starts',
-        'lineup'
+        "Lineups will appear once the match starts",
+        "lineup"
       );
   }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
-  const { players: homePlayers = '', coach: homeCoach = '' } =
+  const { players: homePlayers = "", coach: homeCoach = "" } =
     lineups.find((el) => el.team === 1) || {};
-  const { players: awayPlayers = '', coach: awayCoach = '' } =
+  const { players: awayPlayers = "", coach: awayCoach = "" } =
     lineups.find((el) => el.team === 2) || {};
   const lineupReducer = (playerSet) => {
     const reducedLineup = playerSet.reduce((acc, curPlayer) => {
       const { playerId, playerName, playerNumber, formatPosition } = curPlayer;
       const index =
-        formatPosition === 'substitutePlayer'
-          ? 'subs'
+        formatPosition === "substitutePlayer"
+          ? "subs"
           : formatPosition.slice(0, 1);
       if (acc[index]) {
         acc[index].push({ playerId, playerName, playerNumber });
@@ -94,7 +94,7 @@ const FootballLineup = (props) => {
   const getLineupEl = (lineupObj, away = false) => {
     // Slicing the substitue part
     const finalLineupObj =
-      matchStatus !== 'NS'
+      matchStatus !== "NS"
         ? Object.values(lineupObj).slice(0, -1)
         : Object.values(lineupObj);
     const lineupEl = finalLineupObj.map((positionSet, i) => {
@@ -117,7 +117,7 @@ const FootballLineup = (props) => {
       });
       return (
         <div
-          className={` ${classes['away-position']} ${classes.position}`}
+          className={` ${classes["away-position"]} ${classes.position}`}
           key={i}
         >
           {playerEl}
@@ -134,7 +134,7 @@ const FootballLineup = (props) => {
         <li key={playerId}>
           <PlayerCircle onlyCircle playerNumber={playerNumber} />
           <span
-            className={`${classes['sub-player']} ${away ? classes.away : ''}`}
+            className={`${classes["sub-player"]} ${away ? classes.away : ""}`}
           >
             {playerName}
             {isSubstituted && <SubIn />}
@@ -152,11 +152,11 @@ const FootballLineup = (props) => {
 
   const homeSubEl =
     lineups.length !== 0 &&
-    matchStatus !== 'NS' &&
+    matchStatus !== "NS" &&
     getIndvSubEl(homeLineupObj.subs);
   const awaySubEl =
     lineups.length !== 0 &&
-    matchStatus !== 'NS' &&
+    matchStatus !== "NS" &&
     getIndvSubEl(awayLineupObj.subs, true);
   const subsEl =
     subs &&
@@ -164,7 +164,7 @@ const FootballLineup = (props) => {
       .flat()
       .map((subContainer) => {
         const {
-          minute = '23',
+          minute = "23",
           team,
           subOutPlayerName,
           subInPlayerName,
@@ -172,7 +172,7 @@ const FootballLineup = (props) => {
           minuteExtended,
         } = subContainer;
         return (
-          <li key={subOutPlayerId} className={classes['subs-list']}>
+          <li key={subOutPlayerId} className={classes["subs-list"]}>
             <span className={classes.time}>
               {minute}
               {minuteExtended ? `+${minuteExtended}` : ``}'
@@ -183,11 +183,11 @@ const FootballLineup = (props) => {
                 alt="team"
               />
             </span>
-            <span className={classes['sub-out']}>
+            <span className={classes["sub-out"]}>
               <span>{subOutPlayerName}</span>
               <SubOut />
             </span>
-            <span className={classes['sub-in']}>
+            <span className={classes["sub-in"]}>
               <SubIn /> {subInPlayerName}
             </span>
           </li>
@@ -211,14 +211,14 @@ const FootballLineup = (props) => {
       )}
       {!isLoading && !lineupError && lineups[0]?.players?.length !== 0 && (
         <article className={classes.container}>
-          <main className={classes['lineup-container']}>
-            {!isLoading && matchStatus === 'NS' && (
+          <main className={classes["lineup-container"]}>
+            {!isLoading && matchStatus === "NS" && (
               <div className={classes.predicted}>
                 <Info />
                 Predicted lineups
               </div>
             )}
-            <div className={classes['lineups']}>
+            <div className={classes["lineups"]}>
               <div className={classes.summary}>
                 <span>
                   <Image src={homeImageUrl} alt="team" />
@@ -226,10 +226,10 @@ const FootballLineup = (props) => {
                 </span>
                 <span>Coach : {homeCoach}</span>
               </div>
-              <section className={classes['home-lineups']}>
+              <section className={classes["home-lineups"]}>
                 {homeLineupSet}
               </section>
-              <section className={classes['away-lineups']}>
+              <section className={classes["away-lineups"]}>
                 <div className={classes.summary}>
                   <span>
                     <Image src={awayImageUrl} alt="Away Team" />
@@ -241,15 +241,15 @@ const FootballLineup = (props) => {
               </section>
             </div>
             {subs && (
-              <main className={classes['subs-container']}>
+              <main className={classes["subs-container"]}>
                 <span className={classes.title}>Substitutions :</span>
                 <ul>{subsEl}</ul>
               </main>
             )}
-            {matchStatus !== 'NS' && (
+            {matchStatus !== "NS" && (
               <Fragment>
                 <span className={classes.title}>Substitute Players :</span>
-                <div className={classes['team-name__container']}>
+                <div className={classes["team-name__container"]}>
                   <span>
                     <Image src={homeImageUrl} alt="Team" />
                     {homeTeamName}
@@ -259,9 +259,9 @@ const FootballLineup = (props) => {
                     {awayTeamName}
                   </span>
                 </div>
-                <main className={classes['sub__player-container']}>
-                  <div className={classes['home__sub']}>{homeSubEl}</div>
-                  <div className={classes['away__sub']}>{awaySubEl}</div>
+                <main className={classes["sub__player-container"]}>
+                  <div className={classes["home__sub"]}>{homeSubEl}</div>
+                  <div className={classes["away__sub"]}>{awaySubEl}</div>
                 </main>
               </Fragment>
             )}

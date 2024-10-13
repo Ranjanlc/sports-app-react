@@ -1,12 +1,12 @@
-import ChartBar from '../../../components/chart/ChartBar';
-import classes from './FootballStats.module.css';
-import { Fragment, useContext, useEffect } from 'react';
-import MatchContext from '../../../store/match-context';
-import Info from '../../../assets/scoreList/info';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import useHttp from '../../../hooks/use-http';
-import Image from '../../../components/ui/Image';
+import ChartBar from "../../../components/chart/ChartBar";
+import classes from "./FootballStats.module.css";
+import { Fragment, useContext, useEffect } from "react";
+import MatchContext from "../../../store/match-context";
+import Info from "../../../assets/scoreList/info";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import useHttp from "../../../hooks/use-http";
+import Image from "../../../components/UI/Image";
 const FootballStats = () => {
   const ctx = useContext(MatchContext);
   const {
@@ -34,19 +34,19 @@ const FootballStats = () => {
       matchId,
     },
   };
-  const toFetch = matchStatus !== 'NS' && !statsContainer;
+  const toFetch = matchStatus !== "NS" && !statsContainer;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getFootballMatchStats',
+    "getFootballMatchStats",
     toFetch
   );
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
     if (data) {
-      setMatchDetailHandler(data, 'stats');
+      setMatchDetailHandler(data, "stats");
     }
   }, [data, setMatchDetailHandler]);
-  if (matchStatus === 'NS') {
+  if (matchStatus === "NS") {
     return (
       <div className={classes.fallback}>
         <Info /> Stats will be shown once the match starts.
@@ -63,7 +63,7 @@ const FootballStats = () => {
       )}
       {!isLoading && (
         <Fragment>
-          <nav className={classes['team-container']}>
+          <nav className={classes["team-container"]}>
             <div className={classes.home}>
               <Image src={homeImageUrl} alt="hehe" />
               <span>{homeTeamName}</span>
@@ -89,7 +89,7 @@ const FootballStats = () => {
                   label={capitalizedStat}
                 />
               );
-            }) ?? ''}
+            }) ?? ""}
           </div>
         </Fragment>
       )}

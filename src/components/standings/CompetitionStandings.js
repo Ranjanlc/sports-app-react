@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useState } from 'react';
-import classes from './CompetitionStandings.module.css';
-import Dropdown from '../dropdown/Dropdown';
-import Image from '../ui/Image';
+import { Fragment, useEffect, useState } from "react";
+import classes from "./CompetitionStandings.module.css";
+import Dropdown from "../dropdown/Dropdown";
+import Image from "../UI/Image";
 function CompetitionStandings({
   sportName,
   standings,
@@ -55,25 +55,25 @@ function CompetitionStandings({
     } = teamData;
     return (
       <article
-        className={`${classes['team-data']} ${
+        className={`${classes["team-data"]} ${
           teamId === homeTeamId || teamId === awayTeamId
             ? classes.highlight
-            : ''
+            : ""
         }`}
         key={teamId}
       >
-        <div className={classes['team-data__details']}>
+        <div className={classes["team-data__details"]}>
           <div className={classes.property}>{position}</div>
           <div className={classes.name}>
             <Image src={teamImageUrl} alt="" />
             {name}
           </div>
         </div>
-        <div className={classes['property-container']}>
+        <div className={classes["property-container"]}>
           <div className={classes.property}>{played}</div>
           <div className={classes.property}>{wins}</div>
           <div className={classes.property}>{losses}</div>
-          {sportName === 'cricket' ? (
+          {sportName === "cricket" ? (
             <div className={classes.nrr}>{netRunRate}</div>
           ) : (
             <div className={classes.nrr}>{percentage}</div>
@@ -98,11 +98,11 @@ function CompetitionStandings({
 
       <Fragment>
         <header className={classes.header}>
-          <div className={classes['team-details']}>
+          <div className={classes["team-details"]}>
             <div className={classes.property}>#</div>
-            <div className={classes['header-name']}>Team</div>
+            <div className={classes["header-name"]}>Team</div>
           </div>
-          <div className={classes['property-container']}>
+          <div className={classes["property-container"]}>
             <div data-full="Played" className={classes.property}>
               P
             </div>
@@ -112,7 +112,7 @@ function CompetitionStandings({
             <div data-full="Losses" className={classes.property}>
               L
             </div>
-            {sportName === 'cricket' ? (
+            {sportName === "cricket" ? (
               <div data-full="Run rate" className={classes.nrr}>
                 NRR
               </div>

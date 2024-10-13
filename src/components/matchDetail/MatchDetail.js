@@ -1,18 +1,18 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import classes from './MatchDetail.module.css';
-import People from '../../assets/matchDetail/people';
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import classes from "./MatchDetail.module.css";
+import People from "../../assets/matchDetail/people";
 
-import Stadium from '../../assets/matchDetail/stadium.svg';
-import Referee from '../../assets/matchDetail/referee.svg';
-import Calendar from '../../assets/matchDetail/calendar.svg';
-import { Fragment, useContext, useState } from 'react';
-import MatchContext from '../../store/match-context';
-import useHttp from '../../hooks/use-http';
-import ErrorHandler from '../error/ErrorHandler';
-import LoadingSpinner from '../ui/LoadingSpinner';
-import { convertToReadableStatus } from '../../helpers/helpers';
-import Image from '../ui/Image';
-import { competitionDateHandler } from '../../helpers/date-picker';
+import Stadium from "../../assets/matchDetail/stadium.svg";
+import Referee from "../../assets/matchDetail/referee.svg";
+import Calendar from "../../assets/matchDetail/calendar.svg";
+import { Fragment, useContext, useState } from "react";
+import MatchContext from "../../store/match-context";
+import useHttp from "../../hooks/use-http";
+import ErrorHandler from "../error/ErrorHandler";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import { convertToReadableStatus } from "../../helpers/helpers";
+import Image from "../UI/Image";
+import { competitionDateHandler } from "../../helpers/date-picker";
 function MatchDetail({ query, endpoint }) {
   const [matchInfo, setMatchInfo] = useState({});
   const navigate = useNavigate();
@@ -44,18 +44,18 @@ function MatchDetail({ query, endpoint }) {
       const awayVal = awayScoreArr[i];
       const homeWon = homeVal > awayVal;
       return (
-        <li className={classes['basketball-score']} key={i}>
+        <li className={classes["basketball-score"]} key={i}>
           <span
-            className={`${classes['period-score']}
-          ${!homeWon ? classes.lost : ''}
+            className={`${classes["period-score"]}
+          ${!homeWon ? classes.lost : ""}
           `}
           >
             {homeVal}
           </span>
-          <span className={classes['period-name']}>Period {i + 1}</span>
+          <span className={classes["period-name"]}>Period {i + 1}</span>
           <span
-            className={`${classes['period-score']}
-          ${homeWon ? classes.lost : ''}
+            className={`${classes["period-score"]}
+          ${homeWon ? classes.lost : ""}
           `}
           >
             {awayVal}
@@ -64,7 +64,7 @@ function MatchDetail({ query, endpoint }) {
       );
     });
   };
-  const isFootball = endpoint.includes('Football');
+  const isFootball = endpoint.includes("Football");
   const { homeScore: detailedHomeScore, awayScore: detailedAwayScore } =
     matchInfo;
   const scoreListContainer = getDetailedScores(
@@ -100,37 +100,37 @@ function MatchDetail({ query, endpoint }) {
           </div>
         )}
         {!isLoading && !isError && Object.keys(matchInfo).length !== 0 && (
-          <section className={classes['match-container']}>
-            <span className={classes['competition-title']}>
+          <section className={classes["match-container"]}>
+            <span className={classes["competition-title"]}>
               {competitionName}
             </span>
-            <main className={classes['match-score-container']}>
-              <article className={classes['match']}>
+            <main className={classes["match-score-container"]}>
+              <article className={classes["match"]}>
                 <div className={classes.team}>
                   {homeTeamName}
                   <Image src={homeImageUrl} alt="dasd" />
                 </div>
-                <main className={classes['score-container']}>
-                  <div className={classes['match-score']}>
-                    {matchStatus === 'NS' ? (
+                <main className={classes["score-container"]}>
+                  <div className={classes["match-score"]}>
+                    {matchStatus === "NS" ? (
                       <Fragment>{displayTime}</Fragment>
                     ) : (
                       <Fragment>
                         <span
                           className={
-                            winnerTeam && winnerTeam !== 1 ? classes.loser : ''
+                            winnerTeam && winnerTeam !== 1 ? classes.loser : ""
                           }
                         >
                           {homeScore}
                         </span>
                         <span
-                          className={matchStatus === 'FT' ? classes.loser : ''}
+                          className={matchStatus === "FT" ? classes.loser : ""}
                         >
                           -
                         </span>
                         <span
                           className={
-                            winnerTeam && winnerTeam !== 2 ? classes.loser : ''
+                            winnerTeam && winnerTeam !== 2 ? classes.loser : ""
                           }
                         >
                           {awayScore}
@@ -151,7 +151,7 @@ function MatchDetail({ query, endpoint }) {
                 </div>
               </article>
               {!isFootball && (
-                <ul className={classes['basketball-score-container']}>
+                <ul className={classes["basketball-score-container"]}>
                   {scoreListContainer}
                 </ul>
               )}
@@ -185,13 +185,13 @@ function MatchDetail({ query, endpoint }) {
             </main>
           </section>
         )}
-        <section className={classes['details-container']}>
-          <header className={classes['link-container']}>
+        <section className={classes["details-container"]}>
+          <header className={classes["link-container"]}>
             {isFootball && (
               <NavLink
                 to="summary"
                 replace
-                className={({ isActive }) => (isActive ? classes.active : '')}
+                className={({ isActive }) => (isActive ? classes.active : "")}
               >
                 Summary
               </NavLink>
@@ -199,7 +199,7 @@ function MatchDetail({ query, endpoint }) {
             <NavLink
               to="stats"
               replace
-              className={({ isActive }) => (isActive ? classes.active : '')}
+              className={({ isActive }) => (isActive ? classes.active : "")}
             >
               Stats
             </NavLink>
@@ -209,10 +209,10 @@ function MatchDetail({ query, endpoint }) {
               className={({ isActive }) =>
                 isActive
                   ? `${
-                      isFootball ? classes.lineup : classes['basketball-lineup']
+                      isFootball ? classes.lineup : classes["basketball-lineup"]
                     } ${classes.active}`
                   : `${
-                      isFootball ? classes.lineup : classes['basketball-lineup']
+                      isFootball ? classes.lineup : classes["basketball-lineup"]
                     }`
               }
             >
@@ -228,7 +228,7 @@ function MatchDetail({ query, endpoint }) {
               Table
             </NavLink>
           </header>
-          <article className={classes['details']}>
+          <article className={classes["details"]}>
             <Outlet />
           </article>
         </section>

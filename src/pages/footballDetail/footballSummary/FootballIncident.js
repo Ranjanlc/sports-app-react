@@ -1,12 +1,12 @@
-import { useContext } from 'react';
-import Card from '../../../assets/matchDetail/card';
-import FootballIcon from '../../../assets/matchDetail/football-icon';
-import classes from './FootballIncident.module.css';
-import MatchContext from '../../../store/match-context';
-import Boot from '../../../assets/matchDetail/boot-icon';
-import missedGoal from '../../../assets/matchDetail/football-cross.png';
-import football from '../../../assets/matchDetail/football.png';
-import Image from '../../../components/ui/Image';
+import { useContext } from "react";
+import Card from "../../../assets/matchDetail/card";
+import FootballIcon from "../../../assets/matchDetail/football-icon";
+import classes from "./FootballIncident.module.css";
+import MatchContext from "../../../store/match-context";
+import Boot from "../../../assets/matchDetail/boot-icon";
+import missedGoal from "../../../assets/matchDetail/football-cross.png";
+import football from "../../../assets/matchDetail/football.png";
+import Image from "../../../components/UI/Image";
 const FootballIncident = (props) => {
   const {
     minute,
@@ -24,31 +24,31 @@ const FootballIncident = (props) => {
     matchDetail: { homeImageUrl, awayImageUrl },
   } = ctx;
   const classifyGoal = (incident) => {
-    if (incident === 'goal') {
+    if (incident === "goal") {
       return <Image src={football} alt="football" />;
     }
-    if (incident === 'ownGoal') {
+    if (incident === "ownGoal") {
       return <FootballIcon color="red" />;
     }
-    if (incident === 'canceledGoal') {
+    if (incident === "canceledGoal") {
       return (
-        <div className={classes['goal-icon__container']}>
+        <div className={classes["goal-icon__container"]}>
           VAR
           <Image src={missedGoal} alt="VAR" />
         </div>
       );
     }
-    if (incident === 'penalty') {
+    if (incident === "penalty") {
       return (
-        <div className={classes['goal-icon__container']}>
+        <div className={classes["goal-icon__container"]}>
           PEN
           <Image src={football} alt="football" />
         </div>
       );
     }
-    if (incident === 'missedPenalty') {
+    if (incident === "missedPenalty") {
       return (
-        <div className={classes['goal-icon__container']}>
+        <div className={classes["goal-icon__container"]}>
           PEN
           <Image src={missedGoal} alt="MissedPEN" />
         </div>
@@ -63,7 +63,7 @@ const FootballIncident = (props) => {
         }`}</span>
         <Image src={homeImageUrl} alt="Home Team" />
         <span className={classes.player}>{playerName}</span>
-        {incident === 'yellowCard' ? (
+        {incident === "yellowCard" ? (
           <Card color="yellow" />
         ) : (
           <Card color="red" />
@@ -74,7 +74,7 @@ const FootballIncident = (props) => {
   if (score && team === 1) {
     return (
       <div
-        className={`${classes['left-goal']} ${classes.goal} ${classes.card}`}
+        className={`${classes["left-goal"]} ${classes.goal} ${classes.card}`}
         key={minute}
       >
         <span className={classes.minute}>{`${minute}${
@@ -82,11 +82,11 @@ const FootballIncident = (props) => {
         }`}</span>
         <div className={classes.left}>
           <Image
-            src={incident !== 'ownGoal' ? homeImageUrl : awayImageUrl}
+            src={incident !== "ownGoal" ? homeImageUrl : awayImageUrl}
             alt="dcas"
           />
           <span
-            className={`${classes.player} ${hasAssisted ? classes.assist : ''}`}
+            className={`${classes.player} ${hasAssisted ? classes.assist : ""}`}
           >
             <span>{playerName ? playerName : scorer}</span>
             {hasAssisted && (
@@ -111,7 +111,7 @@ const FootballIncident = (props) => {
           minuteExtended ? `+${minuteExtended}'` : `'`
         }`}</span>
         <div className={classes.right}>
-          {incident === 'yellowCard' ? (
+          {incident === "yellowCard" ? (
             <Card color="yellow" />
           ) : (
             <Card color="red" />
@@ -125,7 +125,7 @@ const FootballIncident = (props) => {
   if (score && team === 2) {
     return (
       <div
-        className={`${classes['right-goal']} ${classes.card} ${classes.goal}`}
+        className={`${classes["right-goal"]} ${classes.card} ${classes.goal}`}
         key={minute}
       >
         <span className={classes.minute}>{`${minute}${
@@ -137,12 +137,12 @@ const FootballIncident = (props) => {
         <div className={classes.right}>
           {classifyGoal(incident)}
           <span
-            className={`${classes.player} ${hasAssisted ? classes.assist : ''}`}
+            className={`${classes.player} ${hasAssisted ? classes.assist : ""}`}
           >
             <span>{playerName ? playerName : scorer}</span>
             {hasAssisted && (
               <span
-                className={`${classes.assister} ${classes['away-assister']}`}
+                className={`${classes.assister} ${classes["away-assister"]}`}
               >
                 <Boot />
                 {assister}
@@ -150,7 +150,7 @@ const FootballIncident = (props) => {
             )}
           </span>
           <Image
-            src={incident !== 'ownGoal' ? awayImageUrl : homeImageUrl}
+            src={incident !== "ownGoal" ? awayImageUrl : homeImageUrl}
             alt="dcas"
           />
         </div>
