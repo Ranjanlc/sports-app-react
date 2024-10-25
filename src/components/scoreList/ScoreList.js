@@ -149,6 +149,16 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
           <Info /> There are no live matches as of now.
         </div>
       )}
+      {isError && (
+        <div className={classes.fallback}>
+          <Info />
+          <span>
+            Sorry for the incovenience. It's the third-party api problem. I am
+            working to fix this problem, ASAP. Meanwhile, you can enjoy cricket
+            and basketball scores.
+          </span>
+        </div>
+      )}
       <main className={isLive ? classes["live-container"] : classes.container}>
         {isError && <ErrorHandler message={isError} />}
         <div className={classes["match-list"]}>
@@ -157,7 +167,7 @@ const ScoreList = ({ sportName, isLive, dateId }) => {
               <LoadingSpinner />
             </div>
           )}
-          {!isLoading && <Fragment>{competitionSet}</Fragment>}
+          {!isLoading && !isError && <Fragment>{competitionSet}</Fragment>}
         </div>
         {!isLive && !isError && (
           <div className={classes.featured}>
