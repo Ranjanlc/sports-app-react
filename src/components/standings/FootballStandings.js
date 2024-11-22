@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import classes from './FootballStandings.module.css';
-import Dropdown from '../dropdown/Dropdown';
-import { Fragment } from 'react';
-import { convertSlugToDisplay } from '../../helpers/helpers';
-import Image from '../ui/Image';
+import { useState } from "react";
+import classes from "./FootballStandings.module.css";
+import Dropdown from "../dropdown/Dropdown";
+import { Fragment } from "react";
+import { convertSlugToDisplay } from "../../helpers/helpers";
+import Image from "../UI/Image";
 const FootballStandings = (props) => {
   const { dirtyStandings, homeTeamId, awayTeamId } = props;
   const [standings, setStandings] = useState();
@@ -66,14 +66,14 @@ const FootballStandings = (props) => {
     } = teamData;
     return (
       <article
-        className={`${classes['team-data']} ${
+        className={`${classes["team-data"]} ${
           teamId === homeTeamId || teamId === awayTeamId
             ? classes.highlight
-            : ''
+            : ""
         }`}
         key={teamId}
       >
-        <div className={classes['team-data__details']}>
+        <div className={classes["team-data__details"]}>
           <span className={classes.position}>{position}</span>
           <span className={classes.name}>
             <Image src={teamImageUrl} alt="" />
@@ -103,9 +103,9 @@ const FootballStandings = (props) => {
       )}
       <Fragment>
         <header className={classes.header}>
-          <div className={classes['team-details']}>
+          <div className={classes["team-details"]}>
             <span>#</span>
-            <span className={classes['header-name']}>Team</span>
+            <span className={classes["header-name"]}>Team</span>
           </div>
           <span data-full="Played">P</span>
           <span data-full="Wins">W</span>

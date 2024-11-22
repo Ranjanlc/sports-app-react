@@ -1,10 +1,10 @@
-import { Fragment, useContext } from 'react';
-import classes from './FeaturedMatch.module.css';
-import { convertDateForDisplay } from '../../helpers/date-picker';
-import MatchContext from '../../store/match-context';
-import { useNavigate } from 'react-router-dom';
-import { matchClickHandler } from '../../helpers/helpers';
-import Image from '../ui/Image';
+import { Fragment, useContext } from "react";
+import classes from "./FeaturedMatch.module.css";
+import { convertDateForDisplay } from "../../helpers/date-picker";
+import MatchContext from "../../store/match-context";
+import { useNavigate } from "react-router-dom";
+import { matchClickHandler } from "../../helpers/helpers";
+import Image from "../UI/Image";
 const FeaturedMatch = (props) => {
   const { featuredMatchContainer, sportName } = props;
   const { matchDetailHandler, clearMatchDetailHandler } =
@@ -43,9 +43,9 @@ const FeaturedMatch = (props) => {
   };
   return (
     <Fragment>
-      <span className={classes['featured-title']}>Featured Match</span>
+      <span className={classes["featured-title"]}>Featured Match</span>
       <div
-        className={classes['featured-match']}
+        className={classes["featured-match"]}
         onClick={matchClickHandler.bind(
           null,
           matchDetail,
@@ -55,46 +55,46 @@ const FeaturedMatch = (props) => {
           sportName
         )}
       >
-        <div className={classes['featured-lhs']}>
-          {homeTeamName.split(' ').at(0)}
+        <div className={classes["featured-lhs"]}>
+          {homeTeamName.split(" ").at(0)}
           <Image src={homeImageUrl} alt="dasd" />
         </div>
         <div
           className={
-            sportName === 'cricket'
-              ? classes['cricket-score']
-              : classes['featured-score']
+            sportName === "cricket"
+              ? classes["cricket-score"]
+              : classes["featured-score"]
           }
         >
-          {matchStatus === 'NS' || matchStatus === 'Not started' ? (
+          {matchStatus === "NS" || matchStatus === "Not started" ? (
             <Fragment>{displayTime}</Fragment>
           ) : (
             <Fragment>
               <span
                 className={
-                  (matchStatus === 'Ended' || matchStatus === 'FT') &&
+                  (matchStatus === "Ended" || matchStatus === "FT") &&
                   winnerTeam !== 1
                     ? classes.loser
-                    : ''
+                    : ""
                 }
               >
                 {homeScore}
               </span>
               <span
                 className={
-                  matchStatus === 'Ended' || matchStatus === 'FT'
+                  matchStatus === "Ended" || matchStatus === "FT"
                     ? classes.loser
-                    : ''
+                    : ""
                 }
               >
                 -
               </span>
               <span
                 className={
-                  (matchStatus === 'Ended' || matchStatus === 'FT') &&
+                  (matchStatus === "Ended" || matchStatus === "FT") &&
                   winnerTeam !== 2
                     ? classes.loser
-                    : ''
+                    : ""
                 }
               >
                 {awayScore}
@@ -102,8 +102,8 @@ const FeaturedMatch = (props) => {
             </Fragment>
           )}
         </div>
-        <div className={classes['featured-rhs']}>
-          {awayTeamName.split(' ').at(0)}
+        <div className={classes["featured-rhs"]}>
+          {awayTeamName.split(" ").at(0)}
           <Image src={awayImageUrl} alt="Away" />
         </div>
       </div>

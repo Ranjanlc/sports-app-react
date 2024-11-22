@@ -1,17 +1,16 @@
-import { Fragment, useContext, useEffect } from 'react';
-import MatchContext from '../../../store/match-context';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import classes from './FootballSummary.module.css';
-import FootballIncident from './FootballIncident';
-import Info from '../../../assets/scoreList/info';
-import football from '../../../assets/matchDetail/football.png';
-import missedGoal from '../../../assets/matchDetail/football-cross.png';
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import useHttp from '../../../hooks/use-http';
-import Image from '../../../components/ui/Image';
+import { Fragment, useContext, useEffect } from "react";
+import MatchContext from "../../../store/match-context";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import classes from "./FootballSummary.module.css";
+import FootballIncident from "./FootballIncident";
+import Info from "../../../assets/scoreList/info";
+import football from "../../../assets/matchDetail/football.png";
+import missedGoal from "../../../assets/matchDetail/football-cross.png";
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import useHttp from "../../../hooks/use-http";
+import Image from "../../../components/UI/Image";
 
 const FootballSummary = (props) => {
- 
   const ctx = useContext(MatchContext);
   const {
     matchDetail: { matchStatus, matchId, homeImageUrl, awayImageUrl },
@@ -89,19 +88,19 @@ const FootballSummary = (props) => {
       matchId,
     },
   };
-  const toFetch = firstHalfIncidents?.length === 0 && matchStatus !== 'NS';
+  const toFetch = firstHalfIncidents?.length === 0 && matchStatus !== "NS";
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getFootballMatchSummary',
+    "getFootballMatchSummary",
     toFetch
   );
   useEffect(() => {
     // To avoid mutating FootballContext while rendering of this component.
     if (data) {
-      setMatchDetailHandler(data, 'summary');
+      setMatchDetailHandler(data, "summary");
     }
   }, [data, setMatchDetailHandler]);
-  if (matchStatus === 'NS') {
+  if (matchStatus === "NS") {
     return (
       <div className={classes.fallback}>
         <Info /> Key events will be shown once the match starts.
@@ -120,17 +119,17 @@ const FootballSummary = (props) => {
       <FootballIncident incidentSet={incidentSet} key={i} />
     ));
   const classifyPen = (incident) => {
-    if (incident === 'shootOutPen') {
+    if (incident === "shootOutPen") {
       return (
-        <div className={classes['goal-icon__container']}>
+        <div className={classes["goal-icon__container"]}>
           PEN
           <Image src={football} alt="football" />
         </div>
       );
     }
-    if (incident === 'shootOutMiss') {
+    if (incident === "shootOutMiss") {
       return (
-        <div className={classes['goal-icon__container']}>
+        <div className={classes["goal-icon__container"]}>
           PEN
           <Image src={missedGoal} alt="Missed Goal" />
         </div>
@@ -153,14 +152,14 @@ const FootballSummary = (props) => {
         incident: homeIncident,
         playerName: homePlayer,
         score: homeScore,
-      } = homeTeam || { incident: '', playerName: '', score: [] }; //To avoid errors
+      } = homeTeam || { incident: "", playerName: "", score: [] }; //To avoid errors
       const {
         incident: awayIncident,
         playerName: awayPlayer,
         score: awayScore,
-      } = awayTeam || { incident: '', playerName: '', score: [] };
+      } = awayTeam || { incident: "", playerName: "", score: [] };
       const el = (
-        <main key={i} className={classes['penalty-card']}>
+        <main key={i} className={classes["penalty-card"]}>
           {!awayTeam ||
             (!homeTeam && <div className={classes.decider}>Decider:</div>)}
           {homeTeam && (
@@ -170,9 +169,9 @@ const FootballSummary = (props) => {
                 className={classes.logo}
                 alt="Home team logo"
               />
-              <div className={classes['player-container']}>
+              <div className={classes["player-container"]}>
                 <span className={classes.player}>{homePlayer}</span>
-                <span className={classes.score}>{homeScore.join('-')}</span>
+                <span className={classes.score}>{homeScore.join("-")}</span>
               </div>
               <span>{classifyPen(homeIncident)}</span>
             </div>
@@ -180,11 +179,11 @@ const FootballSummary = (props) => {
           {awayTeam && (
             <div className={classes.away}>
               <span>{classifyPen(awayIncident)}</span>
-              <div className={classes['player-container']}>
-                <span className={`${classes.player} ${classes['away-player']}`}>
+              <div className={classes["player-container"]}>
+                <span className={`${classes.player} ${classes["away-player"]}`}>
                   {awayPlayer}
                 </span>
-                <span className={classes.score}>{awayScore.join('-')}</span>
+                <span className={classes.score}>{awayScore.join("-")}</span>
               </div>
               <Image src={awayImageUrl} alt="Away " className={classes.logo} />
             </div>
@@ -210,9 +209,9 @@ const FootballSummary = (props) => {
             {homeHTScore}-{awayHTScore}
           </div>
           {secondHalfEl && secondHalfEl}
-          {(matchStatus === 'FT' ||
-            matchStatus === 'AET' ||
-            matchStatus === 'AP') && (
+          {(matchStatus === "FT" ||
+            matchStatus === "AET" ||
+            matchStatus === "AP") && (
             <div className={`${classes.card} ${classes.time} ${classes.full}`}>
               <span className={classes.minute}>FT</span>
               {homeFTScore}-{awayFTScore}
@@ -228,10 +227,10 @@ const FootballSummary = (props) => {
           {penaltyContainer && <Fragment> {penaltyEl}</Fragment>}
           {penaltyContainer && (
             <div
-              className={`${classes.card} ${classes.full} ${classes.time} ${classes['penalty-score__container']}`}
+              className={`${classes.card} ${classes.full} ${classes.time} ${classes["penalty-score__container"]}`}
             >
               <span>Penalty Shootout</span>
-              <div className={classes['penalty-score']}>
+              <div className={classes["penalty-score"]}>
                 <Image
                   src={homeImageUrl}
                   className={classes.logo}

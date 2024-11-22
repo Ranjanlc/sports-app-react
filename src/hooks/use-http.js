@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { URL } from '../helpers/helpers';
+import { useCallback, useEffect, useState } from "react";
+import { URL } from "../helpers/helpers";
 
 const useHttp = (query, endpoint, toFetch = true, reFetch) => {
   const [isError, setIsError] = useState(null);
@@ -9,10 +9,10 @@ const useHttp = (query, endpoint, toFetch = true, reFetch) => {
     setIsLoading(true);
     try {
       const res = await fetch(URL, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(query),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       const fetchedData = await res.json();
@@ -23,8 +23,10 @@ const useHttp = (query, endpoint, toFetch = true, reFetch) => {
         data: { [endpoint]: actualData },
       } = fetchedData;
       setData(actualData);
+      setIsError(null);
     } catch (err) {
       setIsError(err.message);
+      setData(null);
     }
     setIsLoading(false);
     // It's weird how it works.

@@ -1,10 +1,10 @@
-import { useContext, useEffect } from 'react';
-import FootballStandings from '../../../components/standings/FootballStandings';
-import classes from './FootballTable.module.css';
-import MatchContext from '../../../store/match-context';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
-import ErrorHandler from '../../../components/error/ErrorHandler';
-import useHttp from '../../../hooks/use-http';
+import { useContext, useEffect } from "react";
+import FootballStandings from "../../../components/standings/FootballStandings";
+import classes from "./FootballTable.module.css";
+import MatchContext from "../../../store/match-context";
+import LoadingSpinner from "../../../components/UI/LoadingSpinner";
+import ErrorHandler from "../../../components/error/ErrorHandler";
+import useHttp from "../../../hooks/use-http";
 
 const FootballTable = (props) => {
   const {
@@ -41,17 +41,17 @@ const FootballTable = (props) => {
   const toFetch = !tableContainer.length && !tableError;
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getFootballMatchTable',
+    "getFootballMatchTable",
     toFetch
   );
   useEffect(() => {
     if (data?.length === 0)
       return setMatchDetailError(
-        'No standings available for this match',
-        'table'
+        "No standings available for this match",
+        "table"
       );
-    data && setMatchDetailHandler(data, 'table');
-    isError && setMatchDetailError(isError, 'table');
+    data && setMatchDetailHandler(data, "table");
+    isError && setMatchDetailError(isError, "table");
   }, [data, setMatchDetailHandler, isError, setMatchDetailError]);
   return (
     <div

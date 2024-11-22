@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from 'react';
-import Dropdown from '../../components/dropdown/Dropdown';
-import classes from './CricketInnings.module.css';
+import { useContext, useEffect, useState } from "react";
+import Dropdown from "../../components/dropdown/Dropdown";
+import classes from "./CricketInnings.module.css";
 
-import cricketBat from '../../assets/scoreList/cricket-bat.png';
-import CricketBall from '../../assets/matchDetail/cricket-ball';
-import Image from '../../components/ui/Image';
-import MatchContext from '../../store/match-context';
-import useHttp from '../../hooks/use-http';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import ErrorHandler from '../../components/error/ErrorHandler';
-import Info from '../../assets/scoreList/info';
+import cricketBat from "../../assets/scoreList/cricket-bat.png";
+import CricketBall from "../../assets/matchDetail/cricket-ball";
+import Image from "../../components/UI/Image";
+import MatchContext from "../../store/match-context";
+import useHttp from "../../hooks/use-http";
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
+import ErrorHandler from "../../components/error/ErrorHandler";
+import Info from "../../assets/scoreList/info";
 function CricketInnings() {
   const {
     matchDetail: { matchId, matchStatus },
@@ -20,7 +20,7 @@ function CricketInnings() {
   } = useContext(MatchContext);
   // To store user's index preferences
   const [curIndex, setCurIndex] = useState(
-    localStorage.getItem('curIndex') || 0
+    localStorage.getItem("curIndex") || 0
   );
   const graphqlQuery = {
     query: `
@@ -54,17 +54,17 @@ function CricketInnings() {
   };
   const [data, isError, isLoading] = useHttp(
     graphqlQuery,
-    'getCricketMatchInnings',
+    "getCricketMatchInnings",
     !inningsContainer.length &&
       !(
-        matchStatus === 'Not started' ||
-        matchStatus === 'Abandoned' ||
-        matchStatus === 'Start delayed'
+        matchStatus === "Not started" ||
+        matchStatus === "Abandoned" ||
+        matchStatus === "Start delayed"
       )
   );
   useEffect(() => {
-    data && setMatchDetailHandler(data, 'innings');
-    isError && setMatchDetailError(isError, 'innings');
+    data && setMatchDetailHandler(data, "innings");
+    isError && setMatchDetailError(isError, "innings");
   }, [data, setMatchDetailHandler, setMatchDetailError, isError]);
 
   const options = inningsContainer.map((inning, i) => {
@@ -85,9 +85,9 @@ function CricketInnings() {
         reversedContainer,
       };
       const index = inningsObj[
-        option.includes('1st Inning') ? 'inningsContainer' : 'reversedContainer'
+        option.includes("1st Inning") ? "inningsContainer" : "reversedContainer"
       ].findIndex((inning) => option.includes(inning.battingTeam));
-      refinedIndex = option.includes('1st Inning')
+      refinedIndex = option.includes("1st Inning")
         ? index
         : inningsContainer.length - (index + 1);
     }
@@ -96,7 +96,7 @@ function CricketInnings() {
         option.includes(inning.battingTeam)
       );
     }
-    localStorage.setItem('curIndex', String(refinedIndex));
+    localStorage.setItem("curIndex", String(refinedIndex));
     setCurIndex(refinedIndex);
   };
   const curInning = inningsContainer.at(curIndex);
@@ -107,7 +107,7 @@ function CricketInnings() {
         wicket: { type },
         player: { name },
       } = batsman;
-      if (type === 'Did not bat') {
+      if (type === "Did not bat") {
         acc.noBat.push(name);
       } else {
         acc.batted.push(batsman);
@@ -133,12 +133,12 @@ function CricketInnings() {
       balls !== 0 ? ((score / balls) * 100).toFixed(2) : `0.00`;
     const caughtAndBowled = catcher && bowler === catcher;
     const wicketTakerEl = (
-      <div className={classes['wicket-taker']}>
-        {type === 'Retired out' ? (
-          'Retired Out'
+      <div className={classes["wicket-taker"]}>
+        {type === "Retired out" ? (
+          "Retired Out"
         ) : (
           <>
-            {type === 'Batting' && (
+            {type === "Batting" && (
               <span>
                 Batting
                 {id === curInning.currentBatsmanId && (
@@ -146,10 +146,10 @@ function CricketInnings() {
                 )}
               </span>
             )}
-            {type === 'LBW' && 'lbw'}
+            {type === "LBW" && "lbw"}
             {caughtAndBowled && <span>c&b {bowler}</span>}
             {catcher && !caughtAndBowled && <span>c {catcher}</span>}
-            {bowler && !caughtAndBowled && type !== 'Batting' && (
+            {bowler && !caughtAndBowled && type !== "Batting" && (
               <span>b {bowler}</span>
             )}
           </>
@@ -158,8 +158,8 @@ function CricketInnings() {
     );
 
     return (
-      <li key={id} className={classes['batsmen-list']}>
-        <div className={classes['player-container']}>
+      <li key={id} className={classes["batsmen-list"]}>
+        <div className={classes["player-container"]}>
           <Image
             src={`https://api.sofascore.app/api/v1/player/${id}/image`}
             alt="Player"
@@ -170,13 +170,13 @@ function CricketInnings() {
             {wicketTakerEl}
           </div>
         </div>
-        {type !== 'Did not bat' && (
-          <div className={classes['property-container']}>
+        {type !== "Did not bat" && (
+          <div className={classes["property-container"]}>
             <div className={classes.property}>{score}</div>
             <div className={classes.property}>{balls}</div>
             <div className={classes.property}>{fours}</div>
             <div className={classes.property}>{sixes}</div>
-            <div className={classes['strike-rate']}>{strikeRate}</div>
+            <div className={classes["strike-rate"]}>{strikeRate}</div>
           </div>
         )}
       </li>
@@ -192,8 +192,8 @@ function CricketInnings() {
       wicket,
     } = bowler;
     return (
-      <li key={id} className={classes['batsmen-list']}>
-        <div className={classes['player-container']}>
+      <li key={id} className={classes["batsmen-list"]}>
+        <div className={classes["player-container"]}>
           <Image
             src={`https://api.sofascore.app/api/v1/player/${id}/image`}
             alt="Player"
@@ -205,20 +205,20 @@ function CricketInnings() {
           </div>
         </div>
 
-        <div className={classes['property-container']}>
+        <div className={classes["property-container"]}>
           <div className={classes.property}>{over}</div>
           <div className={classes.property}>{maiden}</div>
           <div className={classes.property}>{run}</div>
           <div className={classes.property}>{wicket}</div>
-          <div className={classes['strike-rate']}>{economy}</div>
+          <div className={classes["strike-rate"]}>{economy}</div>
         </div>
       </li>
     );
   });
   if (
-    matchStatus === 'Not started' ||
-    matchStatus === 'Abandoned' ||
-    matchStatus === 'Start delayed'
+    matchStatus === "Not started" ||
+    matchStatus === "Abandoned" ||
+    matchStatus === "Start delayed"
   ) {
     return (
       <div className={classes.fallback}>
@@ -243,7 +243,7 @@ function CricketInnings() {
           />
           <article className={classes.header}>
             <span className={classes.batsmen}>Batsmen</span>
-            <div className={classes['property-container']}>
+            <div className={classes["property-container"]}>
               <div data-full="Runs" className={classes.property}>
                 R
               </div>
@@ -256,24 +256,24 @@ function CricketInnings() {
               <div data-full="Sixes" className={classes.property}>
                 6s
               </div>
-              <div data-full="Strike rate" className={classes['strike-rate']}>
+              <div data-full="Strike rate" className={classes["strike-rate"]}>
                 S/R
               </div>
             </div>
           </article>
-          <ul className={classes['player-list-container']}>{batsmenEl}</ul>
+          <ul className={classes["player-list-container"]}>{batsmenEl}</ul>
           <div className={classes.extras}>{curInning.extras}</div>
-          <article className={classes['general-container']}>
+          <article className={classes["general-container"]}>
             <div className={classes.title}>Did not Bat:</div>
-            <div>{curBatsmen.noBat.join(',')}</div>
+            <div>{curBatsmen.noBat.join(",")}</div>
           </article>
-          <article className={classes['general-container']}>
+          <article className={classes["general-container"]}>
             <div className={classes.title}>Fall of wickets:</div>
-            <div>{curInning.fallOfWickets.join(' , ')}</div>
+            <div>{curInning.fallOfWickets.join(" , ")}</div>
           </article>
           <article className={classes.header}>
             <span>Bowler</span>
-            <div className={classes['property-container']}>
+            <div className={classes["property-container"]}>
               <div data-full="Overs" className={classes.property}>
                 O
               </div>
@@ -286,12 +286,12 @@ function CricketInnings() {
               <div data-full="Wickets" className={classes.property}>
                 W
               </div>
-              <div data-full="Economy" className={classes['strike-rate']}>
+              <div data-full="Economy" className={classes["strike-rate"]}>
                 Econ.
               </div>
             </div>
           </article>
-          <ul className={classes['player-list-container']}>{bowlerEl}</ul>
+          <ul className={classes["player-list-container"]}>{bowlerEl}</ul>
         </main>
       )}
     </>
