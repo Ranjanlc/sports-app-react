@@ -227,6 +227,16 @@ note @include(if:$isCricket)
 };
 ```
 
+## Future Updates
+
+We have some exciting updates planned for the future:
+
+- **Login Functionality**: Users will be able to log in to the application.
+  - If a user logs in with a college email, the website will change its theme to match the college's theme colors.
+  - If a user logs in with a college email and their college plays in the NCAA, we will prioritize displaying their college's games at the top.
+
+- **New Sports Addition**: We will be adding American football to the sports section soon.
+
 ## License
 
 This project is licensed under the MIT License.
