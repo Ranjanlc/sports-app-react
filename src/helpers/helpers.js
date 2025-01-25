@@ -1,5 +1,6 @@
 // export const URL = "http://localhost:8080/graphql"; //
-export const URL = "https://main.novocreation.com/graphql";
+// export const URL = "https://main.novocreation.com/graphql";
+export const URL = "https://sports-app-xv27.onrender.com/graphql";
 
 export const refineCricketScores = (homeScore, awayScore) => {
   const splittedHomeScore = homeScore !== "Yet to bat" && homeScore?.split(" ");
